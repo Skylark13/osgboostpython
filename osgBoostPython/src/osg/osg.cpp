@@ -45,17 +45,12 @@ using namespace boost::python;
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
 
-#include <osg/Drawable>
-#include <osg/ShapeDrawable>
-#include <osg/Geometry>
-
-#include <osg/Shape>
-
 using namespace osg;
 
 // Definitions in other source files
 void export_math();
 void export_util();
+void export_drawable();
 
 // HeldType for objects which have a protected destructor.
 // http://osdir.com/ml/python.c++/2002-07/msg00174.html
@@ -77,21 +72,21 @@ namespace python {
 
 // Pointer calling a specific version of an overloaded method
 // http://www.boost.org/doc/libs/1_36_0/libs/python/doc/tutorial/doc/html/python/functions.html#python.overloading
-void (Object::*setName1)( const std::string& ) = &Object::setName;
+void (Object::*Object_setName1)( const std::string& ) = &Object::setName;
 
-const Node::ParentList& (Node::*getParents1)() const = &Node::getParents;
-Group* (Node::*getParent1)( unsigned int ) = &Node::getParent;
-const NodeCallback* (Node::*getUpdateCallback1)() const = &Node::getUpdateCallback;
-const NodeCallback* (Node::*getEventCallback1)() const = &Node::getEventCallback;
-const NodeCallback* (Node::*getCullCallback1)() const = &Node::getCullCallback;
+const Node::ParentList& (Node::*Node_getParents1)() const = &Node::getParents;
+Group* (Node::*Node_getParent1)( unsigned int ) = &Node::getParent;
+const NodeCallback* (Node::*Node_getUpdateCallback1)() const = &Node::getUpdateCallback;
+const NodeCallback* (Node::*Node_getEventCallback1)() const = &Node::getEventCallback;
+const NodeCallback* (Node::*Node_getCullCallback1)() const = &Node::getCullCallback;
 
-Node* (Group::*getChild1)( unsigned int ) = &Group::getChild;
-bool (Group::*removeChild1)( osg::Node* ) = &Group::removeChild;
-bool (Group::*removeChild2)( unsigned int, unsigned int ) = &Group::removeChild;    // Can't find a way to use the default argument here.
+Node* (Group::*Group_getChild1)( unsigned int ) = &Group::getChild;
+bool (Group::*Group_removeChild1)( osg::Node* ) = &Group::removeChild;
+bool (Group::*Group_removeChild2)( unsigned int, unsigned int ) = &Group::removeChild;    // Can't find a way to use the default argument here.
 
-const Geode::DrawableList& (Geode::*getDrawableList1)() const = &Geode::getDrawableList;
-Drawable* (Geode::*getDrawable1)( unsigned int ) = &Geode::getDrawable;
-bool (Geode::*removeDrawable1)( osg::Drawable* ) = &Geode::removeDrawable;
+const Geode::DrawableList& (Geode::*Geode_getDrawableList1)() const = &Geode::getDrawableList;
+Drawable* (Geode::*Geode_getDrawable1)( unsigned int ) = &Geode::getDrawable;
+bool (Geode::*Geode_removeDrawable1)( osg::Drawable* ) = &Geode::removeDrawable;
 
 
 BOOST_PYTHON_MODULE(_osg)
@@ -130,7 +125,7 @@ BOOST_PYTHON_MODULE(_osg)
         // return_value_policy<manage_new_object>()             -- ptr               good
         // return_value_policy<return_by_value>()               -- value             good
         scope in_Object = class_<Object, bases<Referenced>, ref_ptr<Object>, boost::noncopyable >("Object", no_init)
-            .add_property("name", make_function(&Object::getName, return_value_policy<copy_const_reference>()), setName1)
+            .add_property("name", make_function(&Object::getName, return_value_policy<copy_const_reference>()), Object_setName1)
             .add_property("dataVariance", &Object::getDataVariance, &Object::setDataVariance)
         ;
 
@@ -146,8 +141,8 @@ BOOST_PYTHON_MODULE(_osg)
     {
         scope in_Node = class_<Node, bases<Object>, ref_ptr<Node> >("Node")
             .def("getNumParents", &Node::getNumParents)
-            .def("getParents", getParents1, return_value_policy<return_by_value>())
-            .def("getParent", getParent1, return_value_policy<reference_existing_object>())
+            .def("getParents", Node_getParents1, return_value_policy<return_by_value>())
+            .def("getParent", Node_getParent1, return_value_policy<reference_existing_object>())
             // TODO: NodePathList
             //.def("getParentalNodePaths", &Node::getParentalNodePaths)
             // TODO: MatrixList
@@ -155,11 +150,11 @@ BOOST_PYTHON_MODULE(_osg)
             // TODO: Implement these when needed
             // They need a wrapper class for NodeCallback
             //.def("setUpdateCallback", &Node::setUpdateCallback)
-            //.def("getUpdateCallback", getUpdateCallback1)
+            //.def("getUpdateCallback", Node_getUpdateCallback1)
             //.def("setEventCallback", &Node::setEventCallback)
-            //.def("getEventCallback", getEventCallback1)
+            //.def("getEventCallback", Node_getEventCallback1)
             //.def("setCullCallback", &Node::setCullCallback)
-            //.def("getCullCallback", getCullCallback1)
+            //.def("getCullCallback", Node_getCullCallback1)
             .add_property("cullingActive", &Node::getCullingActive, &Node::setCullingActive)
             .add_property("nodeMask", &Node::getNodeMask, &Node::setNodeMask)
             // TODO: Need methods related to descriptions?
@@ -181,11 +176,11 @@ BOOST_PYTHON_MODULE(_osg)
     // Group
     class_<Group, bases<Node>, ref_ptr<Group> >("Group")
         .def("getNumChildren", &Group::getNumChildren)
-        .def("getChild", getChild1, return_value_policy<reference_existing_object>())
+        .def("getChild", Group_getChild1, return_value_policy<reference_existing_object>())
         .def("addChild", &Group::addChild)
         .def("insertChild", &Group::insertChild)
-        .def("removeChild", removeChild1)
-        .def("removeChild", removeChild2)
+        .def("removeChild", Group_removeChild1)
+        .def("removeChild", Group_removeChild2)
         .def("removeChildren", &Group::removeChildren)
         .def("replaceChild", &Group::replaceChild)
         .def("setChild", &Group::setChild)
@@ -219,44 +214,17 @@ BOOST_PYTHON_MODULE(_osg)
         .def("computeWorldToLocalMatrix", &MatrixTransform::computeWorldToLocalMatrix)
     ;
 
-    // Drawable and DrawCallback
-    {
-        // Abstract class
-        scope in_Drawable = class_<Drawable, bases<Object>, ref_ptr<Drawable>, boost::noncopyable >("Drawable", no_init)
-        ;
-
-        class_<Drawable::DrawCallback, bases<Object>, ref_ptr<Drawable::DrawCallback> >("DrawCallback")
-        ;
-    }
-
-    // Abstract class
-    class_<Shape, bases<Object>, ref_ptr<Shape>, boost::noncopyable >("Shape", no_init)
-    ;
-
-    class_<Sphere, bases<Shape>, ref_ptr<Sphere> >("Sphere")
-        .def(init<Vec3f, float>())
-        .def("set", &Sphere::set)
-        .add_property("center", make_function(&Sphere::getCenter, return_value_policy<copy_const_reference>()), &Sphere::setCenter)
-        .add_property("radius", &Sphere::getRadius, &Sphere::setRadius)
-    ;
-
-    class_<TessellationHints, bases<Object>, ref_ptr<TessellationHints> >("TessellationHints")
-    ;
-
-    class_<ShapeDrawable, bases<Drawable>, ref_ptr<ShapeDrawable> >("ShapeDrawable")
-        .def(init<Shape*, TessellationHints*>())
-        .add_property("color", make_function(&ShapeDrawable::getColor, return_value_policy<copy_const_reference>()), &ShapeDrawable::setColor)
-    ;
+    export_drawable();
 
     // Geode
     {
         class_<Geode, bases<Node>, ref_ptr<Geode> >("Geode")
             .def("addDrawable", &Geode::addDrawable)
             .def("getNumDrawables", &Geode::getNumDrawables)
-            .def("getDrawableList", getDrawableList1, return_value_policy<return_by_value>())
-            .def("getDrawable", getDrawable1, return_value_policy<reference_existing_object>())
+            .def("getDrawableList", Geode_getDrawableList1, return_value_policy<return_by_value>())
+            .def("getDrawable", Geode_getDrawable1, return_value_policy<reference_existing_object>())
             .def("addDrawable", &Geode::addDrawable)
-            .def("removeDrawable", removeDrawable1)
+            .def("removeDrawable", Geode_removeDrawable1)
             .def("removeDrawables", &Geode::removeDrawables)
             .def("replaceDrawable", &Geode::replaceDrawable)
             .def("setDrawable", &Geode::setDrawable)
@@ -264,6 +232,21 @@ BOOST_PYTHON_MODULE(_osg)
             .def("getDrawableIndex", &Geode::getDrawableIndex)
         ;
 
+        // For some reason, this doesn't work:
+        // sd = osg.ShapeDrawable(osg.Sphere(), None)
+        // sd.name = "sphere"
+        // geode = osg.Geode()
+        // geode.addDrawable(sd)
+        // dl = geode.getDrawableList()
+        // len(dl)    # returns 1
+        // sd.name    # returns 'sphere'
+        // dl[0].name # should return 'sphere', but causes this error instead:
+        // # Traceback (most recent call last):
+        // #   File "<stdin>", line 1, in <module>
+        // # Boost.Python.ArgumentError: Python argument types in
+        // #     None.None(Drawable)
+        // # did not match C++ signature:
+        // #     None(class osg::Object {lvalue})
         class_<Geode::DrawableList>("DrawableList")
             .def( vector_indexing_suite< Geode::DrawableList >() )
         ;

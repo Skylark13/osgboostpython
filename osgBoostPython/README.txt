@@ -3,9 +3,7 @@ Quick notes
 To start working
 ------------------
 cd /d G:\OSG-Nodekits\___myprojects\osgBoostPython
-for /F "Tokens=1" %I in ('cd') do set osgBoostPython_Lib=%I\lib
-set PYTHONPATH=%PYTHONPATH%;%osgBoostPython_Lib%
-set PATH=%PATH%;G:\boost_1_35_0\tools\jam\src\bin.ntx86;G:\boost_1_35_0\lib;%OSG_BIN_PATH%
+setenv
 
 To build
 ------------------

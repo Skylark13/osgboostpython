@@ -47,6 +47,7 @@ using msvc : : : <linkflags>-LIBPATH:G:/boost_1_35_0/lib
 # Declare the three extension modules.  You can specify multiple
 # source files after the colon separated by spaces.
 python-extension _osg       : src/osg/osg.cpp
+                              src/osg/drawable.cpp
                               src/osg/math.cpp
                               src/osg/util.cpp
                               otlib

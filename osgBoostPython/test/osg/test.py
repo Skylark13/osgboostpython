@@ -1,8 +1,25 @@
 #!/bin/python
 import osg
+
+print "Testing osg::Vec4d (for now we assume if this works, then Vec2{d|f}, Vec3{d|f} and Vec4f work too"
+v4d = osg.Vec4d()
+print "v4d contains", v4d._v
+v4d.set(1,2,3,4)
+print "v4d contains", v4d._v
+print "Can also print by component:", v4d.x(), v4d.y(), v4d.z(), v4d.w()
+
 print "Testing osg::Matrixd"
 m = osg.Matrixd()
-m.valid()
+print "Matrix valid =", m.valid()
+
+print "Testing osg::BoundingSphere"
+bs = osg.BoundingSphere()
+print "bs initial values: center =", bs._center._v, "radius =", bs._radius
+print "valid =", bs.valid()
+bs._center = osg.Vec3f(0,0,0)
+bs._radius = 1
+print "bs new values: center =", bs._center._v, "radius =", bs._radius
+print "valid =", bs.valid()
 
 print "Testing osg::Node and osg::Group"
 print "  Creating objects"
@@ -40,3 +57,4 @@ print "  Getting drawable list"
 drawables = geode.getDrawableList()
 print "    Drawable list has", len(drawables), "drawables"
 #print "    Drawable 0 is called [", drawables[0].name, "]"   # Doesn't quite work yet.
+
