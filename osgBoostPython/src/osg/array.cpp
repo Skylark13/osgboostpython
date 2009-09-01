@@ -59,9 +59,100 @@ struct ArrayWrapper
       container[j] = element;
     }
 
+    /// Add an item to the end of the list; equivalent to a[len(a):] = [x].
     static void append(ContainerType& container, ElementType const& element)
     {
         container.push_back(element);
+    }
+
+    /// Extend the list by appending all the items in the given list; 
+    /// equivalent to a[len(a):] = L.
+    static void extend(ContainerType& container, ContainerType const& container2)
+    {
+        for (ContainerType::const_iterator it = container2.begin(); it != container2.end(); ++it)
+            container.push_back(*it);
+    }
+
+    /// Insert an item at a given position. The first argument is the index of 
+    /// the element before which to insert, so a.insert(0, x) inserts at the 
+    /// front of the list, and a.insert(len(a), x) is equivalent to a.append(x).
+    static void insert(ContainerType& container, long i, ElementType const& element)
+    {
+        std::size_t j = positive_getitem_index(i, container.size(), true);
+        container.insert(container.begin()+j, element);
+    }
+
+    /// Remove the first item from the list whose value is x. It is an error if 
+    /// there is no such item.
+    static void remove(ContainerType& container, ElementType const& element)
+    {
+        ContainerType::iterator it = std::find(container.begin(), container.end(), element);
+        if (it != container.end())
+            container.erase(it);
+        else
+        {
+            throw std::invalid_argument("Element does not exist");
+        }
+    }
+
+    /// Remove the item at the given position in the list, and return it. If no 
+    /// index is specified, a.pop() removes and returns the last item in the 
+    /// list.
+    static ElementType pop(ContainerType& container)
+    {
+        ElementType element = container.back();
+        container.erase(container.end() - 1);
+        return element;
+    }
+
+
+    /// Remove the item at the given position in the list, and return it. If no 
+    /// index is specified, a.pop() removes and returns the last item in the 
+    /// list.
+    static ElementType pop_i(ContainerType& container, long i)
+    {
+        std::size_t j = positive_getitem_index(i, container.size(), true);
+        ElementType element = *(container.begin() + j);
+        container.erase(container.begin() + j);
+        return element;
+    }
+
+    /// Return the index in the list of the first item whose value is x. It is 
+    /// an error if there is no such item.
+    static long index(ContainerType& container, ElementType const& element)
+    {
+        long i = 0;
+        for (ContainerType::const_iterator it = container.begin(); it != container.end(); ++it)
+        {
+            if (*it == element)
+                return i;
+            i++;
+        }
+
+        throw std::invalid_argument("Element does not exist");
+    }
+
+    /// Return the number of times x appears in the list.
+    static long count(ContainerType& container, ElementType const& element)
+    {
+        long num = 0;
+        for (ContainerType::const_iterator it = container.begin(); it != container.end(); ++it)
+        {
+            if (*it == element)
+                num++;
+        }
+
+        return num;
+    }
+
+    /// Sort the items of the list, in place.
+    static void sort(ContainerType& container)
+    {
+    }
+
+    /// Reverse the elements of the list, in place.
+    static void reverse(ContainerType& container)
+    {
     }
 
     static class_t wrap(const std::string& name)
@@ -70,8 +161,22 @@ struct ArrayWrapper
         result
             .def("__len__", &ContainerType::size)
             .def("__getitem__", getitem_1d, GetitemReturnValuePolicy())
+            //.def("__getitem__", getitem_1d_slice)
             .def("__setitem__", setitem_1d)
+            //.def("__setitem__", setitem_1d_slice)
+            //.def("__delitem__", delitem_1d)
+            //.def("__delitem__", delitem_1d_slice)
             .def("append", append)
+            //.def("extend", extend)  // Complains that it can't destroy TemplateArray because of protected dtor...
+            .def("insert", insert)
+            .def("remove", remove)
+            .def("pop", pop)
+            .def("pop", pop_i)
+            .def("index", index)
+            .def("count", count)
+            //.def("sort", sort)
+            //.def("reverse", reverse)
+
 
             // TODO: Not all are needed, but a few...
             // At least support whatever is needed to give a python-esque interface.
