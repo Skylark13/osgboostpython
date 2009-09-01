@@ -1,5 +1,6 @@
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
+#include <boost/python/slice.hpp>
 using namespace boost::python;
 
 #define WIN32
@@ -52,11 +53,90 @@ struct ArrayWrapper
       return container[j];
     }
 
+    // Needs to return ref_ptr because ContainerType has protected dtor - conversion will be done automatically in python
+    static ref_ptr<ContainerType> getitem_1d_slice(ContainerType& container, slice const& sl)
+    {
+        ref_ptr<ContainerType> result = new ContainerType;
+
+        slice::range<ContainerType::iterator> bounds;
+        try 
+        {
+            bounds = sl.get_indicies<>(container.begin(), container.end());
+        }
+        catch (std::invalid_argument)
+        {
+            return result;
+        }
+
+        while (bounds.start != bounds.stop)
+        {
+            result->push_back(*bounds.start);
+            std::advance( bounds.start, bounds.step);
+        }
+        result->push_back(*bounds.start);
+
+        return result;
+    }
+
     static void setitem_1d(ContainerType& container, long i, ElementType const& element)
     {
       //if (!a.check_shared_size()) raise_shared_size_mismatch();
       std::size_t j = positive_getitem_index(i, container.size());
       container[j] = element;
+    }
+
+    /*
+    // Doesn't work.
+    static void setitem_1d_slice(ContainerType& container, slice const& sl, ContainerType& container2)
+    {
+        slice::range<ContainerType::iterator> c1Bounds;
+        slice::range<ContainerType::iterator> c2Bounds;
+
+        try 
+        {
+            c1Bounds = sl.get_indicies<>(container.begin(),  container.end());
+            c1Bounds = sl.get_indicies<>(container2.begin(), container2.end());
+        }
+        catch (std::invalid_argument)
+        {
+            return;
+        }
+
+        while (c1Bounds.start != c1Bounds.stop)
+        {
+            *c1Bounds.start = *c2Bounds.start;
+            std::advance( c1Bounds.start, c1Bounds.step);
+            std::advance( c2Bounds.start, c2Bounds.step);
+        }
+        *c1Bounds.start = *c2Bounds.start;
+    }
+    */
+
+    static void delitem_1d(ContainerType& container, long i)
+    {
+        std::size_t j = positive_getitem_index(i, container.size());
+        container.erase(container.begin()+j);
+    }
+
+    // Untested
+    static void delitem_1d_slice(ContainerType& container, slice const& sl)
+    {
+        slice::range<ContainerType::iterator> bounds;
+        try 
+        {
+            bounds = sl.get_indicies<>(container.begin(), container.end());
+        }
+        catch (std::invalid_argument)
+        {
+            return;
+        }
+
+        while (bounds.start != bounds.stop)
+        {
+            container.erase(bounds.start);
+            std::advance( bounds.start, bounds.step);
+        }
+        container.erase(bounds.start);
     }
 
     /// Add an item to the end of the list; equivalent to a[len(a):] = [x].
@@ -67,10 +147,9 @@ struct ArrayWrapper
 
     /// Extend the list by appending all the items in the given list; 
     /// equivalent to a[len(a):] = L.
-    static void extend(ContainerType& container, ContainerType const& container2)
+    static void extend(ContainerType& container, ContainerType /*const*/& container2) // const causes "cannot access protected member ~TemplateArray"
     {
-        for (ContainerType::const_iterator it = container2.begin(); it != container2.end(); ++it)
-            container.push_back(*it);
+        container.insert(container.end(), container2.begin(), container2.end());
     }
 
     /// Insert an item at a given position. The first argument is the index of 
@@ -161,13 +240,13 @@ struct ArrayWrapper
         result
             .def("__len__", &ContainerType::size)
             .def("__getitem__", getitem_1d, GetitemReturnValuePolicy())
-            //.def("__getitem__", getitem_1d_slice)
+            .def("__getitem__", getitem_1d_slice)
             .def("__setitem__", setitem_1d)
             //.def("__setitem__", setitem_1d_slice)
-            //.def("__delitem__", delitem_1d)
-            //.def("__delitem__", delitem_1d_slice)
+            .def("__delitem__", delitem_1d)
+            .def("__delitem__", delitem_1d_slice)
             .def("append", append)
-            //.def("extend", extend)  // Complains that it can't destroy TemplateArray because of protected dtor...
+            .def("extend", extend)
             .def("insert", insert)
             .def("remove", remove)
             .def("pop", pop)
