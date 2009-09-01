@@ -2,12 +2,25 @@
 import osg
 
 def test_osgVec4():
-    print "Testing osg::Vec4d (for now we assume if this works, then Vec2{d|f}, Vec3{d|f} and Vec4f work too"
+    print "Testing osg::Vec4d (for now we assume if this works, then Vec2{d|f}, Vec3{d|f} and Vec4f work too)"
     v4d = osg.Vec4d()
     print "v4d contains", v4d._v
     v4d.set(1,2,3,4)
     print "v4d contains", v4d._v
     print "Can also print by component:", v4d.x(), v4d.y(), v4d.z(), v4d.w()
+
+def test_osgVec4Array
+    print "Testing osg::Vec4Array (for now we assume if this works, then Vec2Array and Vec3Array work too)"
+    v4array = osg.Vec4Array()
+    v4array.append(osg.Vec4f(1,2,3,4))
+    v4array.append(osg.Vec4f(2,3,4,5))
+    v4array.append(osg.Vec4f(3,4,5,6))
+    print "v4array contains", len(v4array), "items"
+    v4array2 = v4array[0:2]
+    print "v4array2 created from a slice contains", len(v4array2), "items"
+    v4 = v4array.pop()
+    print "popped", v4._v, ", v4array now has", len(v4array), "items"
+    # Should test all methods...
 
 def test_osgMatrix():
     print "Testing osg::Matrixd"
