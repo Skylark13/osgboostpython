@@ -51,6 +51,7 @@ using namespace osg;
 void export_math();
 void export_util();
 void export_drawable();
+void export_array();
 
 // HeldType for objects which have a protected destructor.
 // http://osdir.com/ml/python.c++/2002-07/msg00174.html
@@ -136,6 +137,8 @@ BOOST_PYTHON_MODULE(_osg)
         ;
 
     }
+
+    export_array();
 
     // Node
     {

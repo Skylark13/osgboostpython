@@ -47,6 +47,7 @@ using msvc : : : <linkflags>-LIBPATH:G:/boost_1_35_0/lib
 # Declare the three extension modules.  You can specify multiple
 # source files after the colon separated by spaces.
 python-extension _osg       : src/osg/osg.cpp
+                              src/osg/array.cpp
                               src/osg/drawable.cpp
                               src/osg/math.cpp
                               src/osg/util.cpp
@@ -82,4 +83,4 @@ local rule run-test ( test-name : sources + )
 #run-test osgDB : _osgDB test/osgDB/test.py ;
 #run-test osgGA : _osgGA test/osgGA/test.py ;
 #run-test osgViewer : _osgViewer test/osgViewer/test.py ;
-#run-test all : _osg _osgDB _osgGA _osgViewer test/testAll.py ;
+#run-test all : _osg _osgDB _osgGA _osgViewer test/test-all.py ;

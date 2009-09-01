@@ -6,6 +6,8 @@
 #include <boost/python/extract.hpp>
 #include <boost/python/to_python_converter.hpp>
 
+namespace osgBoostPython {
+
 namespace array_utils {
 
   template <typename ContainerType, unsigned int size>
@@ -336,5 +338,7 @@ namespace container_utils {
   };
 
 } // container_utils
+
+} // osgBoostPython
 
 #endif // CONTAINER_UTILS_H

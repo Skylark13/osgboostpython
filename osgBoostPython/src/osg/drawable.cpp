@@ -15,6 +15,12 @@ using namespace osg;
 const Drawable::ParentList& (Drawable::*Drawable_getParents1)() const = &Drawable::getParents;
 Node* (Drawable::*Drawable_getParent1)( unsigned int ) = &Drawable::getParent;
 
+Array* (Geometry::*Geometry_getVertexArray1)() = &Geometry::getVertexArray;
+Array* (Geometry::*Geometry_getNormalArray1)() = &Geometry::getNormalArray;
+Array* (Geometry::*Geometry_getColorArray1)() = &Geometry::getColorArray;
+Array* (Geometry::*Geometry_getSecondaryColorArray1)() = &Geometry::getSecondaryColorArray;
+Array* (Geometry::*Geometry_getTexCoordArray1)(unsigned int unit) = &Geometry::getTexCoordArray;
+Array* (Geometry::*Geometry_getVertexAttribArray1)(unsigned int index) = &Geometry::getVertexAttribArray;
 
 void export_drawable()
 {
@@ -67,13 +73,23 @@ void export_drawable()
 
     // Geometry
     {
-        // TODO: Wrap osg::Array, osg::MixinVector<T>
-        //       Then osg::TemplateArray : public Array, public MixinVector<T>
-        //       Then Vec3Array et al.
-
-        class_<Geometry, bases<Drawable>, ref_ptr<Geometry> >("Geometry")
-            //.add_property("vertexArray", make_function(&Geometry::getVertexArray, return_value_policy<reference_existing_object>()), &Geometry::setVertexArray)
+        scope in_Geometry = class_<Geometry, bases<Drawable>, ref_ptr<Geometry> >("Geometry")
+            // Could have gone for properties, but it doesn't work well for those that need arguments like texcoords...
+            .def("setVertexArray", &Geometry::setVertexArray)
+            .def("getVertexArray", Geometry_getVertexArray1, return_value_policy<reference_existing_object>())
             .add_property("normalBinding", &Geometry::getNormalBinding, &Geometry::setNormalBinding)
+            .def("setNormalArray", &Geometry::setNormalArray)
+            .def("getNormalArray", Geometry_getNormalArray1, return_value_policy<reference_existing_object>())
+            .add_property("colorBinding", &Geometry::getColorBinding, &Geometry::setColorBinding)
+            .def("setColorArray", &Geometry::setColorArray)
+            .def("getColorArray", Geometry_getColorArray1, return_value_policy<reference_existing_object>())
+            .add_property("secondaryColorBinding", &Geometry::getSecondaryColorBinding, &Geometry::setSecondaryColorBinding)
+            .def("setSecondaryColorArray", &Geometry::setSecondaryColorArray)
+            .def("getSecondaryColorArray", Geometry_getSecondaryColorArray1, return_value_policy<reference_existing_object>())
+            .def("setTexCoordArray", &Geometry::setTexCoordArray)
+            .def("getTexCoordArray", Geometry_getTexCoordArray1, return_value_policy<reference_existing_object>())
+            .def("setVertexAttribArray", &Geometry::setVertexAttribArray)
+            .def("getVertexAttribArray", Geometry_getVertexAttribArray1, return_value_policy<reference_existing_object>())
             //.def()
         ;
 

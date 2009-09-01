@@ -76,7 +76,7 @@ void export_math()
         // TODO
     ;
 
-    array_utils::to_tuple_mapping< float[2], 2 >();
+    osgBoostPython::array_utils::to_tuple_mapping< float[2], 2 >();
 
     class_<Vec2d>("Vec2d")
         .def_readonly("_v", &Vec2d::_v)                                             // Should be readwrite...
@@ -93,7 +93,7 @@ void export_math()
         // TODO
     ;
 
-    array_utils::to_tuple_mapping< double[2], 2 >();
+    osgBoostPython::array_utils::to_tuple_mapping< double[2], 2 >();
 
     class_<Vec3f>("Vec3f")
         .def_readonly("_v", &Vec3f::_v)                                             // Should be readwrite...
@@ -112,7 +112,7 @@ void export_math()
         // TODO
     ;
 
-    array_utils::to_tuple_mapping< float[3], 3 >();
+    osgBoostPython::array_utils::to_tuple_mapping< float[3], 3 >();
 
     class_<Vec3d>("Vec3d")
         .def_readonly("_v", &Vec3d::_v)                                             // Should be readwrite...
@@ -132,7 +132,7 @@ void export_math()
         // TODO
     ;
 
-    array_utils::to_tuple_mapping< double[3], 3 >();
+    osgBoostPython::array_utils::to_tuple_mapping< double[3], 3 >();
 
     class_<Vec4f>("Vec4f")
         .def_readonly("_v", &Vec4f::_v)                                             // Should be readwrite...
@@ -152,7 +152,7 @@ void export_math()
         // TODO
     ;
 
-    array_utils::to_tuple_mapping< float[4], 4 >();
+    osgBoostPython::array_utils::to_tuple_mapping< float[4], 4 >();
 
     class_<Vec4d>("Vec4d")
         .def_readonly("_v", &Vec4d::_v)                                             // Should be readwrite...
@@ -173,7 +173,7 @@ void export_math()
         // TODO
     ;
 
-    array_utils::to_tuple_mapping< double[4], 4 >();
+    osgBoostPython::array_utils::to_tuple_mapping< double[4], 4 >();
 
     class_<Matrixf>("Matrixf")
         .def(init<Matrixf>())
