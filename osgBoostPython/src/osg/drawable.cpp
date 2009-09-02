@@ -7,6 +7,7 @@ using namespace boost::python;
 #include <osg/Drawable>
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
+#include <osg/PrimitiveSet>
 
 #include <osg/Shape>
 
@@ -21,6 +22,7 @@ Array* (Geometry::*Geometry_getColorArray1)() = &Geometry::getColorArray;
 Array* (Geometry::*Geometry_getSecondaryColorArray1)() = &Geometry::getSecondaryColorArray;
 Array* (Geometry::*Geometry_getTexCoordArray1)(unsigned int unit) = &Geometry::getTexCoordArray;
 Array* (Geometry::*Geometry_getVertexAttribArray1)(unsigned int index) = &Geometry::getVertexAttribArray;
+PrimitiveSet* (Geometry::*Geometry_getPrimitiveSet1)(unsigned int pos) = &Geometry::getPrimitiveSet;
 
 void export_drawable()
 {
@@ -90,6 +92,10 @@ void export_drawable()
             .def("getTexCoordArray", Geometry_getTexCoordArray1, return_value_policy<reference_existing_object>())
             .def("setVertexAttribArray", &Geometry::setVertexAttribArray)
             .def("getVertexAttribArray", Geometry_getVertexAttribArray1, return_value_policy<reference_existing_object>())
+            .def("addPrimitiveSet", &Geometry::addPrimitiveSet)
+            .def("getNumPrimitiveSets", &Geometry::getNumPrimitiveSets)
+            .def("getPrimitiveSet", Geometry_getPrimitiveSet1, return_value_policy<reference_existing_object>())
+            .def("removePrimitiveSet", &Geometry::removePrimitiveSet)
             //.def()
         ;
 
@@ -102,4 +108,56 @@ void export_drawable()
         ;
     }
 
+    // PrimitiveSet
+    {
+        scope in_PrimitiveSet = class_<PrimitiveSet, bases<Object>, ref_ptr<PrimitiveSet>, boost::noncopyable >("PrimitiveSet", no_init)
+            //.def()
+        ;
+
+        enum_<PrimitiveSet::Type>("Type")
+            .value("PrimitiveType",                   PrimitiveSet::PrimitiveType)
+            .value("DrawArraysPrimitiveType",         PrimitiveSet::DrawArraysPrimitiveType)
+            .value("DrawArrayLengthsPrimitiveType",   PrimitiveSet::DrawArrayLengthsPrimitiveType)
+            .value("DrawElementsUBytePrimitiveType",  PrimitiveSet::DrawElementsUBytePrimitiveType)
+            .value("DrawElementsUShortPrimitiveType", PrimitiveSet::DrawElementsUShortPrimitiveType)
+            .value("DrawElementsUIntPrimitiveType",   PrimitiveSet::DrawElementsUIntPrimitiveType)
+        ;
+
+        enum_<PrimitiveSet::Mode>("Mode")
+            .value("POINTS",         PrimitiveSet::POINTS)
+            .value("LINES",          PrimitiveSet::LINES)
+            .value("LINE_STRIP",     PrimitiveSet::LINE_STRIP)
+            .value("LINE_LOOP",      PrimitiveSet::LINE_LOOP)
+            .value("TRIANGLES",      PrimitiveSet::TRIANGLES)
+            .value("TRIANGLE_STRIP", PrimitiveSet::TRIANGLE_STRIP)
+            .value("TRIANGLE_FAN",   PrimitiveSet::TRIANGLE_FAN)
+            .value("QUADS",          PrimitiveSet::QUADS)
+            .value("QUAD_STRIP",     PrimitiveSet::QUAD_STRIP)
+            .value("POLYGON",        PrimitiveSet::POLYGON)
+        ;
+    }
+
+    // DrawArrays
+    {
+        class_<DrawArrays, bases<PrimitiveSet>, ref_ptr<DrawArrays> >("DrawArrays")
+            .def(init<PrimitiveSet::Mode>())
+            .def(init<PrimitiveSet::Mode, GLint, GLsizei>())
+        ;
+    }
+
+    // DrawElements
+    {
+    }
+
+    // DrawElementsUByte
+    {
+    }
+
+    // DrawElementsUShort
+    {
+    }
+
+    // DrawElementsUInt
+    {
+    }
 }

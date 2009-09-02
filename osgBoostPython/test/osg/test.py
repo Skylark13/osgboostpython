@@ -9,7 +9,7 @@ def test_osgVec4():
     print "v4d contains", v4d._v
     print "Can also print by component:", v4d.x(), v4d.y(), v4d.z(), v4d.w()
 
-def test_osgVec4Array
+def test_osgVec4Array():
     print "Testing osg::Vec4Array (for now we assume if this works, then Vec2Array and Vec3Array work too)"
     v4array = osg.Vec4Array()
     v4array.append(osg.Vec4f(1,2,3,4))
@@ -76,12 +76,19 @@ def test_osgGeodeAndShapeDrawable():
     print "    Drawable list has", len(drawables), "drawables"
     #print "    Drawable 0 is called [", drawables[0].name, "]"   # Doesn't quite work yet.
 
+def test_osgGeometry():
+    print "Testing osg::Geometry and osg::DrawArrays - run osgViewer tests to see the results"
+    g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
+    print "  g has", g.getNumPrimitiveSets(), "primitive sets,", len(g.getVertexArray()), "vertices"
+
 def test_osg():
     test_osgVec4()
+    test_osgVec4Array()
     test_osgMatrix()
     test_osgBoundingSphere()
     test_osgNodeAndGroup()
     test_osgGeodeAndShapeDrawable()
+    test_osgGeometry()
 
 test_osg()
 

@@ -18,37 +18,6 @@ using namespace boost::python;
 
 using namespace osg;
 
-
-Vec2f::value_type& (Vec2f::*Vec2f_x1)( ) = &Vec2f::x;
-Vec2f::value_type& (Vec2f::*Vec2f_y1)( ) = &Vec2f::y;
-void (Vec2f::*Vec2f_set1)( Vec2f::value_type, Vec2f::value_type ) = &Vec2f::set; 
-
-Vec2d::value_type& (Vec2d::*Vec2d_x1)( ) = &Vec2d::x;
-Vec2d::value_type& (Vec2d::*Vec2d_y1)( ) = &Vec2d::y;
-void (Vec2d::*Vec2d_set1)( Vec2d::value_type, Vec2d::value_type ) = &Vec2d::set; 
-
-Vec3f::value_type& (Vec3f::*Vec3f_x1)( ) = &Vec3f::x;
-Vec3f::value_type& (Vec3f::*Vec3f_y1)( ) = &Vec3f::y;
-Vec3f::value_type& (Vec3f::*Vec3f_z1)( ) = &Vec3f::z;
-void (Vec3f::*Vec3f_set1)( Vec3f::value_type, Vec3f::value_type, Vec3f::value_type ) = &Vec3f::set; 
-
-Vec3d::value_type& (Vec3d::*Vec3d_x1)( ) = &Vec3d::x;
-Vec3d::value_type& (Vec3d::*Vec3d_y1)( ) = &Vec3d::y;
-Vec3d::value_type& (Vec3d::*Vec3d_z1)( ) = &Vec3d::z;
-void (Vec3d::*Vec3d_set1)( Vec3d::value_type, Vec3d::value_type, Vec3d::value_type ) = &Vec3d::set; 
-
-Vec4f::value_type& (Vec4f::*Vec4f_x1)( ) = &Vec4f::x;
-Vec4f::value_type& (Vec4f::*Vec4f_y1)( ) = &Vec4f::y;
-Vec4f::value_type& (Vec4f::*Vec4f_z1)( ) = &Vec4f::z;
-Vec4f::value_type& (Vec4f::*Vec4f_w1)( ) = &Vec4f::w;
-void (Vec4f::*Vec4f_set1)( Vec4f::value_type, Vec4f::value_type, Vec4f::value_type, Vec4f::value_type ) = &Vec4f::set; 
-
-Vec4d::value_type& (Vec4d::*Vec4d_x1)( ) = &Vec4d::x;
-Vec4d::value_type& (Vec4d::*Vec4d_y1)( ) = &Vec4d::y;
-Vec4d::value_type& (Vec4d::*Vec4d_z1)( ) = &Vec4d::z;
-Vec4d::value_type& (Vec4d::*Vec4d_w1)( ) = &Vec4d::w;
-void (Vec4d::*Vec4d_set1)( Vec4d::value_type, Vec4d::value_type, Vec4d::value_type, Vec4d::value_type ) = &Vec4d::set; 
-
 void (BoundingBox::*BoundingBox_set1)( BoundingBox::value_type, BoundingBox::value_type, BoundingBox::value_type, 
                                        BoundingBox::value_type, BoundingBox::value_type, BoundingBox::value_type ) = &BoundingBox::set;
 void (BoundingBox::*BoundingBox_set2)( const BoundingBox::vec_type&, const BoundingBox::vec_type& ) = &BoundingBox::set;
@@ -60,120 +29,187 @@ BoundingBox::value_type& (BoundingBox::*BoundingBox_yMax1)( ) = &BoundingBox::yM
 BoundingBox::value_type& (BoundingBox::*BoundingBox_zMax1)( ) = &BoundingBox::zMax;
 
 
+template<typename VecType>
+struct VecWrapper
+{
+    typedef typename VecType::value_type value_type;
+
+    typedef boost::python::class_<VecType> class_t;
+
+    static VecType add(VecType const& lhs, VecType const& rhs)
+    {
+        return lhs + rhs;
+    }
+
+    static class_t wrap(const std::string& name)
+    {
+        class_t result(name.c_str());
+        result
+            .def_readonly("_v", &VecType::_v)                                             // Should be readwrite...
+
+            // default ctor
+            .def(init<VecType>())
+
+            .def("__add__", add)
+        
+            // TODO:
+            //.def("__neg__", neg_a)
+            //.def("__add__", add_a_a)
+            //.def("__sub__", sub_a_a)
+            //.def("__mul__", mul_a_a)
+            //.def("__div__", div_a_a)
+            //.def("__truediv__", div_a_a)
+            //.def("__add__", add_a_s)
+            //.def("__radd__", add_a_s)
+            //.def("__sub__", sub_a_s)
+            //.def("__rsub__", rsub_a_s)
+            //.def("__mul__", mul_a_s)
+            //.def("__rmul__", mul_a_s)
+            //.def("__div__", div_a_s)
+            //.def("__truediv__", div_a_s)
+            //.def("__rdiv__", rdiv_a_s)
+            //.def("__rtruediv__", rdiv_a_s)
+            //.def("__iadd__", iadd_a_a)
+            //.def("__isub__", isub_a_a)
+            //.def("__imul__", imul_a_a)
+            //.def("__idiv__", idiv_a_a)
+            //.def("__itruediv__", idiv_a_a)
+            //.def("__iadd__", iadd_a_s)
+            //.def("__isub__", isub_a_s)
+            //.def("__imul__", imul_a_s)
+            //.def("__idiv__", idiv_a_s)
+            //.def("__itruediv__", idiv_a_s)
+            //.def("__eq__", eq_a_a)
+            //.def("__ne__", ne_a_a)
+            //.def("__eq__", eq_a_s)
+            //.def("__ne__", ne_a_s)
+
+        ;
+
+        osgBoostPython::array_utils::to_tuple_mapping< value_type[VecType::num_components], VecType::num_components >();
+
+        return result;
+    }
+};
+
+template<typename VecType>
+struct Vec2Wrapper : public VecWrapper<VecType>
+{
+    static value_type& x(VecType& vec)
+    {
+        return vec.x();
+    }
+
+    static value_type& y(VecType& vec)
+    {
+        return vec.y();
+    }
+
+    static void set_2_components(VecType& vec, value_type x, value_type y)
+    {
+        vec.set(x, y);
+    }
+
+    static class_t wrap(const std::string& name)
+    {
+        class_t result = VecWrapper::wrap(name);
+        result
+            .def(init<value_type, value_type>())
+            .def("x", x, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
+            .def("y", y, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
+            .def("set", set_2_components)
+        ;
+        return result;
+    }
+};
+
+template<typename VecType>
+struct Vec3Wrapper : public Vec2Wrapper<VecType>
+{
+    static value_type& z(VecType& vec)
+    {
+        return vec.z();
+    }
+
+    static void set_3_components(VecType& vec, value_type x, value_type y, value_type z)
+    {
+        vec.set(x, y, z);
+    }
+
+    static class_t wrap(const std::string& name)
+    {
+        class_t result = VecWrapper::wrap(name);
+        result
+            .def(init<value_type, value_type, value_type>())
+            .def("x", x, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
+            .def("y", y, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
+            .def("z", z, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
+            .def("set", set_3_components)
+        ;
+        return result;
+    }
+};
+
+template<typename VecType>
+struct Vec4Wrapper : public Vec3Wrapper<VecType>
+{
+    static value_type& w(VecType& vec)
+    {
+        return vec.w();
+    }
+
+    static void set_4_components(VecType& vec, value_type x, value_type y, value_type z, value_type w)
+    {
+        vec.set(x, y, z, w);
+    }
+
+    static class_t wrap(const std::string& name)
+    {
+        class_t result = VecWrapper::wrap(name);
+        result
+            .def(init<value_type, value_type, value_type, value_type>())
+            .def("x", x, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
+            .def("y", y, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
+            .def("z", z, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
+            .def("w", w, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
+            .def("set", set_4_components)
+        ;
+        return result;
+    }
+};
+
 void export_math()
 {
-    class_<Vec2f>("Vec2f")
-        .def_readonly("_v", &Vec2f::_v)                                             // Should be readwrite...
+    // Vec2f
+    VecWrapper<Vec2f>::class_t v2fwrapper = Vec2Wrapper<Vec2f>::wrap("Vec2f");
 
-        // default ctor
-        .def(init<Vec2f>())
-        // ctor that takes x, y.
-        .def(init<Vec2f::value_type, Vec2f::value_type>())
+    // Vec2d
+    VecWrapper<Vec2d>::class_t v2dwrapper = Vec2Wrapper<Vec2d>::wrap("Vec2d");
+    v2dwrapper
+        .def(init<Vec2f>());
 
-        .def("x", Vec2f_x1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("y", Vec2f_y1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("set", Vec2f_set1)
-        // TODO
-    ;
+    // Vec3f
+    VecWrapper<Vec3f>::class_t v3fwrapper = Vec3Wrapper<Vec3f>::wrap("Vec3f");
+    v3fwrapper
+        .def(init<Vec2f, Vec3f::value_type>());
 
-    osgBoostPython::array_utils::to_tuple_mapping< float[2], 2 >();
-
-    class_<Vec2d>("Vec2d")
-        .def_readonly("_v", &Vec2d::_v)                                             // Should be readwrite...
-
-        // default ctor
-        .def(init<Vec2d>())
-        // ctor that takes x, y.
-        .def(init<Vec2d::value_type, Vec2d::value_type>())
-        // TODO: Conversion from Vec2f
-
-        .def("x", Vec2d_x1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("y", Vec2d_y1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("set", Vec2d_set1)
-        // TODO
-    ;
-
-    osgBoostPython::array_utils::to_tuple_mapping< double[2], 2 >();
-
-    class_<Vec3f>("Vec3f")
-        .def_readonly("_v", &Vec3f::_v)                                             // Should be readwrite...
-
-        // default ctor
+    // Vec3d
+    VecWrapper<Vec3d>::class_t v3dwrapper = Vec3Wrapper<Vec3d>::wrap("Vec3d");
+    v3dwrapper
         .def(init<Vec3f>())
-        // ctor that takes x, y, z.
-        .def(init<Vec3f::value_type, Vec3f::value_type, Vec3f::value_type>())
-        // ctor that takes a vec2(x,y) and z.
-        .def(init<const Vec2f&, Vec3f::value_type>())
+        .def(init<Vec2d, Vec3d::value_type>());
 
-        .def("x", Vec3f_x1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("y", Vec3f_y1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("z", Vec3f_z1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("set", Vec3f_set1)
-        // TODO
-    ;
+    // Vec4f
+    VecWrapper<Vec4f>::class_t v4fwrapper = Vec4Wrapper<Vec4f>::wrap("Vec4f");
+    v4fwrapper
+        .def(init<Vec3f, Vec4f::value_type>());
 
-    osgBoostPython::array_utils::to_tuple_mapping< float[3], 3 >();
-
-    class_<Vec3d>("Vec3d")
-        .def_readonly("_v", &Vec3d::_v)                                             // Should be readwrite...
-
-        // default ctor
-        .def(init<Vec3d>())
-        // ctor that takes x, y, z.
-        .def(init<Vec3d::value_type, Vec3d::value_type, Vec3d::value_type>())
-        // ctor that takes a vec2(x,y) and z.
-        .def(init<const Vec2d&, Vec3d::value_type>())
-        // TODO: Conversion from Vec3f
-
-        .def("x", Vec3d_x1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("y", Vec3d_y1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("z", Vec3d_z1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("set", Vec3d_set1)
-        // TODO
-    ;
-
-    osgBoostPython::array_utils::to_tuple_mapping< double[3], 3 >();
-
-    class_<Vec4f>("Vec4f")
-        .def_readonly("_v", &Vec4f::_v)                                             // Should be readwrite...
-
-        // default ctor
+    // Vec4d
+    VecWrapper<Vec4d>::class_t v4dwrapper = Vec4Wrapper<Vec4d>::wrap("Vec4d");
+    v4dwrapper
         .def(init<Vec4f>())
-        // ctor that takes x, y, z, w.
-        .def(init<Vec4f::value_type, Vec4f::value_type, Vec4f::value_type, Vec4f::value_type>())
-        // ctor that takes a vec3(x,y,z) and w.
-        .def(init<const Vec3f&, Vec4f::value_type>())
+        .def(init<Vec3d, Vec4d::value_type>());
 
-        .def("x", Vec4f_x1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("y", Vec4f_y1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("z", Vec4f_z1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("w", Vec4f_w1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("set", Vec4f_set1)
-        // TODO
-    ;
-
-    osgBoostPython::array_utils::to_tuple_mapping< float[4], 4 >();
-
-    class_<Vec4d>("Vec4d")
-        .def_readonly("_v", &Vec4d::_v)                                             // Should be readwrite...
-
-        // default ctor
-        .def(init<Vec4d>())
-        // ctor that takes x, y, z, w.
-        .def(init<Vec4d::value_type, Vec4d::value_type, Vec4d::value_type, Vec4d::value_type>())
-        // ctor that takes a vec3(x,y,z) and w.
-        .def(init<const Vec3d&, Vec4d::value_type>())
-        // TODO: Conversion from Vec4f
-
-        .def("x", Vec4d_x1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("y", Vec4d_y1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("z", Vec4d_z1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("w", Vec4d_w1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("set", Vec4d_set1)
-        // TODO
-    ;
-
-    osgBoostPython::array_utils::to_tuple_mapping< double[4], 4 >();
 
     class_<Matrixf>("Matrixf")
         .def(init<Matrixf>())
@@ -186,6 +222,7 @@ void export_math()
         .def("valid", &Matrixd::valid)
         // TODO
     ;
+
 
     class_<BoundingSphere>("BoundingSphere")
         .def_readwrite("_center", &BoundingSphere::_center)

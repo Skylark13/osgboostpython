@@ -53,6 +53,7 @@ struct ArrayWrapper
       return container[j];
     }
 
+    // http://www.boost.org/doc/libs/1_39_0/libs/python/doc/v2/slice.html
     // Needs to return ref_ptr because ContainerType has protected dtor - conversion will be done automatically in python
     static ref_ptr<ContainerType> getitem_1d_slice(ContainerType& container, slice const& sl)
     {
