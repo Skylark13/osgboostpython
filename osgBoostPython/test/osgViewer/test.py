@@ -42,9 +42,14 @@ def test_osgViewerAndGeometry(testStateSet):
     geode = osg.Geode()
     geode.addDrawable(g)
     if (testStateSet):
-        print "Will disable lighting"
+        print "Will add a texture"
+        import osgDB
+        i = osgDB.readImageFile("Images/osg256.png")
+        t = osg.Texture2D(i)
         s = geode.stateSet
-        s.setMode(osg.GL_LIGHTING, osg.StateAttribute.Values.OFF)
+        s.setTextureAttributeAndModes(0, t, osg.StateAttribute.Values.ON)
+        s.setRenderingHint(osg.StateSet.RenderingHint.TRANSPARENT_BIN)
+        s.setMode(osg.GL_BLEND, osg.StateAttribute.Values.ON)
     viewer = osgViewer.Viewer()
     viewer.addEventHandler(osgGA.StateSetManipulator(geode.stateSet))
     viewer.addEventHandler(osgViewer.HelpHandler())
@@ -60,5 +65,6 @@ def test_osgViewer():
     print "Now, let's re-test the sphere and cow with changes to the StateSets to see if StateSet works."
     test_osgViewerAndShapeDrawable(1)
     test_osgViewerAndCow(1)
+    test_osgViewerAndGeometry(1)
 
 test_osgViewer()

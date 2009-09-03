@@ -51,6 +51,7 @@ python-extension _osg       : src/osg/osg.cpp
                               src/osg/array.cpp
                               src/osg/drawable.cpp
                               src/osg/stateset.cpp
+                              src/osg/stateAttributes.cpp
                               src/osg/math.cpp
                               src/osg/util.cpp
                               otlib

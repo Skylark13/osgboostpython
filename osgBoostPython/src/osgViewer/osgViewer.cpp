@@ -16,6 +16,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(osgViewer_frame_overloads, frame, 0, 1)
 BOOST_PYTHON_MODULE(_osgViewer)
 {
 
+    // TODO: Wrap osgViewer::View at least, then osgViewer::ViewerBase and osgViewer::CompositeViewer.
+
     // Need wrapper for osgViewer::View, which needs wrapper for osg::View, ...
     class_<Viewer/*, bases<osgViewer::View, osgViewer::ViewerBase>*/, ref_ptr<Viewer> >("Viewer")
         .def("run", &Viewer::run)

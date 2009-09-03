@@ -82,7 +82,7 @@ def test_osgGeometry():
     print "  g has", g.getNumPrimitiveSets(), "primitive sets,", len(g.getVertexArray()), "vertices"
 
 def test_osgStateSet():
-    print "Testing osg::StateSet"
+    print "Testing osg::StateSet - run osgViewer tests to see the results"
     g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
     s = g.stateSet
     print "g's StateSet is", s

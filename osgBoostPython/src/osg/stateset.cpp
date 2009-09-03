@@ -8,6 +8,8 @@ using namespace boost::python;
 
 using namespace osg;
 
+void export_stateAttributes();
+
 const StateAttribute::ParentList& (StateAttribute::*StateAttribute_getParents1)() const = &StateAttribute::getParents;
 StateSet* (StateAttribute::*StateAttribute_getParent1)( unsigned int ) = &StateAttribute::getParent;
 
@@ -164,6 +166,8 @@ void export_stateset()
         ;
     }
 
+    export_stateAttributes();
+
     {
         scope in_StateSet = class_<StateSet, bases<Object>, ref_ptr<StateSet> >("StateSet")
             .def("getNumParents", &StateSet::getNumParents)
@@ -185,6 +189,15 @@ void export_stateset()
             .def("removeTextureAttribute", StateSet_removeTextureAttribute1)
             .def("removeTextureAttribute", StateSet_removeTextureAttribute2)
             .def("getTextureAttribute", StateSet_getTextureAttribute1, return_value_policy<reference_existing_object>())
+            .def("setRenderingHint", &StateSet::setRenderingHint)
+            .def("getRenderingHint", &StateSet::getRenderingHint)
         ;
+
+        enum_<StateSet::RenderingHint>("RenderingHint")
+            .value("DEFAULT_BIN",     StateSet::DEFAULT_BIN)
+            .value("OPAQUE_BIN",      StateSet::OPAQUE_BIN)
+            .value("TRANSPARENT_BIN", StateSet::TRANSPARENT_BIN)
+        ;
+
     }
 }

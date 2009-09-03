@@ -37,6 +37,7 @@ using namespace boost::python;
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/Geode>
+#include <osg/Image>
 
 #include <osg/Transform>
 #include <osg/MatrixTransform>
@@ -133,6 +134,16 @@ BOOST_PYTHON_MODULE(_osg)
             .value("UNSPECIFIED", Object::UNSPECIFIED)
         ;
 
+    }
+
+    {
+        scope in_Image = class_<Image, bases<Object>, ref_ptr<Image> >("Image")
+            .def("s", &Image::s)
+            .def("t", &Image::t)
+            .def("r", &Image::r)
+            .def("valid", &Image::valid)
+            .def("isImageTranslucent", &Image::isImageTranslucent)
+        ;
     }
 
     export_stateset();
