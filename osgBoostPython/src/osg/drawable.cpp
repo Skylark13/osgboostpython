@@ -13,6 +13,10 @@ using namespace boost::python;
 
 using namespace osg;
 
+// Definitions in other source files
+void export_array();
+
+
 const Drawable::ParentList& (Drawable::*Drawable_getParents1)() const = &Drawable::getParents;
 Node* (Drawable::*Drawable_getParent1)( unsigned int ) = &Drawable::getParent;
 
@@ -31,7 +35,7 @@ void export_drawable()
     {
         // Abstract class
         scope in_Drawable = class_<Drawable, bases<Object>, ref_ptr<Drawable>, boost::noncopyable >("Drawable", no_init)
-            .def("getNumParents", &Node::getNumParents)
+            .def("getNumParents", &Drawable::getNumParents)
             .def("getParents", Drawable_getParents1, return_value_policy<return_by_value>())
             .def("getParent", Drawable_getParent1, return_value_policy<reference_existing_object>())
             // TODO: Wrap StateSet (big one)
@@ -72,6 +76,8 @@ void export_drawable()
         .def(init<Shape*, TessellationHints*>())
         .add_property("color", make_function(&ShapeDrawable::getColor, return_value_policy<copy_const_reference>()), &ShapeDrawable::setColor)
     ;
+
+    export_array();
 
     // Geometry
     {

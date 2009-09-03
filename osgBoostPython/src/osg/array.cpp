@@ -8,36 +8,11 @@ using namespace boost::python;
 #include <osg/Array>
 #include <osg/MixinVector>
 
-#include <stdexcept>
 #include "ContainerUtils.h"
 
 using namespace osg;
 
-// http://cci.lbl.gov/cctbx_sources/scitbx/misc/positive_getitem_index.h
-template <typename IndexType, typename SizeType>
-SizeType positive_getitem_index(IndexType const& i, SizeType const& size, bool allow_i_eq_size=false, 
-                                const char* index_out_of_range = "Index out of range.")
-{
-    if (i >= 0)
-    {
-        SizeType result = static_cast<SizeType>(i);
-
-        if ( result > size ||
-             (result == size && !allow_i_eq_size))
-        {
-            throw std::out_of_range(index_out_of_range);
-        }
-        return result;
-    }
-    if (static_cast<SizeType>(-i) > size) 
-    {
-        throw std::out_of_range(index_out_of_range);
-    }
-    return size + i;
-}
-
-
-// http://cci.lbl.gov/cctbx_sources/scitbx/array_family/boost_python/flex_wrapper.h
+// http://cctbx.svn.sourceforge.net/viewvc/cctbx/trunk/scitbx/array_family/boost_python/flex_wrapper.h?view=markup
 template<typename ContainerType,
          typename GetitemReturnValuePolicy = return_value_policy<copy_non_const_reference> >
 struct ArrayWrapper
@@ -48,9 +23,9 @@ struct ArrayWrapper
 
     static ElementType& getitem_1d(ContainerType& container, long i)
     {
-      //if (!a.check_shared_size()) raise_shared_size_mismatch();
-      std::size_t j = positive_getitem_index(i, container.size());
-      return container[j];
+        //if (!a.check_shared_size()) raise_shared_size_mismatch();
+        std::size_t j = osgBoostPython::positive_getitem_index(i, container.size());
+        return container[j];
     }
 
     // http://www.boost.org/doc/libs/1_39_0/libs/python/doc/v2/slice.html
@@ -82,7 +57,7 @@ struct ArrayWrapper
     static void setitem_1d(ContainerType& container, long i, ElementType const& element)
     {
       //if (!a.check_shared_size()) raise_shared_size_mismatch();
-      std::size_t j = positive_getitem_index(i, container.size());
+      std::size_t j = osgBoostPython::positive_getitem_index(i, container.size());
       container[j] = element;
     }
 
@@ -115,7 +90,7 @@ struct ArrayWrapper
 
     static void delitem_1d(ContainerType& container, long i)
     {
-        std::size_t j = positive_getitem_index(i, container.size());
+        std::size_t j = osgBoostPython::positive_getitem_index(i, container.size());
         container.erase(container.begin()+j);
     }
 
@@ -158,7 +133,7 @@ struct ArrayWrapper
     /// front of the list, and a.insert(len(a), x) is equivalent to a.append(x).
     static void insert(ContainerType& container, long i, ElementType const& element)
     {
-        std::size_t j = positive_getitem_index(i, container.size(), true);
+        std::size_t j = osgBoostPython::positive_getitem_index(i, container.size(), true);
         container.insert(container.begin()+j, element);
     }
 
@@ -191,7 +166,7 @@ struct ArrayWrapper
     /// list.
     static ElementType pop_i(ContainerType& container, long i)
     {
-        std::size_t j = positive_getitem_index(i, container.size(), true);
+        std::size_t j = osgBoostPython::positive_getitem_index(i, container.size(), true);
         ElementType element = *(container.begin() + j);
         container.erase(container.begin() + j);
         return element;
@@ -367,6 +342,4 @@ void export_array()
     ArrayWrapper<Vec2Array>::wrap("Vec2Array");
     ArrayWrapper<Vec3Array>::wrap("Vec3Array");
     ArrayWrapper<Vec4Array>::wrap("Vec4Array");
-
-    //osgBoostPython::container_utils::tuple_mapping_variable_capacity< Vec3Array >();
 }

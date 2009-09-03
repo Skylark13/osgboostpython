@@ -21,14 +21,11 @@ cls && build
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
 // Sure, "Computational Crystallography Toolbox" doesn't seem like it applies 
-// to us, but it seems that they've got some really well made generalized 
-// boost.python wrappers for STL containers.
+// to us, but there's a lot of good example code for wrapping containers, etc.
 // http://cctbx.sourceforge.net/
-// http://cctbx.sourceforge.net/current_cvs/installation.html#manually-building-from-sources-under-windows-2000-or-higher
-//#include <scitbx\stl\vector_wrapper.h>
+// http://cctbx.svn.sourceforge.net/viewvc/cctbx/trunk/scitbx/
 
 using namespace boost::python;
-//using namespace scitbx::stl::boost_python;
 
 #define WIN32
 
@@ -51,7 +48,7 @@ using namespace osg;
 void export_math();
 void export_util();
 void export_drawable();
-void export_array();
+void export_stateset();
 
 // HeldType for objects which have a protected destructor.
 // http://osdir.com/ml/python.c++/2002-07/msg00174.html
@@ -138,7 +135,7 @@ BOOST_PYTHON_MODULE(_osg)
 
     }
 
-    export_array();
+    export_stateset();
 
     // Node
     {

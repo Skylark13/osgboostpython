@@ -81,6 +81,19 @@ def test_osgGeometry():
     g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
     print "  g has", g.getNumPrimitiveSets(), "primitive sets,", len(g.getVertexArray()), "vertices"
 
+def test_osgStateSet():
+    print "Testing osg::StateSet"
+    g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
+    s = g.stateSet
+    print "g's StateSet is", s
+    print "g has lighting state:", s.getMode(osg.GL_LIGHTING)
+    print "setting g's lighting state to on"
+    s.setMode(osg.GL_LIGHTING, osg.StateAttribute.Values.ON)
+    print "g has lighting state:", s.getMode(osg.GL_LIGHTING)
+    print "setting g's lighting state to off"
+    s.setMode(osg.GL_LIGHTING, osg.StateAttribute.Values.OFF)
+    print "g has lighting state:", s.getMode(osg.GL_LIGHTING)
+
 def test_osg():
     test_osgVec4()
     test_osgVec4Array()
@@ -89,6 +102,7 @@ def test_osg():
     test_osgNodeAndGroup()
     test_osgGeodeAndShapeDrawable()
     test_osgGeometry()
+    test_osgStateSet()
 
 test_osg()
 

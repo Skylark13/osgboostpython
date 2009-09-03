@@ -39,7 +39,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="G:\boost_1_35_0;&quot;$(OSG_INCLUDE_PATH)&quot;"
+				AdditionalIncludeDirectories="G:\boost_1_35_0;$(SolutionDir)include;&quot;$(OSG_INCLUDE_PATH)&quot;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -183,11 +183,23 @@
 			Name="osg"
 			>
 			<File
+				RelativePath=".\src\osg\array.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\osg\drawable.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\osg\math.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\src\osg\osg.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\osg\stateset.cpp"
 				>
 			</File>
 			<File
@@ -203,6 +215,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\include\ContainerUtils.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
