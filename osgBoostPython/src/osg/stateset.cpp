@@ -8,11 +8,26 @@ using namespace boost::python;
 
 using namespace osg;
 
+const StateAttribute::ParentList& (StateAttribute::*StateAttribute_getParents1)() const = &StateAttribute::getParents;
+StateSet* (StateAttribute::*StateAttribute_getParent1)( unsigned int ) = &StateAttribute::getParent;
+
 const StateSet::ParentList& (StateSet::*StateSet_getParents1)() const = &StateSet::getParents;
 Object* (StateSet::*StateSet_getParent1)( unsigned int ) = &StateSet::getParent;
 
 void (StateSet::*StateSet_setMode1)(StateAttribute::GLMode, StateAttribute::GLModeValue) = &StateSet::setMode;
 StateAttribute::GLModeValue (StateSet::*StateSet_getMode1)(StateAttribute::GLMode) const = &StateSet::getMode;
+
+void (StateSet::*StateSet_setAttribute1)(StateAttribute*, StateAttribute::OverrideValue) = &StateSet::setAttribute;
+StateAttribute* (StateSet::*StateSet_getAttribute1)(StateAttribute::Type, unsigned int) = &StateSet::getAttribute;
+// Can't use default value for second argument.
+void (StateSet::*StateSet_removeAttribute1)(StateAttribute::Type, unsigned int) = &StateSet::removeAttribute;
+void (StateSet::*StateSet_removeAttribute2)(StateAttribute*) = &StateSet::removeAttribute;
+
+void (StateSet::*StateSet_setTextureAttribute1)(unsigned int, StateAttribute*, StateAttribute::OverrideValue) = &StateSet::setTextureAttribute;
+StateAttribute* (StateSet::*StateSet_getTextureAttribute1)(unsigned int, StateAttribute::Type) = &StateSet::getTextureAttribute;
+// Can't use default value for second argument.
+void (StateSet::*StateSet_removeTextureAttribute1)(unsigned int, StateAttribute::Type) = &StateSet::removeTextureAttribute;
+void (StateSet::*StateSet_removeTextureAttribute2)(unsigned int, StateAttribute*) = &StateSet::removeTextureAttribute;
 
 void export_stateset()
 {
@@ -81,7 +96,12 @@ void export_stateset()
 
     {
         scope in_StateAttribute = class_<StateAttribute, bases<Object>, ref_ptr<StateAttribute>, boost::noncopyable >("StateAttribute", no_init)
-            //.def()
+            .def("getNumParents", &StateAttribute::getNumParents)
+            .def("getParents", StateAttribute_getParents1, return_value_policy<return_by_value>())
+            .def("getParent", StateAttribute_getParent1, return_value_policy<reference_existing_object>())
+            .def("getType", &StateAttribute::getType)
+            .def("isTextureAttribute", &StateAttribute::isTextureAttribute)
+            // TODO: set/get update/event callback
         ;
 
         // Need to use + instead of | to combine values, but otherwise works great.
@@ -152,9 +172,19 @@ void export_stateset()
             .def("setMode", StateSet_setMode1)
             .def("removeMode", &StateSet::removeMode)
             .def("getMode", StateSet_getMode1)
+            .def("setAttribute", StateSet_setAttribute1)
+            .def("setAttributeAndModes", &StateSet::setAttributeAndModes)
+            .def("removeAttribute", StateSet_removeAttribute1)
+            .def("removeAttribute", StateSet_removeAttribute2)
+            .def("getAttribute", StateSet_getAttribute1, return_value_policy<reference_existing_object>())
             .def("setTextureMode", &StateSet::setTextureMode)
             .def("removeTextureMode", &StateSet::removeTextureMode)
             .def("getTextureMode", &StateSet::getTextureMode)
+            .def("setTextureAttribute", StateSet_setTextureAttribute1)
+            .def("setTextureAttributeAndModes", &StateSet::setTextureAttributeAndModes)
+            .def("removeTextureAttribute", StateSet_removeTextureAttribute1)
+            .def("removeTextureAttribute", StateSet_removeTextureAttribute2)
+            .def("getTextureAttribute", StateSet_getTextureAttribute1, return_value_policy<reference_existing_object>())
         ;
     }
 }
