@@ -3,7 +3,24 @@ import osg
 import osgGA
 import osgViewer
 
-def test_osgViewerAndShapeDrawable(testStateSet):
+def test_osgViewerSetups():
+    print "Testing osgViewer across all screens"
+    viewer = osgViewer.Viewer()
+    viewer.setUpViewAcrossAllScreens();
+    viewer.run()
+    del viewer
+    print "Testing osgViewer on single screen (0)"
+    viewer = osgViewer.Viewer()
+    viewer.setUpViewOnSingleScreen(0);
+    viewer.run()
+    del viewer
+    print "Testing osgViewer in window"
+    viewer = osgViewer.Viewer()
+    viewer.setUpViewInWindow(50, 50, 1024, 768);
+    viewer.run()
+    del viewer
+
+def test_osgViewerAndShapeDrawable(testStateSet, inWindow):
     print "Testing osgViewer with a ShapeDrawable"
     shape = osg.ShapeDrawable(osg.Sphere(), None)
     geode = osg.Geode()
@@ -13,6 +30,8 @@ def test_osgViewerAndShapeDrawable(testStateSet):
         s = geode.stateSet
         s.setMode(osg.GL_LIGHTING, osg.StateAttribute.Values.OFF)
     viewer = osgViewer.Viewer()
+    if (inWindow):
+        viewer.setUpViewInWindow(50, 50, 1024, 768);
     viewer.addEventHandler(osgGA.StateSetManipulator(geode.stateSet))
     viewer.addEventHandler(osgViewer.HelpHandler())
     viewer.addEventHandler(osgViewer.StatsHandler())
@@ -20,7 +39,7 @@ def test_osgViewerAndShapeDrawable(testStateSet):
     viewer.run()
     del viewer      # To cause the dtor to be called, hence the window to be destroyed.
 
-def test_osgViewerAndCow(testStateSet):
+def test_osgViewerAndCow(testStateSet, inWindow):
     print "Testing osgViewer with cow.osg"
     import osgDB
     cow = osgDB.readNodeFile("cow.osg")
@@ -29,6 +48,8 @@ def test_osgViewerAndCow(testStateSet):
         s = cow.stateSet
         s.setTextureMode(0, osg.GL_TEXTURE_2D, osg.StateAttribute.Values.OFF + osg.StateAttribute.Values.OVERRIDE)
     viewer = osgViewer.Viewer()
+    if (inWindow):
+        viewer.setUpViewInWindow(50, 50, 1024, 768);
     viewer.addEventHandler(osgGA.StateSetManipulator(cow.stateSet))
     viewer.addEventHandler(osgViewer.HelpHandler())
     viewer.addEventHandler(osgViewer.StatsHandler())
@@ -36,7 +57,7 @@ def test_osgViewerAndCow(testStateSet):
     viewer.run()
     del viewer      # To cause the dtor to be called, hence the window to be destroyed.
 
-def test_osgViewerAndGeometry(testStateSet):
+def test_osgViewerAndGeometry(testStateSet, inWindow):
     print "Testing osgViewer with osg::Geometry"
     g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
     g.getColorArray()[0] = osg.Vec4f(1,1,1,0.5)
@@ -52,6 +73,8 @@ def test_osgViewerAndGeometry(testStateSet):
         s.setRenderingHint(osg.StateSet.RenderingHint.TRANSPARENT_BIN)
         s.setMode(osg.GL_BLEND, osg.StateAttribute.Values.ON)
     viewer = osgViewer.Viewer()
+    if (inWindow):
+        viewer.setUpViewInWindow(50, 50, 1024, 768);
     viewer.addEventHandler(osgGA.StateSetManipulator(geode.stateSet))
     viewer.addEventHandler(osgViewer.HelpHandler())
     viewer.addEventHandler(osgViewer.StatsHandler())
@@ -60,12 +83,13 @@ def test_osgViewerAndGeometry(testStateSet):
     del viewer      # To cause the dtor to be called, hence the window to be destroyed.
 
 def test_osgViewer():
-    test_osgViewerAndShapeDrawable(0)
-    test_osgViewerAndCow(0)
-    test_osgViewerAndGeometry(0)
+    test_osgViewerSetups()
+    test_osgViewerAndShapeDrawable(0, 1)
+    test_osgViewerAndCow(0, 1)
+    test_osgViewerAndGeometry(0, 1)
     print "Now, let's re-test the sphere and cow with changes to the StateSets to see if StateSet works."
-    test_osgViewerAndShapeDrawable(1)
-    test_osgViewerAndCow(1)
-    test_osgViewerAndGeometry(1)
+    test_osgViewerAndShapeDrawable(1, 1)
+    test_osgViewerAndCow(1, 1)
+    test_osgViewerAndGeometry(1, 1)
 
 test_osgViewer()

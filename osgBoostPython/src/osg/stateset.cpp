@@ -10,26 +10,36 @@ using namespace osg;
 
 void export_stateAttributes();
 
+//----------------- StateAttribute -----------------
 const StateAttribute::ParentList& (StateAttribute::*StateAttribute_getParents1)() const = &StateAttribute::getParents;
 StateSet* (StateAttribute::*StateAttribute_getParent1)( unsigned int ) = &StateAttribute::getParent;
+//----------------- StateAttribute -----------------
 
+//----------------- StateSet -----------------
+// Parents
 const StateSet::ParentList& (StateSet::*StateSet_getParents1)() const = &StateSet::getParents;
 Object* (StateSet::*StateSet_getParent1)( unsigned int ) = &StateSet::getParent;
 
+// Modes
 void (StateSet::*StateSet_setMode1)(StateAttribute::GLMode, StateAttribute::GLModeValue) = &StateSet::setMode;
 StateAttribute::GLModeValue (StateSet::*StateSet_getMode1)(StateAttribute::GLMode) const = &StateSet::getMode;
 
+// Attributes
 void (StateSet::*StateSet_setAttribute1)(StateAttribute*, StateAttribute::OverrideValue) = &StateSet::setAttribute;
+// getAttribute and removeAttribute have a default value on the second 
+// argument, the BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS allows us to use them.
 StateAttribute* (StateSet::*StateSet_getAttribute1)(StateAttribute::Type, unsigned int) = &StateSet::getAttribute;
-// Can't use default value for second argument.
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(StateSet_getAttribute_overloads, getAttribute, 1, 2)
 void (StateSet::*StateSet_removeAttribute1)(StateAttribute::Type, unsigned int) = &StateSet::removeAttribute;
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(StateSet_removeAttribute_overloads, removeAttribute, 1, 2)
 void (StateSet::*StateSet_removeAttribute2)(StateAttribute*) = &StateSet::removeAttribute;
 
+// TextureAttributes
 void (StateSet::*StateSet_setTextureAttribute1)(unsigned int, StateAttribute*, StateAttribute::OverrideValue) = &StateSet::setTextureAttribute;
 StateAttribute* (StateSet::*StateSet_getTextureAttribute1)(unsigned int, StateAttribute::Type) = &StateSet::getTextureAttribute;
-// Can't use default value for second argument.
 void (StateSet::*StateSet_removeTextureAttribute1)(unsigned int, StateAttribute::Type) = &StateSet::removeTextureAttribute;
 void (StateSet::*StateSet_removeTextureAttribute2)(unsigned int, StateAttribute*) = &StateSet::removeTextureAttribute;
+//----------------- StateSet -----------------
 
 void export_stateset()
 {
@@ -178,9 +188,9 @@ void export_stateset()
             .def("getMode", StateSet_getMode1)
             .def("setAttribute", StateSet_setAttribute1)
             .def("setAttributeAndModes", &StateSet::setAttributeAndModes)
-            .def("removeAttribute", StateSet_removeAttribute1)
+            .def("removeAttribute", StateSet_removeAttribute1, StateSet_removeAttribute_overloads())
             .def("removeAttribute", StateSet_removeAttribute2)
-            .def("getAttribute", StateSet_getAttribute1, return_value_policy<reference_existing_object>())
+            .def("getAttribute", StateSet_getAttribute1, return_value_policy<reference_existing_object>(), StateSet_getAttribute_overloads())
             .def("setTextureMode", &StateSet::setTextureMode)
             .def("removeTextureMode", &StateSet::removeTextureMode)
             .def("getTextureMode", &StateSet::getTextureMode)
