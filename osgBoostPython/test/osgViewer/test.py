@@ -39,6 +39,7 @@ def test_osgViewerAndCow(testStateSet):
 def test_osgViewerAndGeometry(testStateSet):
     print "Testing osgViewer with osg::Geometry"
     g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
+    g.getColorArray()[0] = osg.Vec4f(1,1,1,0.5)
     geode = osg.Geode()
     geode.addDrawable(g)
     if (testStateSet):
