@@ -48,6 +48,7 @@ using namespace osg;
 // Definitions in other source files
 void export_math();
 void export_util();
+void export_array();
 void export_drawable();
 void export_stateset();
 
@@ -146,6 +147,7 @@ BOOST_PYTHON_MODULE(_osg)
         ;
     }
 
+    export_array();
     export_stateset();
 
     // Node

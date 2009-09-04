@@ -13,9 +13,6 @@ using namespace boost::python;
 
 using namespace osg;
 
-// Definitions in other source files
-void export_array();
-
 
 const Drawable::ParentList& (Drawable::*Drawable_getParents1)() const = &Drawable::getParents;
 Node* (Drawable::*Drawable_getParent1)( unsigned int ) = &Drawable::getParent;
@@ -76,8 +73,6 @@ void export_drawable()
         .def(init<Shape*, TessellationHints*>())
         .add_property("color", make_function(&ShapeDrawable::getColor, return_value_policy<copy_const_reference>()), &ShapeDrawable::setColor)
     ;
-
-    export_array();
 
     // Geometry
     {

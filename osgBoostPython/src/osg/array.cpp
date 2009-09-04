@@ -334,12 +334,14 @@ void export_array()
         ;
     }
 
-    // osg::MixinVector<T>
-    //{
-    //}
-
     // TODO: Not all array types are needed...
+    // Used by osg::Geometry
     ArrayWrapper<Vec2Array>::wrap("Vec2Array");
     ArrayWrapper<Vec3Array>::wrap("Vec3Array");
     ArrayWrapper<Vec4Array>::wrap("Vec4Array");
+
+    // Used by osg::Uniform
+    ArrayWrapper<FloatArray>::wrap("FloatArray");
+    ArrayWrapper<IntArray>::wrap("IntArray");
+    ArrayWrapper<UIntArray>::wrap("UIntArray");
 }

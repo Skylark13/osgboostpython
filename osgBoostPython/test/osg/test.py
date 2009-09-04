@@ -94,6 +94,25 @@ def test_osgStateSet():
     s.setMode(osg.GL_LIGHTING, osg.StateAttribute.Values.OFF)
     print "g has lighting state:", s.getMode(osg.GL_LIGHTING)
 
+def test_osgUniform():
+    print "Testing osg::Uniform"
+    u = osg.Uniform(osg.Uniform.Type.FLOAT, "uFloat")
+    print "u is a FLOAT uniform variable"
+    print "u's initial value is", u.getFloat()
+    print "setting it to 1.3"
+    u.setFloat(1.3)
+    print "u's value is now", u.getFloat()
+    u = osg.Uniform(osg.Uniform.Type.BOOL_VEC4, "uBVec4")
+    print "u is now a BOOL_VEC4 uniform variable"
+    print "u's initial value is", u.getBool4()
+    print "setting to (False, True, True, False)"
+    u.setBool4(False, True, True, False)
+    print "u's value is now", u.getBool4()
+    print "setting to (True, False, True, False) with a tuple"
+    values = (True, False, True, False)
+    u.setBool4(*values)
+    print "u's value is now", u.getBool4()
+
 def test_osg():
     test_osgVec4()
     test_osgVec4Array()
@@ -103,6 +122,7 @@ def test_osg():
     test_osgGeodeAndShapeDrawable()
     test_osgGeometry()
     test_osgStateSet()
+    test_osgUniform()
 
 test_osg()
 
