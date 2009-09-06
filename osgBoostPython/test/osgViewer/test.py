@@ -108,15 +108,40 @@ def test_osgViewerAndOverriddenGUIEventHandler(inWindow):
     viewer.run()
     del viewer      # To cause the dtor to be called, hence the window to be destroyed.
 
-def test_osgViewer():
-    test_osgViewerSetups()
-    test_osgViewerAndShapeDrawable(False, True)
-    test_osgViewerAndCow(False, True)
-    test_osgViewerAndGeometry(False, True)
-    print "Now, let's re-test the sphere and cow with changes to the StateSets to see if StateSet works."
-    test_osgViewerAndShapeDrawable(True, True)
-    test_osgViewerAndCow(True, True)
-    test_osgViewerAndGeometry(True, True)
-    test_osgViewerAndOverriddenGUIEventHandler(True)
+def test_osgViewerAndOverriddenNodeCallback(inWindow):
+    class TrialCallback(osg.NodeCallback):
+        def call(self, node, nv):
+            print "python callback"
+            self.traverse(node, nv)     # Seems like this chops off the node, it thinks it's an osg::Node instead of an osg::Group.
 
-test_osgViewer()
+    import osgDB
+    viewer = osgViewer.Viewer()
+    if (inWindow):
+        viewer.setUpViewInWindow(50, 50, 1024, 768);
+    viewer.addEventHandler(osgViewer.StatsHandler())
+    cow = osgDB.readNodeFile("cow.osg")
+    t = TrialCallback()
+    cow.setUpdateCallback(t)
+    viewer.setSceneData(cow)
+    viewer.run()
+    del viewer      # To cause the dtor to be called, hence the window to be destroyed.
+
+def test_osgViewer(testToRun):
+    if (testToRun == -1 or testToRun == 0): test_osgViewerSetups()
+    if (testToRun == -1 or testToRun == 1): test_osgViewerAndShapeDrawable(False, True)
+    if (testToRun == -1 or testToRun == 2): test_osgViewerAndCow(False, True)
+    if (testToRun == -1 or testToRun == 3): test_osgViewerAndGeometry(False, True)
+    if (testToRun == -1): print "Now, let's re-test the sphere and cow with changes to the StateSets to see if StateSet works."
+    if (testToRun == -1 or testToRun == 4): test_osgViewerAndShapeDrawable(True, True)
+    if (testToRun == -1 or testToRun == 5): test_osgViewerAndCow(True, True)
+    if (testToRun == -1 or testToRun == 6): test_osgViewerAndGeometry(True, True)
+    if (testToRun == -1 or testToRun == 7): test_osgViewerAndOverriddenGUIEventHandler(True)
+    if (testToRun == -1 or testToRun == 8): test_osgViewerAndOverriddenNodeCallback(True)
+
+testToRun = -1
+if __name__ == "__main__":
+    import sys
+    if (len(sys.argv) == 2):
+        testToRun = int(sys.argv[1])
+
+test_osgViewer(testToRun)

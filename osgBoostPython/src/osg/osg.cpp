@@ -147,6 +147,7 @@ BOOST_PYTHON_MODULE(_osg)
         ;
     }
 
+    export_util();
     export_array();
     export_stateset();
 
@@ -160,18 +161,22 @@ BOOST_PYTHON_MODULE(_osg)
             //.def("getParentalNodePaths", &Node::getParentalNodePaths)
             // TODO: MatrixList
             //.def("getWorldMatrices", &Node::getWorldMatrices)
-            // TODO: Implement these when needed
-            // They need a wrapper class for NodeCallback
-            //.def("setUpdateCallback", &Node::setUpdateCallback)
-            //.def("getUpdateCallback", Node_getUpdateCallback1)
-            //.def("setEventCallback", &Node::setEventCallback)
-            //.def("getEventCallback", Node_getEventCallback1)
-            //.def("setCullCallback", &Node::setCullCallback)
-            //.def("getCullCallback", Node_getCullCallback1)
+            .def("accept", &Node::accept)
+            .def("setUpdateCallback", &Node::setUpdateCallback)
+            .def("getUpdateCallback", Node_getUpdateCallback1, return_value_policy<reference_existing_object>())
+            .def("addUpdateCallback", &Node::addUpdateCallback)
+            .def("removeUpdateCallback", &Node::removeUpdateCallback)
+            .def("setEventCallback", &Node::setEventCallback)
+            .def("getEventCallback", Node_getEventCallback1, return_value_policy<reference_existing_object>())
+            .def("addEventCallback", &Node::addEventCallback)
+            .def("removeEventCallback", &Node::removeEventCallback)
+            .def("setCullCallback", &Node::setCullCallback)
+            .def("getCullCallback", Node_getCullCallback1, return_value_policy<reference_existing_object>())
+            .def("addCullCallback", &Node::addCullCallback)
+            .def("removeCullCallback", &Node::removeCullCallback)
             .add_property("cullingActive", &Node::getCullingActive, &Node::setCullingActive)
             .add_property("nodeMask", &Node::getNodeMask, &Node::setNodeMask)
             // TODO: Need methods related to descriptions?
-            // TODO: Wrap StateSet (big one)
             .add_property("stateSet", make_function(&Node::getOrCreateStateSet, return_internal_reference<>()), &Node::setStateSet)     // TODO: wrapper returning ref_ptr for getOrCreateStateSet()
             .def("setInitialBound", &Node::setInitialBound)
             .def("getInitialBound", &Node::getInitialBound, return_value_policy<copy_const_reference>())
@@ -267,6 +272,4 @@ BOOST_PYTHON_MODULE(_osg)
 
     class_<View, bases<Object>, ref_ptr<View> >("View")
     ;
-
-    export_util();
 }

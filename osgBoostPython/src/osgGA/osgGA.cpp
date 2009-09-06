@@ -49,7 +49,7 @@ struct GUIEventHandlerDerivedWrapper : GUIEventHandlerBaseWrapper, wrapper<GUIEv
     //    std::cout << "In Derived::handle1" << std::endl;
     //    if (boost::python::override handle1_override = this->get_override("handle1"))
     //    {
-    //        std::cout << "Calling override" << std::cout;
+    //        std::cout << "Calling override" << std::endl;
     //        return handle1_override(ea, aa, obj, nv);
     //    }
     //    return GUIEventHandlerBaseWrapper::handle1(ea, aa, obj, nv);

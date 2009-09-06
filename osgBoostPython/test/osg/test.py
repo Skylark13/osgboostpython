@@ -2,6 +2,7 @@
 import osg
 
 def test_osgVec4():
+    print "-"*78
     print "Testing osg::Vec4d (for now we assume if this works, then Vec2{d|f}, Vec3{d|f} and Vec4f work too)"
     v4d = osg.Vec4d()
     print "v4d contains", v4d._v
@@ -10,6 +11,7 @@ def test_osgVec4():
     print "Can also print by component:", v4d.x(), v4d.y(), v4d.z(), v4d.w()
 
 def test_osgVec4Array():
+    print "-"*78
     print "Testing osg::Vec4Array (for now we assume if this works, then Vec2Array and Vec3Array work too)"
     v4array = osg.Vec4Array()
     v4array.append(osg.Vec4f(1,2,3,4))
@@ -23,11 +25,13 @@ def test_osgVec4Array():
     # Should test all methods...
 
 def test_osgMatrix():
+    print "-"*78
     print "Testing osg::Matrixd"
     m = osg.Matrixd()
     print "Matrix valid =", m.valid()
 
 def test_osgBoundingSphere():
+    print "-"*78
     print "Testing osg::BoundingSphere"
     bs = osg.BoundingSphere()
     print "bs initial values: center =", bs._center._v, "radius =", bs._radius
@@ -38,6 +42,7 @@ def test_osgBoundingSphere():
     print "valid =", bs.valid()
 
 def test_osgNodeAndGroup():
+    print "-"*78
     print "Testing osg::Node and osg::Group"
     print "  Creating objects"
     n = osg.Node()
@@ -58,6 +63,7 @@ def test_osgNodeAndGroup():
     print "    Parent 0 is called [", parents[0].name, "]"
 
 def test_osgGeodeAndShapeDrawable():
+    print "-"*78
     print "Testing osg::Geode and osg::ShapeDrawable"
     print "  Creating ShapeDrawable and Geode"
     sd = osg.ShapeDrawable(osg.Sphere(), None)
@@ -77,11 +83,13 @@ def test_osgGeodeAndShapeDrawable():
     #print "    Drawable 0 is called [", drawables[0].name, "]"   # Doesn't quite work yet.
 
 def test_osgGeometry():
+    print "-"*78
     print "Testing osg::Geometry and osg::DrawArrays - run osgViewer tests to see the results"
     g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
     print "  g has", g.getNumPrimitiveSets(), "primitive sets,", len(g.getVertexArray()), "vertices"
 
 def test_osgStateSet():
+    print "-"*78
     print "Testing osg::StateSet - run osgViewer tests to see the results"
     g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
     s = g.stateSet
@@ -95,6 +103,7 @@ def test_osgStateSet():
     print "g has lighting state:", s.getMode(osg.GL_LIGHTING)
 
 def test_osgUniform():
+    print "-"*78
     print "Testing osg::Uniform"
     u = osg.Uniform(osg.Uniform.Type.FLOAT, "uFloat")
     print "u is a FLOAT uniform variable"
@@ -113,16 +122,47 @@ def test_osgUniform():
     u.setBool4(*values)
     print "u's value is now", u.getBool4()
 
-def test_osg():
-    test_osgVec4()
-    test_osgVec4Array()
-    test_osgMatrix()
-    test_osgBoundingSphere()
-    test_osgNodeAndGroup()
-    test_osgGeodeAndShapeDrawable()
-    test_osgGeometry()
-    test_osgStateSet()
-    test_osgUniform()
+def test_overriddenNodeVisitor():
+    print "-"*78
+    print "Testing osg::NodeVisitor derived in python code"
+    class DerivedVisitor(osg.NodeVisitor):
+        def __init__(self, tm = osg.NodeVisitor.TraversalMode.TRAVERSE_NONE):
+            osg.NodeVisitor.__init__(self, tm)  # call parent class constructor with argument
+        def apply_Node(self, node):
+            print "python apply_Node - node name:", node.name
+            self.traverse(node)     # Seems like this chops off the node, it thinks it's an osg::Node instead of an osg::Group.
+        def apply_Group(self, node):
+            print "python apply_Group - node name:", node.name
+            self.traverse(node)     # Seems like this chops off the node, it thinks it's an osg::Node instead of an osg::Group.
 
-test_osg()
+    g1 = osg.Group()
+    g1.name = "g1"
+    g2 = osg.Group()
+    g2.name = "g2"
+    g1.addChild(g2)
+    n = osg.Node()
+    n.name = "n"
+    g2.addChild(n)
+    nv = DerivedVisitor(osg.NodeVisitor.TraversalMode.TRAVERSE_ALL_CHILDREN)
+    g1.accept(nv)
+
+def test_osg(testToRun):
+    if (testToRun == -1 or testToRun == 0): test_osgVec4()
+    if (testToRun == -1 or testToRun == 1): test_osgVec4Array()
+    if (testToRun == -1 or testToRun == 2): test_osgMatrix()
+    if (testToRun == -1 or testToRun == 3): test_osgBoundingSphere()
+    if (testToRun == -1 or testToRun == 4): test_osgNodeAndGroup()
+    if (testToRun == -1 or testToRun == 5): test_osgGeodeAndShapeDrawable()
+    if (testToRun == -1 or testToRun == 6): test_osgGeometry()
+    if (testToRun == -1 or testToRun == 7): test_osgStateSet()
+    if (testToRun == -1 or testToRun == 8): test_osgUniform()
+    if (testToRun == -1 or testToRun == 9): test_overriddenNodeVisitor()
+
+testToRun = -1
+if __name__ == "__main__":
+    import sys
+    if (len(sys.argv) == 2):
+        testToRun = int(sys.argv[1])
+
+test_osg(testToRun)
 
