@@ -18,16 +18,18 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(osgViewer_setUpViewOnSingleScreen_overloa
 
 BOOST_PYTHON_MODULE(_osgViewer)
 {
+    class_<ViewerBase, bases<Object>, ref_ptr<ViewerBase>, boost::noncopyable>("ViewerBase", no_init)
+    ;
 
     // TODO: Wrap osgViewer::View at least, then osgViewer::ViewerBase and osgViewer::CompositeViewer.
-    class_<osgViewer::View/*, bases<osg::View, osgGA::GUIActionAdapter>*/, ref_ptr<osgViewer::View> >("View")
+    class_<osgViewer::View, bases<osg::View, osgGA::GUIActionAdapter>, ref_ptr<osgViewer::View> >("View")
         .def("setUpViewAcrossAllScreens", &osgViewer::View::setUpViewAcrossAllScreens)
         .def("setUpViewInWindow", &osgViewer::View::setUpViewInWindow, osgViewer_setUpViewInWindow_overloads())
         .def("setUpViewOnSingleScreen", &osgViewer::View::setUpViewOnSingleScreen, osgViewer_setUpViewOnSingleScreen_overloads())
     ;
 
     // Need wrapper for osgViewer::View, which needs wrapper for osg::View, ...
-    class_<Viewer, bases<osgViewer::View/*, osgViewer::ViewerBase*/>, ref_ptr<Viewer> >("Viewer")
+    class_<Viewer, bases<osgViewer::View, osgViewer::ViewerBase>, ref_ptr<Viewer> >("Viewer")
         .def("run", &Viewer::run)
         .def("done", &Viewer::done)
         .def("frame", &Viewer::frame, osgViewer_frame_overloads())

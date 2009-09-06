@@ -82,14 +82,41 @@ def test_osgViewerAndGeometry(testStateSet, inWindow):
     viewer.run()
     del viewer      # To cause the dtor to be called, hence the window to be destroyed.
 
+def test_osgViewerAndOverriddenGUIEventHandler(inWindow):
+    class TrialHandler(osgGA.GUIEventHandler):
+        def handle(self, ea, aa):
+            print "python handle"
+            if (ea):
+                pass
+            else:
+                print "ea is NULL"
+            if (aa):
+                pass
+            else:
+                print "aa is NULL"
+            return False
+
+    import osgDB
+    viewer = osgViewer.Viewer()
+    if (inWindow):
+        viewer.setUpViewInWindow(50, 50, 1024, 768);
+    t = TrialHandler()
+    viewer.addEventHandler(t)
+    viewer.addEventHandler(osgViewer.StatsHandler())
+    cow = osgDB.readNodeFile("cow.osg")
+    viewer.setSceneData(cow)
+    viewer.run()
+    del viewer      # To cause the dtor to be called, hence the window to be destroyed.
+
 def test_osgViewer():
     test_osgViewerSetups()
-    test_osgViewerAndShapeDrawable(0, 1)
-    test_osgViewerAndCow(0, 1)
-    test_osgViewerAndGeometry(0, 1)
+    test_osgViewerAndShapeDrawable(False, True)
+    test_osgViewerAndCow(False, True)
+    test_osgViewerAndGeometry(False, True)
     print "Now, let's re-test the sphere and cow with changes to the StateSets to see if StateSet works."
-    test_osgViewerAndShapeDrawable(1, 1)
-    test_osgViewerAndCow(1, 1)
-    test_osgViewerAndGeometry(1, 1)
+    test_osgViewerAndShapeDrawable(True, True)
+    test_osgViewerAndCow(True, True)
+    test_osgViewerAndGeometry(True, True)
+    test_osgViewerAndOverriddenGUIEventHandler(True)
 
 test_osgViewer()

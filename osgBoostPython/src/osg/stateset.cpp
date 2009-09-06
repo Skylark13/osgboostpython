@@ -43,7 +43,7 @@ bool (Uniform::*Uniform_setBool41)( bool, bool, bool, bool ) = &Uniform::set;
 
 // The single-argument gets return the value directly, the multiple-argument 
 // ones return them in a tuple. You can call the multiple-argument sets with
-// a tuple by unpacking it:
+// a tuple by unpacking it with '*' like so:
 //     values = (False, True, False, False)
 //     u.setBool4(*values)
 float Uniform_getFloat1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); float f; u->get(f); return f; }

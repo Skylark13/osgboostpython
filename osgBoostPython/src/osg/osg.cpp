@@ -265,5 +265,8 @@ BOOST_PYTHON_MODULE(_osg)
         ;
     }
 
+    class_<View, bases<Object>, ref_ptr<View> >("View")
+    ;
+
     export_util();
 }
