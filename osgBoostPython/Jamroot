@@ -6,8 +6,12 @@
 
 # Specify the path to the Boost project.  If you move this project,
 # adjust this path to refer to the Boost root directory.
+
+import os ;
+local BOOST_ROOT = [ os.environ BOOST_ROOT ] ;
+
 use-project boost
-  : ../../../boost_1_35_0 ;
+  : $(BOOST_ROOT) ;
 
 # Set up the project-wide requirements that everything uses the
 # boost_python library from the project whose global ID is
@@ -36,12 +40,15 @@ lib osgViewerlib : : <name>osgViewerd   <variant>debug   ;
 #                <linkflags>-LIBPATH:G:/scitbx/cctbx_build/lib
 #                <cxxflags>-IG:/scitbx/cctbx_sources
 
+local OSG_ROOT = [ os.environ OSG_ROOT ] ;
+
+
 # Make the definition of the python-extension rule available
 import python ;
-using msvc : : : <linkflags>-LIBPATH:G:/boost_1_35_0/lib
-                 <linkflags>-LIBPATH:G:/OpenSceneGraph-SVN/OpenSceneGraph/lib
-                 <cflags>-IG:/OpenSceneGraph-SVN/OpenSceneGraph/include
-                 <cxxflags>-IG:/OpenSceneGraph-SVN/OpenSceneGraph/include
+using msvc : : : <linkflags>-LIBPATH:$(BOOST_ROOT)/lib
+                 <linkflags>-LIBPATH:$(OSG_ROOT)/lib
+                 <cflags>-I$(OSG_ROOT)/include
+                 <cxxflags>-I$(OSG_ROOT)/include
                  <cxxflags>-Iinclude
                  ;
 

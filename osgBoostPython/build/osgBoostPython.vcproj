@@ -167,7 +167,7 @@
 			Name="osgViewer"
 			>
 			<File
-				RelativePath=".\src\osgViewer\osgViewer.cpp"
+				RelativePath="..\src\osgViewer\osgViewer.cpp"
 				>
 			</File>
 		</Filter>
@@ -175,7 +175,7 @@
 			Name="osgGA"
 			>
 			<File
-				RelativePath=".\src\osgGA\osgGA.cpp"
+				RelativePath="..\src\osgGA\osgGA.cpp"
 				>
 			</File>
 		</Filter>
@@ -183,31 +183,31 @@
 			Name="osg"
 			>
 			<File
-				RelativePath=".\src\osg\array.cpp"
+				RelativePath="..\src\osg\array.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\osg\drawable.cpp"
+				RelativePath="..\src\osg\drawable.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\osg\math.cpp"
+				RelativePath="..\src\osg\math.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\osg\osg.cpp"
+				RelativePath="..\src\osg\osg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\osg\stateAttributes.cpp"
+				RelativePath="..\src\osg\stateAttributes.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\osg\stateset.cpp"
+				RelativePath="..\src\osg\stateset.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\osg\util.cpp"
+				RelativePath="..\src\osg\util.cpp"
 				>
 			</File>
 		</Filter>
@@ -215,12 +215,12 @@
 			Name="osgDB"
 			>
 			<File
-				RelativePath=".\src\osgDB\osgDB.cpp"
+				RelativePath="..\src\osgDB\osgDB.cpp"
 				>
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\include\ContainerUtils.h"
+			RelativePath="..\include\ContainerUtils.h"
 			>
 		</File>
 	</Files>
