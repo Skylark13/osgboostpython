@@ -130,10 +130,10 @@ def test_overriddenNodeVisitor():
             osg.NodeVisitor.__init__(self, tm)  # call parent class constructor with argument
         def apply_Node(self, node):
             print "python apply_Node - node name:", node.name
-            self.traverse(node)     # Seems like this chops off the node, it thinks it's an osg::Node instead of an osg::Group.
+            self.traverse(node)     # Seems like this slices off the node, it thinks it's an osg::Node instead of an osg::Group.
         def apply_Group(self, node):
             print "python apply_Group - node name:", node.name
-            self.traverse(node)     # Seems like this chops off the node, it thinks it's an osg::Node instead of an osg::Group.
+            self.traverse(node)     # Seems like this slices off the node, it thinks it's an osg::Node instead of an osg::Group.
 
     g1 = osg.Group()
     g1.name = "g1"

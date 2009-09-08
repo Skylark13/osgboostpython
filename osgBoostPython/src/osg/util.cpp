@@ -10,14 +10,14 @@ using namespace osg;
 
 #include <iostream>
 
-struct NodeCallback_callback : public NodeCallback
+struct NodeCallback_wrapper : public NodeCallback
 {
     // NodeCallback constructor storing initial self parameter
-    NodeCallback_callback(PyObject *p)
+    NodeCallback_wrapper(PyObject *p)
         : NodeCallback(), self(p) {}
 
     // In case NodeCallback is returned by-value from a wrapped function
-    NodeCallback_callback(PyObject *p, const NodeCallback& x)
+    NodeCallback_wrapper(PyObject *p, const NodeCallback& x)
         : NodeCallback(x), self(p) {}
 
     // Override handle to call back into Python
@@ -45,17 +45,17 @@ struct NodeCallback_callback : public NodeCallback
     PyObject* self;
 };
 
-struct NodeVisitor_callback : public NodeVisitor
+struct NodeVisitor_wrapper : public NodeVisitor
 {
     // NodeVisitor constructors storing initial self parameter
-    NodeVisitor_callback(PyObject *p, NodeVisitor::TraversalMode tm = NodeVisitor::TRAVERSE_NONE)
+    NodeVisitor_wrapper(PyObject *p, NodeVisitor::TraversalMode tm = NodeVisitor::TRAVERSE_NONE)
         : NodeVisitor(tm), self(p) {}
 
-    NodeVisitor_callback(PyObject *p, NodeVisitor::VisitorType type, NodeVisitor::TraversalMode tm = NodeVisitor::TRAVERSE_NONE)
+    NodeVisitor_wrapper(PyObject *p, NodeVisitor::VisitorType type, NodeVisitor::TraversalMode tm = NodeVisitor::TRAVERSE_NONE)
         : NodeVisitor(type, tm), self(p) {}
 
     // In case NodeVisitor is returned by-value from a wrapped function
-    NodeVisitor_callback(PyObject *p, const NodeVisitor& x)
+    NodeVisitor_wrapper(PyObject *p, const NodeVisitor& x)
         : NodeVisitor(x), self(p) {}
 
     // Override handle to call back into Python
@@ -107,12 +107,12 @@ struct NodeVisitor_callback : public NodeVisitor
 void export_util()
 {
     {
-        scope in_NodeVisitor = class_<NodeVisitor, NodeVisitor_callback, bases<Referenced>, ref_ptr<NodeVisitor> >("NodeVisitor")
+        scope in_NodeVisitor = class_<NodeVisitor, NodeVisitor_wrapper, bases<Referenced>, ref_ptr<NodeVisitor> >("NodeVisitor")
             .def(init<NodeVisitor::TraversalMode>())
             .def(init<NodeVisitor::VisitorType, NodeVisitor::TraversalMode>())
             .def("traverse", &NodeVisitor::traverse)
-            .def("apply_Node", &NodeVisitor_callback::default_apply_Node)
-            .def("apply_Group", &NodeVisitor_callback::default_apply_Group)
+            .def("apply_Node", &NodeVisitor_wrapper::default_apply_Node)
+            .def("apply_Group", &NodeVisitor_wrapper::default_apply_Group)
             .add_property("traversalMode", &NodeVisitor::getTraversalMode, &NodeVisitor::setTraversalMode)
         ;
 
@@ -133,8 +133,8 @@ void export_util()
 
     }
 
-    class_<NodeCallback, NodeCallback_callback, bases<Object>, ref_ptr<NodeCallback> >("NodeCallback")
-        .def("call", &NodeCallback_callback::default_operator)
+    class_<NodeCallback, NodeCallback_wrapper, bases<Object>, ref_ptr<NodeCallback> >("NodeCallback")
+        .def("call", &NodeCallback_wrapper::default_operator)
         .def("traverse", &NodeCallback::traverse)
     ;
 
