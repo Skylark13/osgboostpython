@@ -1,0 +1,89 @@
+# Copyright David Abrahams 2006. Distributed under the Boost
+# Software License, Version 1.0. (See accompanying
+# file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
+
+# http://www.boost.org/doc/tools/build/index.html
+
+# Specify the path to the Boost project.  If you move this project,
+# adjust this path to refer to the Boost root directory.
+use-project boost
+  : ../../../boost_1_35_0 ;
+
+# Set up the project-wide requirements that everything uses the
+# boost_python library from the project whose global ID is
+# /boost/python.
+project osgBoostPython
+  : requirements <library>/boost/python//boost_python ;
+
+
+# Libraries
+lib otlib        : : <name>OpenThreads  <variant>release ;
+lib otlib        : : <name>OpenThreadsd <variant>debug   ;
+lib osglib       : : <name>osg          <variant>release ;
+lib osglib       : : <name>osgd         <variant>debug   ;
+lib osgDBlib     : : <name>osgDB        <variant>release ;
+lib osgDBlib     : : <name>osgDBd       <variant>debug   ;
+lib osgGAlib     : : <name>osgGA        <variant>release ;
+lib osgGAlib     : : <name>osgGAd       <variant>debug   ;
+lib osgViewerlib : : <name>osgViewer    <variant>release ;
+lib osgViewerlib : : <name>osgViewerd   <variant>debug   ;
+
+
+#                <linkflags>osg$(osg_debug_suffix).lib
+#                <linkflags>osgDB$(osg_debug_suffix).lib
+#                <linkflags>osgGA$(osg_debug_suffix).lib
+#                <linkflags>osgViewer$(osg_debug_suffix).lib
+#                <linkflags>-LIBPATH:G:/scitbx/cctbx_build/lib
+#                <cxxflags>-IG:/scitbx/cctbx_sources
+
+# Make the definition of the python-extension rule available
+import python ;
+using msvc : : : <linkflags>-LIBPATH:G:/boost_1_35_0/lib
+                 <linkflags>-LIBPATH:G:/OpenSceneGraph-SVN/OpenSceneGraph/lib
+                 <cflags>-IG:/OpenSceneGraph-SVN/OpenSceneGraph/include
+                 <cxxflags>-IG:/OpenSceneGraph-SVN/OpenSceneGraph/include
+                 <cxxflags>-Iinclude
+                 ;
+
+# Declare the three extension modules.  You can specify multiple
+# source files after the colon separated by spaces.
+python-extension _osg       : src/osg/osg.cpp
+                              src/osg/array.cpp
+                              src/osg/drawable.cpp
+                              src/osg/stateset.cpp
+                              src/osg/stateAttributes.cpp
+                              src/osg/math.cpp
+                              src/osg/util.cpp
+                              otlib
+                              osglib ;
+
+python-extension _osgDB     : src/osgDB/osgDB.cpp
+                              otlib
+                              osglib
+                              osgDBlib ;
+
+python-extension _osgGA     : src/osgGA/osgGA.cpp
+                              otlib
+                              osglib
+                              osgGAlib ;
+
+python-extension _osgViewer : src/osgViewer/osgViewer.cpp
+                              otlib
+                              osglib
+                              osgGAlib
+                              osgViewerlib ;
+
+# A little "rule" (function) to clean up the syntax of declaring tests
+# of these extension modules.
+local rule run-test ( test-name : sources + )
+{
+    import testing ;
+    testing.make-test run-pyd : $(sources) : : $(test-name) ;
+}
+
+# Declare test targets
+#run-test osg : _osg test/osg/test.py ;
+#run-test osgDB : _osgDB test/osgDB/test.py ;
+#run-test osgGA : _osgGA test/osgGA/test.py ;
+#run-test osgViewer : _osgViewer test/osgViewer/test.py ;
+#run-test all : _osg _osgDB _osgGA _osgViewer test/test-all.py ;

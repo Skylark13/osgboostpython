@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Project SYSTEM "Project-4.6.dtd">
+<!-- eric4 project file for project osgBoostPython tests -->
+<!-- Saved: 2009-08-31, 22:28:42 -->
+<!-- Copyright (C) 2009 Jean-Sebastien Guay, jean_seb@videotron.ca -->
+<Project version="4.6">
+  <Language>en</Language>
+  <ProgLanguage mixed="0">Python</ProgLanguage>
+  <ProjectType>Console</ProjectType>
+  <Description></Description>
+  <Version>0.1</Version>
+  <Author>Jean-Sebastien Guay</Author>
+  <Email>jean_seb@videotron.ca</Email>
+  <Sources>
+    <Source>test-all.py</Source>
+    <Source>osg/test.py</Source>
+    <Source>osgDB/test.py</Source>
+    <Source>osgGA/test.py</Source>
+    <Source>osgViewer/test.py</Source>
+  </Sources>
+  <Forms>
+  </Forms>
+  <Translations>
+  </Translations>
+  <Resources>
+  </Resources>
+  <Interfaces>
+  </Interfaces>
+  <Others>
+  </Others>
+  <MainScript>test-all.py</MainScript>
+  <Vcs>
+    <VcsType>None</VcsType>
+  </Vcs>
+  <FiletypeAssociations>
+    <FiletypeAssociation pattern="*.pyw" type="SOURCES" />
+    <FiletypeAssociation pattern="*.idl" type="INTERFACES" />
+    <FiletypeAssociation pattern="*.py" type="SOURCES" />
+    <FiletypeAssociation pattern="*.ptl" type="SOURCES" />
+  </FiletypeAssociations>
+</Project>
