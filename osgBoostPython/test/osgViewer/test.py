@@ -3,6 +3,21 @@ import osg
 import osgGA
 import osgViewer
 
+
+def runViewer(sceneRoot, inWindow, handler = None):
+    viewer = osgViewer.Viewer()
+    if (inWindow):
+        viewer.setUpViewInWindow(50, 50, 1024, 768);
+    viewer.addEventHandler(osgViewer.HelpHandler())
+    viewer.addEventHandler(osgViewer.StatsHandler())
+    if (sceneRoot):
+        viewer.addEventHandler(osgGA.StateSetManipulator(sceneRoot.stateSet))
+        viewer.setSceneData(sceneRoot)
+    if (handler):
+        viewer.addEventHandler(handler)
+    viewer.run()
+    del viewer      # To cause the dtor to be called, hence the window to be destroyed.
+
 def test_osgViewerSetups():
     print "Testing osgViewer across all screens"
     viewer = osgViewer.Viewer()
@@ -29,15 +44,7 @@ def test_osgViewerAndShapeDrawable(testStateSet, inWindow):
         print "Will disable lighting"
         s = geode.stateSet
         s.setMode(osg.GL_LIGHTING, osg.StateAttribute.Values.OFF)
-    viewer = osgViewer.Viewer()
-    if (inWindow):
-        viewer.setUpViewInWindow(50, 50, 1024, 768);
-    viewer.addEventHandler(osgGA.StateSetManipulator(geode.stateSet))
-    viewer.addEventHandler(osgViewer.HelpHandler())
-    viewer.addEventHandler(osgViewer.StatsHandler())
-    viewer.setSceneData(geode)
-    viewer.run()
-    del viewer      # To cause the dtor to be called, hence the window to be destroyed.
+    runViewer(geode, inWindow)
 
 def test_osgViewerAndCow(testStateSet, inWindow):
     print "Testing osgViewer with cow.osg"
@@ -47,15 +54,7 @@ def test_osgViewerAndCow(testStateSet, inWindow):
         print "Will disable texturing"
         s = cow.stateSet
         s.setTextureMode(0, osg.GL_TEXTURE_2D, osg.StateAttribute.Values.OFF + osg.StateAttribute.Values.OVERRIDE)
-    viewer = osgViewer.Viewer()
-    if (inWindow):
-        viewer.setUpViewInWindow(50, 50, 1024, 768);
-    viewer.addEventHandler(osgGA.StateSetManipulator(cow.stateSet))
-    viewer.addEventHandler(osgViewer.HelpHandler())
-    viewer.addEventHandler(osgViewer.StatsHandler())
-    viewer.setSceneData(cow)
-    viewer.run()
-    del viewer      # To cause the dtor to be called, hence the window to be destroyed.
+    runViewer(cow, inWindow)
 
 def test_osgViewerAndGeometry(testStateSet, inWindow):
     print "Testing osgViewer with osg::Geometry"
@@ -63,6 +62,7 @@ def test_osgViewerAndGeometry(testStateSet, inWindow):
     g.getColorArray()[0] = osg.Vec4f(1,1,1,0.5)
     geode = osg.Geode()
     geode.addDrawable(g)
+
     if (testStateSet):
         print "Will add a texture"
         import osgDB
@@ -72,18 +72,11 @@ def test_osgViewerAndGeometry(testStateSet, inWindow):
         s.setTextureAttributeAndModes(0, t, osg.StateAttribute.Values.ON)
         s.setRenderingHint(osg.StateSet.RenderingHint.TRANSPARENT_BIN)
         s.setMode(osg.GL_BLEND, osg.StateAttribute.Values.ON)
-    viewer = osgViewer.Viewer()
-    if (inWindow):
-        viewer.setUpViewInWindow(50, 50, 1024, 768);
-    viewer.addEventHandler(osgGA.StateSetManipulator(geode.stateSet))
-    viewer.addEventHandler(osgViewer.HelpHandler())
-    viewer.addEventHandler(osgViewer.StatsHandler())
-    viewer.setSceneData(geode)
-    viewer.run()
-    del viewer      # To cause the dtor to be called, hence the window to be destroyed.
+
+    runViewer(geode, inWindow)
 
 def test_osgViewerAndOverriddenGUIEventHandler(inWindow):
-    class TrialHandler(osgGA.GUIEventHandler):
+    class DerivedHandler(osgGA.GUIEventHandler):
         def handle(self, ea, aa):
             print "python handle"
             if (ea):
@@ -97,34 +90,23 @@ def test_osgViewerAndOverriddenGUIEventHandler(inWindow):
             return False
 
     import osgDB
-    viewer = osgViewer.Viewer()
-    if (inWindow):
-        viewer.setUpViewInWindow(50, 50, 1024, 768);
-    t = TrialHandler()
-    viewer.addEventHandler(t)
-    viewer.addEventHandler(osgViewer.StatsHandler())
     cow = osgDB.readNodeFile("cow.osg")
-    viewer.setSceneData(cow)
-    viewer.run()
-    del viewer      # To cause the dtor to be called, hence the window to be destroyed.
+
+    runViewer(cow, inWindow, DerivedHandler())
 
 def test_osgViewerAndOverriddenNodeCallback(inWindow):
-    class TrialCallback(osg.NodeCallback):
+    print "Will add a trivial CullCallback to the model - since traverse() is called the model should still be rendered."
+    class DerivedCallback(osg.NodeCallback):
         def call(self, node, nv):
             print "python callback"
             self.traverse(node, nv)     # Seems like this slices off the node, it thinks it's an osg::Node instead of an osg::Group.
 
     import osgDB
-    viewer = osgViewer.Viewer()
-    if (inWindow):
-        viewer.setUpViewInWindow(50, 50, 1024, 768);
-    viewer.addEventHandler(osgViewer.StatsHandler())
     cow = osgDB.readNodeFile("cow.osg")
-    t = TrialCallback()
-    cow.setUpdateCallback(t)
-    viewer.setSceneData(cow)
-    viewer.run()
-    del viewer      # To cause the dtor to be called, hence the window to be destroyed.
+    cb = DerivedCallback()
+    cow.setCullCallback(cb)
+
+    runViewer(cow, inWindow)
 
 def test_osgViewer(testToRun):
     if (testToRun == -1 or testToRun == 0): test_osgViewerSetups()
