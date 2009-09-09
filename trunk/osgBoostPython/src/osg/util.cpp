@@ -5,6 +5,7 @@ using namespace boost::python;
 
 #include <osg/NodeCallback>
 #include <osg/NodeVisitor>
+#include <osg/Group>
 
 using namespace osg;
 
@@ -26,7 +27,7 @@ struct NodeCallback_wrapper : public NodeCallback
         //std::cout << "in operator()(Node*, NodeVisitor*)" << std::endl;
         try {
             //std::cout << "Calling override" << std::endl;
-            call_method<void>(self, "call", node, nv);
+            call_method<void>(self, "call", boost::ref(node), boost::ref(nv));
         }
         // Catch boost::python exception, means method was not overridden in subclass.
         catch (error_already_set) {
@@ -58,13 +59,17 @@ struct NodeVisitor_wrapper : public NodeVisitor
     NodeVisitor_wrapper(PyObject *p, const NodeVisitor& x)
         : NodeVisitor(x), self(p) {}
 
+    // TODO: We could probably simplify writing all the apply_* and 
+    // default_apply_* with some preprocessor magic... Then again there are
+    // a finite number of versions.
+
     // Override handle to call back into Python
     void apply(Node& node)
     {
         //std::cout << "in apply(Node&)" << std::endl;
         try {
             //std::cout << "Calling override" << std::endl;
-            call_method<void>(self, "apply_Node", node);
+            call_method<void>(self, "apply_Node", boost::ref(node));
         }
         // Catch boost::python exception, means method was not overridden in subclass.
         catch (error_already_set) {
@@ -85,7 +90,7 @@ struct NodeVisitor_wrapper : public NodeVisitor
         //std::cout << "in apply(Group&)" << std::endl;
         try {
             //std::cout << "Calling override" << std::endl;
-            call_method<void>(self, "apply_Group", node);
+            call_method<void>(self, "apply_Group", boost::ref(node));
         }
         // Catch boost::python exception, means method was not overridden in subclass.
         catch (error_already_set) {

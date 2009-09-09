@@ -125,15 +125,28 @@ def test_osgUniform():
 def test_overriddenNodeVisitor():
     print "-"*78
     print "Testing osg::NodeVisitor derived in python code"
-    class DerivedVisitor(osg.NodeVisitor):
-        def __init__(self, tm = osg.NodeVisitor.TraversalMode.TRAVERSE_NONE):
-            osg.NodeVisitor.__init__(self, tm)  # call parent class constructor with argument
+    # DerivedVisitor1 verifies that apply_Node will be called for all node
+    # subclasses if other apply_* methods are not overridden.
+    class DerivedVisitor1(osg.NodeVisitor):
+        def __init__(self):
+            # call parent class constructor with argument
+            osg.NodeVisitor.__init__(self, osg.NodeVisitor.TraversalMode.TRAVERSE_ALL_CHILDREN)
         def apply_Node(self, node):
             print "python apply_Node - node name:", node.name
-            self.traverse(node)     # Seems like this slices off the node, it thinks it's an osg::Node instead of an osg::Group.
+            self.traverse(node)
+
+    # DerivedVisitor2 verifies that apply_Node and apply_Group are called for
+    # their respective node arguments.
+    class DerivedVisitor2(osg.NodeVisitor):
+        def __init__(self):
+            # call parent class constructor with argument
+            osg.NodeVisitor.__init__(self, osg.NodeVisitor.TraversalMode.TRAVERSE_ALL_CHILDREN)
+        def apply_Node(self, node):
+            print "python apply_Node - node name:", node.name
+            self.traverse(node)
         def apply_Group(self, node):
             print "python apply_Group - node name:", node.name
-            self.traverse(node)     # Seems like this slices off the node, it thinks it's an osg::Node instead of an osg::Group.
+            self.traverse(node)
 
     g1 = osg.Group()
     g1.name = "g1"
@@ -143,8 +156,14 @@ def test_overriddenNodeVisitor():
     n = osg.Node()
     n.name = "n"
     g2.addChild(n)
-    nv = DerivedVisitor(osg.NodeVisitor.TraversalMode.TRAVERSE_ALL_CHILDREN)
-    g1.accept(nv)
+
+    print "Verifying that apply_Node is called for all node subclasses."
+    nv1 = DerivedVisitor1()
+    g1.accept(nv1)
+
+    print "Verifying that other versions of apply are called for the appropriate subclasses of Node."
+    nv2 = DerivedVisitor2()
+    g1.accept(nv2)
 
 def test_osg(testToRun):
     if (testToRun == -1 or testToRun == 0): test_osgVec4()
