@@ -8,13 +8,15 @@ using namespace boost::python;
 #include <osg/Array>
 #include <osg/MixinVector>
 
+using namespace osg;
+
+#include "defaults.h"
 #include "ContainerUtils.h"
 
-using namespace osg;
 
 // http://cctbx.svn.sourceforge.net/viewvc/cctbx/trunk/scitbx/array_family/boost_python/flex_wrapper.h?view=markup
 template<typename ContainerType,
-         typename GetitemReturnValuePolicy = return_value_policy<copy_non_const_reference> >
+         typename GetitemReturnValuePolicy = osgBoostPython::default_reference_policy >
 struct ArrayWrapper
 {
     typedef typename ContainerType::ElementDataType ElementType;

@@ -45,6 +45,9 @@ using namespace boost::python;
 
 using namespace osg;
 
+#include "defaults.h"
+
+
 // Definitions in other source files
 void export_math();
 void export_util();
@@ -106,26 +109,8 @@ BOOST_PYTHON_MODULE(_osg)
         // http://www.nabble.com/Overriding-c%2B%2B-abstract-class-in-python-td19039105.html
         // http://mail.python.org/pipermail/c++-sig/2006-October/011523.html
         // http://www.nabble.com/-boost.python--Exposing-abstract-derived-classes-td18450942.html
-        // 
-        // getName returns a const std::string&. Unsure of the tradeoff between 
-        // return_internal_reference<>() and 
-        // return_value_policy<copy_const_reference>(), but the first one sounds
-        // closer to the C++ reality.
-        // http://wiki.python.org/moin/boost.python/HowTo#head-20559aa92913c151739164fdaf5170530cfe50e9
-        // http://wiki.python.org/moin/boost.python/CallPolicy
-        // http://www.boost.org/doc/libs/1_35_0/libs/python/doc/v2/CallPolicies.html
-        //
-        // Possible return value policies:
-        // with_custodian_and_ward<1,2>()
-        // with_custodian_and_ward_postcall<1,0>()
-        // return_internal_reference<>()                        -- ptr or reference   bad
-        // return_value_policy<reference_existing_object>()     -- ptr or reference   bad
-        // return_value_policy<copy_const_reference>()          -- reference         good
-        // return_value_policy<copy_non_const_reference>()      -- reference         good
-        // return_value_policy<manage_new_object>()             -- ptr               good
-        // return_value_policy<return_by_value>()               -- value             good
         scope in_Object = class_<Object, bases<Referenced>, ref_ptr<Object>, boost::noncopyable >("Object", no_init)
-            .add_property("name", make_function(&Object::getName, return_value_policy<copy_const_reference>()), Object_setName1)
+            .add_property("name", make_function(&Object::getName, osgBoostPython::default_const_reference_policy()), Object_setName1)
             .add_property("dataVariance", &Object::getDataVariance, &Object::setDataVariance)
         ;
 
@@ -155,33 +140,33 @@ BOOST_PYTHON_MODULE(_osg)
     {
         scope in_Node = class_<Node, bases<Object>, ref_ptr<Node> >("Node")
             .def("getNumParents", &Node::getNumParents)
-            .def("getParents", Node_getParents1, return_value_policy<return_by_value>())
-            .def("getParent", Node_getParent1, return_value_policy<reference_existing_object>())
+            .def("getParents", Node_getParents1, osgBoostPython::default_value_policy())
+            .def("getParent", Node_getParent1, osgBoostPython::default_pointer_policy())
             // TODO: NodePathList
             //.def("getParentalNodePaths", &Node::getParentalNodePaths)
             // TODO: MatrixList
             //.def("getWorldMatrices", &Node::getWorldMatrices)
             .def("accept", &Node::accept)
             .def("setUpdateCallback", &Node::setUpdateCallback)
-            .def("getUpdateCallback", Node_getUpdateCallback1, return_value_policy<reference_existing_object>())
+            .def("getUpdateCallback", Node_getUpdateCallback1, osgBoostPython::default_pointer_policy())
             .def("addUpdateCallback", &Node::addUpdateCallback)
             .def("removeUpdateCallback", &Node::removeUpdateCallback)
             .def("setEventCallback", &Node::setEventCallback)
-            .def("getEventCallback", Node_getEventCallback1, return_value_policy<reference_existing_object>())
+            .def("getEventCallback", Node_getEventCallback1, osgBoostPython::default_pointer_policy())
             .def("addEventCallback", &Node::addEventCallback)
             .def("removeEventCallback", &Node::removeEventCallback)
             .def("setCullCallback", &Node::setCullCallback)
-            .def("getCullCallback", Node_getCullCallback1, return_value_policy<reference_existing_object>())
+            .def("getCullCallback", Node_getCullCallback1, osgBoostPython::default_pointer_policy())
             .def("addCullCallback", &Node::addCullCallback)
             .def("removeCullCallback", &Node::removeCullCallback)
             .add_property("cullingActive", &Node::getCullingActive, &Node::setCullingActive)
             .add_property("nodeMask", &Node::getNodeMask, &Node::setNodeMask)
             // TODO: Need methods related to descriptions?
-            .add_property("stateSet", make_function(&Node::getOrCreateStateSet, return_internal_reference<>()), &Node::setStateSet)     // TODO: wrapper returning ref_ptr for getOrCreateStateSet()
+            .add_property("stateSet", make_function(&Node::getOrCreateStateSet, osgBoostPython::default_pointer_policy()), &Node::setStateSet)     // TODO: wrapper returning ref_ptr for getOrCreateStateSet()
             .def("setInitialBound", &Node::setInitialBound)
-            .def("getInitialBound", &Node::getInitialBound, return_value_policy<copy_const_reference>())
+            .def("getInitialBound", &Node::getInitialBound, osgBoostPython::default_const_reference_policy())
             .def("dirtyBound", &Node::dirtyBound)
-            .def("getBound", &Node::getBound, return_value_policy<copy_const_reference>())
+            .def("getBound", &Node::getBound, osgBoostPython::default_const_reference_policy())
             .def("computeBound", &Node::computeBound)
             // TODO: Methods to set/get the ComputeBSphereCallback
         ;
@@ -194,7 +179,7 @@ BOOST_PYTHON_MODULE(_osg)
     // Group
     class_<Group, bases<Node>, ref_ptr<Group> >("Group")
         .def("getNumChildren", &Group::getNumChildren)
-        .def("getChild", Group_getChild1, return_value_policy<reference_existing_object>())
+        .def("getChild", Group_getChild1, osgBoostPython::default_pointer_policy())
         .def("addChild", &Group::addChild)
         .def("insertChild", &Group::insertChild)
         .def("removeChild", Group_removeChild1)
@@ -224,10 +209,10 @@ BOOST_PYTHON_MODULE(_osg)
 
     class_<MatrixTransform, bases<Transform>, ref_ptr<MatrixTransform> >("MatrixTransform")
         .def(init<Matrixd>())
-        .add_property("matrix", make_function(&MatrixTransform::getMatrix, return_value_policy<copy_const_reference>()), &MatrixTransform::setMatrix)
+        .add_property("matrix", make_function(&MatrixTransform::getMatrix, osgBoostPython::default_const_reference_policy()), &MatrixTransform::setMatrix)
         .def("preMult", &MatrixTransform::preMult)
         .def("postMult", &MatrixTransform::postMult)
-        .def("getInverseMatrix", &MatrixTransform::getInverseMatrix, return_value_policy<copy_const_reference>())
+        .def("getInverseMatrix", &MatrixTransform::getInverseMatrix, osgBoostPython::default_const_reference_policy())
         .def("computeLocalToWorldMatrix", &MatrixTransform::computeLocalToWorldMatrix)
         .def("computeWorldToLocalMatrix", &MatrixTransform::computeWorldToLocalMatrix)
     ;
@@ -239,8 +224,8 @@ BOOST_PYTHON_MODULE(_osg)
         class_<Geode, bases<Node>, ref_ptr<Geode> >("Geode")
             .def("addDrawable", &Geode::addDrawable)
             .def("getNumDrawables", &Geode::getNumDrawables)
-            .def("getDrawableList", Geode_getDrawableList1, return_value_policy<return_by_value>())
-            .def("getDrawable", Geode_getDrawable1, return_value_policy<reference_existing_object>())
+            .def("getDrawableList", Geode_getDrawableList1, osgBoostPython::default_value_policy())
+            .def("getDrawable", Geode_getDrawable1, osgBoostPython::default_pointer_policy())
             .def("addDrawable", &Geode::addDrawable)
             .def("removeDrawable", Geode_removeDrawable1)
             .def("removeDrawables", &Geode::removeDrawables)

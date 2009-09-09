@@ -14,9 +14,11 @@ using namespace boost::python;
 #include <osg/BoundingSphere>
 #include <osg/BoundingBox>
 
+using namespace osg;
+
+#include "defaults.h"
 #include "ContainerUtils.h"
 
-using namespace osg;
 
 void (BoundingBox::*BoundingBox_set1)( BoundingBox::value_type, BoundingBox::value_type, BoundingBox::value_type, 
                                        BoundingBox::value_type, BoundingBox::value_type, BoundingBox::value_type ) = &BoundingBox::set;
@@ -115,8 +117,8 @@ struct Vec2Wrapper : public VecWrapper<VecType>
         class_t result = VecWrapper::wrap(name);
         result
             .def(init<value_type, value_type>())
-            .def("x", x, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-            .def("y", y, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
+            .def("x", x, osgBoostPython::default_reference_policy())        // Will this work when setting?
+            .def("y", y, osgBoostPython::default_reference_policy())        // Will this work when setting?
             .def("set", set_2_components)
         ;
         return result;
@@ -141,9 +143,9 @@ struct Vec3Wrapper : public Vec2Wrapper<VecType>
         class_t result = VecWrapper::wrap(name);
         result
             .def(init<value_type, value_type, value_type>())
-            .def("x", x, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-            .def("y", y, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-            .def("z", z, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
+            .def("x", x, osgBoostPython::default_reference_policy())        // Will this work when setting?
+            .def("y", y, osgBoostPython::default_reference_policy())        // Will this work when setting?
+            .def("z", z, osgBoostPython::default_reference_policy())        // Will this work when setting?
             .def("set", set_3_components)
         ;
         return result;
@@ -168,10 +170,10 @@ struct Vec4Wrapper : public Vec3Wrapper<VecType>
         class_t result = VecWrapper::wrap(name);
         result
             .def(init<value_type, value_type, value_type, value_type>())
-            .def("x", x, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-            .def("y", y, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-            .def("z", z, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-            .def("w", w, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
+            .def("x", x, osgBoostPython::default_reference_policy())        // Will this work when setting?
+            .def("y", y, osgBoostPython::default_reference_policy())        // Will this work when setting?
+            .def("z", z, osgBoostPython::default_reference_policy())        // Will this work when setting?
+            .def("w", w, osgBoostPython::default_reference_policy())        // Will this work when setting?
             .def("set", set_4_components)
         ;
         return result;
@@ -258,12 +260,12 @@ void export_math()
         .def("valid", &BoundingBox::valid)
         .def("set", BoundingBox_set1)   // with 6 floats
         .def("set", BoundingBox_set2)   // with 2 vectors
-        .def("xMin", BoundingBox_xMin1, return_value_policy<copy_non_const_reference>())        // Will this work when setting?
-        .def("yMin", BoundingBox_yMin1, return_value_policy<copy_non_const_reference>())
-        .def("zMin", BoundingBox_zMin1, return_value_policy<copy_non_const_reference>())
-        .def("xMax", BoundingBox_xMax1, return_value_policy<copy_non_const_reference>())
-        .def("yMax", BoundingBox_yMax1, return_value_policy<copy_non_const_reference>())
-        .def("zMax", BoundingBox_zMax1, return_value_policy<copy_non_const_reference>())
+        .def("xMin", BoundingBox_xMin1, osgBoostPython::default_reference_policy())        // Will this work when setting?
+        .def("yMin", BoundingBox_yMin1, osgBoostPython::default_reference_policy())
+        .def("zMin", BoundingBox_zMin1, osgBoostPython::default_reference_policy())
+        .def("xMax", BoundingBox_xMax1, osgBoostPython::default_reference_policy())
+        .def("yMax", BoundingBox_yMax1, osgBoostPython::default_reference_policy())
+        .def("zMax", BoundingBox_zMax1, osgBoostPython::default_reference_policy())
         .def("center", &BoundingBox::center)
         .def("radius", &BoundingBox::radius)
         .def("radius2", &BoundingBox::radius2)

@@ -9,6 +9,9 @@ using namespace boost::python;
 
 using namespace osg;
 
+#include "defaults.h"
+
+
 void export_stateAttributes();
 
 //----------------- StateAttribute -----------------
@@ -176,8 +179,8 @@ void export_stateset()
     {
         scope in_StateAttribute = class_<StateAttribute, bases<Object>, ref_ptr<StateAttribute>, boost::noncopyable >("StateAttribute", no_init)
             .def("getNumParents", &StateAttribute::getNumParents)
-            .def("getParents", StateAttribute_getParents1, return_value_policy<return_by_value>())
-            .def("getParent", StateAttribute_getParent1, return_value_policy<reference_existing_object>())
+            .def("getParents", StateAttribute_getParents1, osgBoostPython::default_value_policy())
+            .def("getParent", StateAttribute_getParent1, osgBoostPython::default_pointer_policy())
             .def("getType", &StateAttribute::getType)
             .def("isTextureAttribute", &StateAttribute::isTextureAttribute)
             // TODO: set/get update/event callback
@@ -254,8 +257,8 @@ void export_stateset()
             .def("setNumElements", &Uniform::setNumElements)
             .def("getNumElements", &Uniform::getNumElements)
             .def("getNumParents", &Uniform::getNumParents)
-            .def("getParents", Uniform_getParents1, return_value_policy<return_by_value>())
-            .def("getParent", Uniform_getParent1, return_value_policy<reference_existing_object>())
+            .def("getParents", Uniform_getParents1, osgBoostPython::default_value_policy())
+            .def("getParent", Uniform_getParent1, osgBoostPython::default_pointer_policy())
 
             // Since one Python type might correspond to many C++ types, I 
             // think we don't have a choice and have to expose methods called
@@ -304,9 +307,9 @@ void export_stateset()
             .def("setFloatArray", Uniform_setFloatArray1)
             .def("setIntArray", Uniform_setIntArray1)
             .def("setUIntArray", Uniform_setUIntArray1)
-            .def("getFloatArray", Uniform_getFloatArray1, return_value_policy<reference_existing_object>())
-            .def("getIntArray", Uniform_getIntArray1, return_value_policy<reference_existing_object>())
-            .def("getUIntArray", Uniform_getUIntArray1, return_value_policy<reference_existing_object>())
+            .def("getFloatArray", Uniform_getFloatArray1, osgBoostPython::default_pointer_policy())
+            .def("getIntArray", Uniform_getIntArray1, osgBoostPython::default_pointer_policy())
+            .def("getUIntArray", Uniform_getUIntArray1, osgBoostPython::default_pointer_policy())
 
         ;
 
@@ -371,8 +374,8 @@ void export_stateset()
     {
         scope in_StateSet = class_<StateSet, bases<Object>, ref_ptr<StateSet> >("StateSet")
             .def("getNumParents", &StateSet::getNumParents)
-            .def("getParents", StateSet_getParents1, return_value_policy<return_by_value>())
-            .def("getParent", StateSet_getParent1, return_value_policy<reference_existing_object>())
+            .def("getParents", StateSet_getParents1, osgBoostPython::default_value_policy())
+            .def("getParent", StateSet_getParent1, osgBoostPython::default_pointer_policy())
             .def("setMode", StateSet_setMode1)
             .def("removeMode", &StateSet::removeMode)
             .def("getMode", StateSet_getMode1)
@@ -380,7 +383,7 @@ void export_stateset()
             .def("setAttributeAndModes", &StateSet::setAttributeAndModes)
             .def("removeAttribute", StateSet_removeAttribute1, StateSet_removeAttribute_overloads())
             .def("removeAttribute", StateSet_removeAttribute2)
-            .def("getAttribute", StateSet_getAttribute1, return_value_policy<reference_existing_object>(), StateSet_getAttribute_overloads())
+            .def("getAttribute", StateSet_getAttribute1, osgBoostPython::default_pointer_policy(), StateSet_getAttribute_overloads())
             .def("setTextureMode", &StateSet::setTextureMode)
             .def("removeTextureMode", &StateSet::removeTextureMode)
             .def("getTextureMode", &StateSet::getTextureMode)
@@ -388,14 +391,14 @@ void export_stateset()
             .def("setTextureAttributeAndModes", &StateSet::setTextureAttributeAndModes)
             .def("removeTextureAttribute", StateSet_removeTextureAttribute1)
             .def("removeTextureAttribute", StateSet_removeTextureAttribute2)
-            .def("getTextureAttribute", StateSet_getTextureAttribute1, return_value_policy<reference_existing_object>())
+            .def("getTextureAttribute", StateSet_getTextureAttribute1, osgBoostPython::default_pointer_policy())
             .def("setRenderingHint", &StateSet::setRenderingHint)
             .def("getRenderingHint", &StateSet::getRenderingHint)
             .def("addUniform", &StateSet::addUniform, StateSet_addUniform_overloads())
             .def("removeUniform", StateSet_removeUniform1)
             .def("removeUniform", StateSet_removeUniform2)
-            .def("getUniform", StateSet_getUniform1, return_value_policy<reference_existing_object>())
-            .def("getOrCreateUniform", &StateSet::getOrCreateUniform, return_value_policy<reference_existing_object>(), StateSet_getOrCreateUniform_overloads())
+            .def("getUniform", StateSet_getUniform1, osgBoostPython::default_pointer_policy())
+            .def("getOrCreateUniform", &StateSet::getOrCreateUniform, osgBoostPython::default_pointer_policy(), StateSet_getOrCreateUniform_overloads())
         ;
 
         enum_<StateSet::RenderingHint>("RenderingHint")
