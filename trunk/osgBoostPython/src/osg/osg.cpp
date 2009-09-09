@@ -97,6 +97,7 @@ BOOST_PYTHON_MODULE(_osg)
     export_math();
 
     class_<Referenced, ref_ptr<Referenced> >("Referenced")
+        .def("referenceCount", &Referenced::referenceCount);
     ;
 
     // Object and its enum
