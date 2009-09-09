@@ -27,7 +27,7 @@ struct NodeCallback_wrapper : public NodeCallback
         //std::cout << "in operator()(Node*, NodeVisitor*)" << std::endl;
         try {
             //std::cout << "Calling override" << std::endl;
-            call_method<void>(self, "call", boost::ref(node), boost::ref(nv));
+            call_method<void>(self, "call", ptr(node), ptr(nv));
         }
         // Catch boost::python exception, means method was not overridden in subclass.
         catch (error_already_set) {
