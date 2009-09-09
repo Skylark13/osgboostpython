@@ -29,22 +29,10 @@ struct GUIEventHandler_wrapper : public GUIEventHandler
     {
         //std::cout << "in handle() - call_method" << std::endl;
         try {
-            return call_method<bool>(self, "handle", boost::ref(ea), boost::ref(aa), boost::ref(obj), boost::ref(nv));
+            return call_method<bool>(self, "handle", ptr(ea), ptr(aa), ptr(obj), ptr(nv));
         }
         catch (error_already_set) {
             return GUIEventHandler::handle(*ea, *aa, obj, nv);
-        }
-    }
-
-    // Override handle to call back into Python
-    bool handle(const GUIEventAdapter* ea, GUIActionAdapter* aa)
-    {
-        //std::cout << "in handle() - call_method" << std::endl;
-        try {
-            return call_method<bool>(self, "handle", boost::ref(ea), boost::ref(aa));
-        }
-        catch (error_already_set) {
-            return GUIEventHandler::handle(*ea, *aa);
         }
     }
 
@@ -54,18 +42,30 @@ struct GUIEventHandler_wrapper : public GUIEventHandler
         return handle(&ea, &aa, obj, nv);
     }
 
-    // This version will be called by OSG, and calls the other version.
-    bool handle(const GUIEventAdapter& ea, GUIActionAdapter& aa)
-    {
-        //std::cout << "in handle() - calling other version" << std::endl;
-        return handle(&ea, &aa);
-    }
-
     // Supplies the default implementation of handle
     bool default_handle1(GUIEventHandler& self_, const GUIEventAdapter* ea, GUIActionAdapter* aa, osg::Object* obj, osg::NodeVisitor* nv)
     {
         //std::cout << "in default_handle()" << std::endl;
         return self_.GUIEventHandler::handle(*ea, *aa, obj, nv);
+    }
+
+    // Override handle to call back into Python
+    bool handle(const GUIEventAdapter* ea, GUIActionAdapter* aa)
+    {
+        //std::cout << "in handle() - call_method" << std::endl;
+        try {
+            return call_method<bool>(self, "handle", ptr(ea), ptr(aa));
+        }
+        catch (error_already_set) {
+            return GUIEventHandler::handle(*ea, *aa);
+        }
+    }
+
+    // This version will be called by OSG, and calls the other version.
+    bool handle(const GUIEventAdapter& ea, GUIActionAdapter& aa)
+    {
+        //std::cout << "in handle() - calling other version" << std::endl;
+        return handle(&ea, &aa);
     }
 
     // Supplies the default implementation of handle
