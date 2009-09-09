@@ -1,5 +1,5 @@
-#ifndef CONTAINER_UTILS_H
-#define CONTAINER_UTILS_H
+#ifndef __OSGBOOSTPYTHON_CONTAINER_UTILS_H__
+#define __OSGBOOSTPYTHON_CONTAINER_UTILS_H__
 
 #include <boost/python/list.hpp>
 #include <boost/python/tuple.hpp>
@@ -364,4 +364,4 @@ namespace osgBoostPython {
 
 } // osgBoostPython
 
-#endif // CONTAINER_UTILS_H
+#endif // __OSGBOOSTPYTHON_CONTAINER_UTILS_H__

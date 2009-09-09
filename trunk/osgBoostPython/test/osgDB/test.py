@@ -3,6 +3,7 @@ import osg
 import osgDB
 
 def test_osgDBReadCow():
+    print "-"*40
     print "Reading cow.osg"
     cow = osgDB.readNodeFile("cow.osg")
     print "Done"

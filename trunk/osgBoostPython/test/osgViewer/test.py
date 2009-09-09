@@ -1,6 +1,7 @@
 #!/bin/python
 import osg
 import osgGA
+import osgDB
 import osgViewer
 
 
@@ -19,6 +20,7 @@ def runViewer(sceneRoot, inWindow, handler = None):
     del viewer      # To cause the dtor to be called, hence the window to be destroyed.
 
 def test_osgViewerSetups():
+    print "-"*40
     print "Testing osgViewer across all screens"
     viewer = osgViewer.Viewer()
     viewer.setUpViewAcrossAllScreens();
@@ -36,6 +38,7 @@ def test_osgViewerSetups():
     del viewer
 
 def test_osgViewerAndShapeDrawable(testStateSet, inWindow):
+    print "-"*40
     print "Testing osgViewer with a ShapeDrawable"
     shape = osg.ShapeDrawable(osg.Sphere(), None)
     geode = osg.Geode()
@@ -47,8 +50,8 @@ def test_osgViewerAndShapeDrawable(testStateSet, inWindow):
     runViewer(geode, inWindow)
 
 def test_osgViewerAndCow(testStateSet, inWindow):
+    print "-"*40
     print "Testing osgViewer with cow.osg"
-    import osgDB
     cow = osgDB.readNodeFile("cow.osg")
     if (testStateSet):
         print "Will disable texturing"
@@ -57,6 +60,7 @@ def test_osgViewerAndCow(testStateSet, inWindow):
     runViewer(cow, inWindow)
 
 def test_osgViewerAndGeometry(testStateSet, inWindow):
+    print "-"*40
     print "Testing osgViewer with osg::Geometry"
     g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
     g.getColorArray()[0] = osg.Vec4f(1,1,1,0.5)
@@ -65,7 +69,6 @@ def test_osgViewerAndGeometry(testStateSet, inWindow):
 
     if (testStateSet):
         print "Will add a texture"
-        import osgDB
         i = osgDB.readImageFile("Images/osg256.png")
         t = osg.Texture2D(i)
         s = geode.stateSet
@@ -76,6 +79,8 @@ def test_osgViewerAndGeometry(testStateSet, inWindow):
     runViewer(geode, inWindow)
 
 def test_osgViewerAndOverriddenGUIEventHandler(inWindow):
+    print "-"*40
+    print "Testing osgViewer with a GUIEventHandler derived in python code"
     class DerivedHandler(osgGA.GUIEventHandler):
         def handle(self, ea, aa):
             print "python handle"
@@ -89,19 +94,18 @@ def test_osgViewerAndOverriddenGUIEventHandler(inWindow):
                 print "aa is NULL"
             return False
 
-    import osgDB
     cow = osgDB.readNodeFile("cow.osg")
 
     runViewer(cow, inWindow, DerivedHandler())
 
 def test_osgViewerAndOverriddenNodeCallback(inWindow):
+    print "-"*40
     print "Will add a trivial CullCallback to the model - since traverse() is called the model should still be rendered."
     class DerivedCallback(osg.NodeCallback):
         def call(self, node, nv):
             print "python callback"
             self.traverse(node, nv)     # Seems like this slices off the node, it thinks it's an osg::Node instead of an osg::Group.
 
-    import osgDB
     cow = osgDB.readNodeFile("cow.osg")
     cb = DerivedCallback()
     cow.setCullCallback(cb)

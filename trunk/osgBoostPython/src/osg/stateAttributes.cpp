@@ -8,6 +8,9 @@ using namespace boost::python;
 
 using namespace osg;
 
+#include "defaults.h"
+
+
 void (Texture2D::*Texture2D_setImage1)(Image*) = &Texture2D::setImage;
 Image* (Texture2D::*Texture2D_getImage1)() = &Texture2D::getImage;
 
@@ -23,7 +26,7 @@ void export_stateAttributes()
             .def(init<>())
             .def(init<Image*>())
             .def("setImage", Texture2D_setImage1)
-            .def("getImage", Texture2D_getImage1, return_value_policy<reference_existing_object>())
+            .def("getImage", Texture2D_getImage1, osgBoostPython::default_pointer_policy())
         ;
     }
 }

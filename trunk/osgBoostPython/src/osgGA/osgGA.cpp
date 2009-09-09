@@ -27,7 +27,7 @@ struct GUIEventHandler_wrapper : public GUIEventHandler
     // Override handle to call back into Python
     bool handle(const GUIEventAdapter* ea, GUIActionAdapter* aa, osg::Object* obj, osg::NodeVisitor* nv)
     {
-        //std::cout << "in handle() - call_method" << std::endl;
+        //std::cout << "in handle(ea, aa, obj, nv) - call_method" << std::endl;
         try {
             return call_method<bool>(self, "handle", ptr(ea), ptr(aa), ptr(obj), ptr(nv));
         }
@@ -52,7 +52,7 @@ struct GUIEventHandler_wrapper : public GUIEventHandler
     // Override handle to call back into Python
     bool handle(const GUIEventAdapter* ea, GUIActionAdapter* aa)
     {
-        //std::cout << "in handle() - call_method" << std::endl;
+        //std::cout << "in handle(ea, aa) - call_method" << std::endl;
         try {
             return call_method<bool>(self, "handle", ptr(ea), ptr(aa));
         }

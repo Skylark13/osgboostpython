@@ -13,6 +13,8 @@ using namespace boost::python;
 
 using namespace osg;
 
+#include "defaults.h"
+
 
 const Drawable::ParentList& (Drawable::*Drawable_getParents1)() const = &Drawable::getParents;
 Node* (Drawable::*Drawable_getParent1)( unsigned int ) = &Drawable::getParent;
@@ -33,14 +35,14 @@ void export_drawable()
         // Abstract class
         scope in_Drawable = class_<Drawable, bases<Object>, ref_ptr<Drawable>, boost::noncopyable >("Drawable", no_init)
             .def("getNumParents", &Drawable::getNumParents)
-            .def("getParents", Drawable_getParents1, return_value_policy<return_by_value>())
-            .def("getParent", Drawable_getParent1, return_value_policy<reference_existing_object>())
+            .def("getParents", Drawable_getParents1, osgBoostPython::default_value_policy())
+            .def("getParent", Drawable_getParent1, osgBoostPython::default_pointer_policy())
             // TODO: Wrap StateSet (big one)
-            .add_property("stateSet", make_function(&Drawable::getOrCreateStateSet, return_internal_reference<>()), &Drawable::setStateSet)     // TODO: wrapper returning ref_ptr for getOrCreateStateSet()
+            .add_property("stateSet", make_function(&Drawable::getOrCreateStateSet, osgBoostPython::default_pointer_policy()), &Drawable::setStateSet)     // TODO: wrapper returning ref_ptr for getOrCreateStateSet()
             .def("setInitialBound", &Drawable::setInitialBound)
-            .def("getInitialBound", &Drawable::getInitialBound, return_value_policy<copy_const_reference>())
+            .def("getInitialBound", &Drawable::getInitialBound, osgBoostPython::default_const_reference_policy())
             .def("dirtyBound", &Drawable::dirtyBound)
-            .def("getBound", &Drawable::getBound, return_value_policy<copy_const_reference>())
+            .def("getBound", &Drawable::getBound, osgBoostPython::default_const_reference_policy())
             .def("computeBound", &Drawable::computeBound)
             // TODO: Methods to set/get the ComputeBBoxCallback
         ;
@@ -60,7 +62,7 @@ void export_drawable()
     class_<Sphere, bases<Shape>, ref_ptr<Sphere> >("Sphere")
         .def(init<Vec3f, float>())
         .def("set", &Sphere::set)
-        .add_property("center", make_function(&Sphere::getCenter, return_value_policy<copy_const_reference>()), &Sphere::setCenter)
+        .add_property("center", make_function(&Sphere::getCenter, osgBoostPython::default_const_reference_policy()), &Sphere::setCenter)
         .add_property("radius", &Sphere::getRadius, &Sphere::setRadius)
     ;
 
@@ -71,7 +73,7 @@ void export_drawable()
 
     class_<ShapeDrawable, bases<Drawable>, ref_ptr<ShapeDrawable> >("ShapeDrawable")
         .def(init<Shape*, TessellationHints*>())
-        .add_property("color", make_function(&ShapeDrawable::getColor, return_value_policy<copy_const_reference>()), &ShapeDrawable::setColor)
+        .add_property("color", make_function(&ShapeDrawable::getColor, osgBoostPython::default_const_reference_policy()), &ShapeDrawable::setColor)
     ;
 
     // Geometry
@@ -79,23 +81,23 @@ void export_drawable()
         scope in_Geometry = class_<Geometry, bases<Drawable>, ref_ptr<Geometry> >("Geometry")
             // Could have gone for properties, but it doesn't work well for those that need arguments like texcoords...
             .def("setVertexArray", &Geometry::setVertexArray)
-            .def("getVertexArray", Geometry_getVertexArray1, return_value_policy<reference_existing_object>())
+            .def("getVertexArray", Geometry_getVertexArray1, osgBoostPython::default_pointer_policy())
             .add_property("normalBinding", &Geometry::getNormalBinding, &Geometry::setNormalBinding)
             .def("setNormalArray", &Geometry::setNormalArray)
-            .def("getNormalArray", Geometry_getNormalArray1, return_value_policy<reference_existing_object>())
+            .def("getNormalArray", Geometry_getNormalArray1, osgBoostPython::default_pointer_policy())
             .add_property("colorBinding", &Geometry::getColorBinding, &Geometry::setColorBinding)
             .def("setColorArray", &Geometry::setColorArray)
-            .def("getColorArray", Geometry_getColorArray1, return_value_policy<reference_existing_object>())
+            .def("getColorArray", Geometry_getColorArray1, osgBoostPython::default_pointer_policy())
             .add_property("secondaryColorBinding", &Geometry::getSecondaryColorBinding, &Geometry::setSecondaryColorBinding)
             .def("setSecondaryColorArray", &Geometry::setSecondaryColorArray)
-            .def("getSecondaryColorArray", Geometry_getSecondaryColorArray1, return_value_policy<reference_existing_object>())
+            .def("getSecondaryColorArray", Geometry_getSecondaryColorArray1, osgBoostPython::default_pointer_policy())
             .def("setTexCoordArray", &Geometry::setTexCoordArray)
-            .def("getTexCoordArray", Geometry_getTexCoordArray1, return_value_policy<reference_existing_object>())
+            .def("getTexCoordArray", Geometry_getTexCoordArray1, osgBoostPython::default_pointer_policy())
             .def("setVertexAttribArray", &Geometry::setVertexAttribArray)
-            .def("getVertexAttribArray", Geometry_getVertexAttribArray1, return_value_policy<reference_existing_object>())
+            .def("getVertexAttribArray", Geometry_getVertexAttribArray1, osgBoostPython::default_pointer_policy())
             .def("addPrimitiveSet", &Geometry::addPrimitiveSet)
             .def("getNumPrimitiveSets", &Geometry::getNumPrimitiveSets)
-            .def("getPrimitiveSet", Geometry_getPrimitiveSet1, return_value_policy<reference_existing_object>())
+            .def("getPrimitiveSet", Geometry_getPrimitiveSet1, osgBoostPython::default_pointer_policy())
             .def("removePrimitiveSet", &Geometry::removePrimitiveSet)
             //.def()
         ;

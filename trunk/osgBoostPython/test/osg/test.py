@@ -2,7 +2,7 @@
 import osg
 
 def test_osgVec4():
-    print "-"*78
+    print "-"*40
     print "Testing osg::Vec4d (for now we assume if this works, then Vec2{d|f}, Vec3{d|f} and Vec4f work too)"
     v4d = osg.Vec4d()
     print "v4d contains", v4d._v
@@ -11,7 +11,7 @@ def test_osgVec4():
     print "Can also print by component:", v4d.x(), v4d.y(), v4d.z(), v4d.w()
 
 def test_osgVec4Array():
-    print "-"*78
+    print "-"*40
     print "Testing osg::Vec4Array (for now we assume if this works, then Vec2Array and Vec3Array work too)"
     v4array = osg.Vec4Array()
     v4array.append(osg.Vec4f(1,2,3,4))
@@ -25,13 +25,13 @@ def test_osgVec4Array():
     # Should test all methods...
 
 def test_osgMatrix():
-    print "-"*78
+    print "-"*40
     print "Testing osg::Matrixd"
     m = osg.Matrixd()
     print "Matrix valid =", m.valid()
 
 def test_osgBoundingSphere():
-    print "-"*78
+    print "-"*40
     print "Testing osg::BoundingSphere"
     bs = osg.BoundingSphere()
     print "bs initial values: center =", bs._center._v, "radius =", bs._radius
@@ -42,7 +42,7 @@ def test_osgBoundingSphere():
     print "valid =", bs.valid()
 
 def test_osgNodeAndGroup():
-    print "-"*78
+    print "-"*40
     print "Testing osg::Node and osg::Group"
     print "  Creating objects"
     n = osg.Node()
@@ -63,7 +63,7 @@ def test_osgNodeAndGroup():
     print "    Parent 0 is called [", parents[0].name, "]"
 
 def test_osgGeodeAndShapeDrawable():
-    print "-"*78
+    print "-"*40
     print "Testing osg::Geode and osg::ShapeDrawable"
     print "  Creating ShapeDrawable and Geode"
     sd = osg.ShapeDrawable(osg.Sphere(), None)
@@ -83,13 +83,13 @@ def test_osgGeodeAndShapeDrawable():
     #print "    Drawable 0 is called [", drawables[0].name, "]"   # Doesn't quite work yet.
 
 def test_osgGeometry():
-    print "-"*78
+    print "-"*40
     print "Testing osg::Geometry and osg::DrawArrays - run osgViewer tests to see the results"
     g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
     print "  g has", g.getNumPrimitiveSets(), "primitive sets,", len(g.getVertexArray()), "vertices"
 
 def test_osgStateSet():
-    print "-"*78
+    print "-"*40
     print "Testing osg::StateSet - run osgViewer tests to see the results"
     g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
     s = g.stateSet
@@ -103,7 +103,7 @@ def test_osgStateSet():
     print "g has lighting state:", s.getMode(osg.GL_LIGHTING)
 
 def test_osgUniform():
-    print "-"*78
+    print "-"*40
     print "Testing osg::Uniform"
     u = osg.Uniform(osg.Uniform.Type.FLOAT, "uFloat")
     print "u is a FLOAT uniform variable"
@@ -123,7 +123,7 @@ def test_osgUniform():
     print "u's value is now", u.getBool4()
 
 def test_overriddenNodeVisitor():
-    print "-"*78
+    print "-"*40
     print "Testing osg::NodeVisitor derived in python code"
     # DerivedVisitor1 verifies that apply_Node will be called for all node
     # subclasses if other apply_* methods are not overridden.
