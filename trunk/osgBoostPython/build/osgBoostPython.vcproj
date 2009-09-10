@@ -223,6 +223,10 @@
 			RelativePath="..\include\ContainerUtils.h"
 			>
 		</File>
+		<File
+			RelativePath="..\include\defaults.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
