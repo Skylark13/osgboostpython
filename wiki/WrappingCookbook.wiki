@@ -1,0 +1,241 @@
+#summary Recipes for wrapping with boost.python
+
+= Introduction =
+
+I'll try not to dwell on the trivial details, but instead mention some tricks and info that I've gathered from different documentation and web links. When I kept the link, I'll mention the source.
+
+= Wrapping overridden methods =
+
+When wrapping methods like this:
+
+{{{
+class A {};
+
+class B
+{
+  public:
+    A* getA();
+    const A* getA() const;
+};
+}}}
+
+The boost.python wrapper cannot be:
+
+{{{
+class_<B, ...>("B")
+  .def("getA", &B::getA, some_return_value_policy())
+;
+}}}
+
+because `&B::getA` is ambiguous. Which override should it choose?
+
+The solution is to create an alias and use that:
+
+{{{
+A* (B::*B_getA1)() = &B::getA;
+
+class_<B, ...>("B")
+  .def("getA", B_getA1, some_return_value_policy())
+;
+}}}
+
+Note that above I chose the version that returns a non-const pointer. These function pointers become tedious to write, so I'd like to find a better (more readable) way, possibly using a macro.
+
+Reference: [http://www.boost.org/doc/libs/1_36_0/libs/python/doc/tutorial/doc/html/python/functions.html#python.overloading Overloading]
+
+= Wrapping methods with optional arguments =
+
+Say you have:
+
+{{{
+class A
+{
+  public:
+    void func(int a, bool b = true);
+};
+}}}
+
+Simple:
+
+{{{
+// First parameter is a name, can be whatever you want.
+// min arguments: 1, max arguments: 2
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(A_func_overloads, func, 1, 2)
+
+// ...
+class_<A, ...>("A")
+  .def("func", &A::func, A_func_overloads())
+;
+}}}
+
+You can combine that with an overloaded method by using `BOOST_PYTHON_FUNCTION_OVERLOADS` and an alias as described above.
+
+Reference: [http://www.boost.org/doc/libs/1_36_0/libs/python/doc/tutorial/doc/html/python/functions.html#python.default_arguments Default Arguments]
+
+= Class overridable in python code =
+
+This is a bit more complex. Two methods are discussed in the documentation:
+  * [http://www.boost.org/doc/libs/1_40_0/libs/python/doc/tutorial/doc/html/python/exposing.html#python.class_virtual_functions Using wrapper<class>]
+  * [http://wiki.python.org/moin/boost.python/OverridableVirtualFunctions  Using call_method<...>(...)]
+
+In my case, I found `wrapper<class>` restrictive (the method and default version cannot be in the same class, so if you want to have a thin wrapper for the method you need to derive twice, among other things). So I went with call_method. Here's an example:
+
+{{{
+struct NodeVisitor_wrapper : public NodeVisitor
+{
+    // 1
+    // NodeVisitor constructors storing initial self parameter
+    NodeVisitor_wrapper(PyObject *p, NodeVisitor::TraversalMode tm = NodeVisitor::TRAVERSE_NONE)
+        : NodeVisitor(tm), self(p) {}
+
+    NodeVisitor_wrapper(PyObject *p, NodeVisitor::VisitorType type, NodeVisitor::TraversalMode tm = NodeVisitor::TRAVERSE_NONE)
+        : NodeVisitor(type, tm), self(p) {}
+
+    // In case NodeVisitor is returned by-value from a wrapped function
+    NodeVisitor_wrapper(PyObject *p, const NodeVisitor& x)
+        : NodeVisitor(x), self(p) {}
+
+    // TODO: We could probably simplify writing all the apply_* and 
+    // default_apply_* with some preprocessor magic... Then again there are
+    // a finite number of versions.
+
+    // Override apply to call back into Python
+    void apply(Node& node)
+    {
+        // 2
+        try {
+            call_method<void>(self, "apply_Node", boost::ref(node));  // 3
+        }
+        // Catch boost::python exception, means method was not overridden in subclass.
+        catch (error_already_set) {
+            NodeVisitor::apply(node);
+        }
+    }
+
+    // Supplies the default implementation of apply
+    void default_apply_Node(NodeVisitor& self_, Node& node)
+    {
+        self_.NodeVisitor::apply(node);
+    }
+
+    // Override apply to call back into Python
+    void apply(Group& node)
+    {
+        try {
+            call_method<void>(self, "apply_Group", boost::ref(node));
+        }
+        // Catch boost::python exception, means method was not overridden in subclass.
+        catch (error_already_set) {
+            NodeVisitor::apply(node);
+        }
+    }
+
+    // Supplies the default implementation of apply
+    void default_apply_Group(NodeVisitor& self_, Group& node)
+    {
+        self_.NodeVisitor::apply(node);
+    }
+
+ private:
+    PyObject* self;
+};
+
+// 4
+class_<NodeVisitor, NodeVisitor_wrapper, bases<Referenced>, 
+       ref_ptr<NodeVisitor> >("NodeVisitor")
+  .def(init<NodeVisitor::TraversalMode>())
+  .def(init<NodeVisitor::VisitorType, NodeVisitor::TraversalMode>())
+  // ...
+  .def("apply_Node", &NodeVisitor_wrapper::default_apply_Node)
+  .def("apply_Group", &NodeVisitor_wrapper::default_apply_Group)
+  // ...
+;
+}}}
+
+Notes:
+  # The wrapper class must define all the constructors you'd want to use from the base class, with an additional first parameter `PyObject *p`.
+  # The `try { /*...*/ } catch (error_already_set) { /*...*/ }` mechanism is used so that the methods can *optionally* be overridden. call_method will throw an exception if the python-derived class does not override that method. You don't need that for pure virtual methods obviously, since it's mandatory that any concrete derived class override all pure virtual methods.
+  # Wrap reference arguments in `boost::ref()` and pointer arguments in `boost::python::ptr()`. This will prevent the wrapper from creating copies of the arguments, which would cause two problems:
+    # Since the copy constructor would be used to copy, the static type would be copied and this would cause slicing of the object's derived part.
+    # The copy would be used by value which would cause a compiler error for any class whose destructor is private/protected (which is often the case in OSG).
+  # Note that in the `class_` wrapper, the wrapper class `NodeVisitor_wrapper` is mentioned after the real type `NodeVisitor`, and then the function pointers used in the .def() methods are `NodeVisitor_wrapper::default_*`.
+
+= Wrapping an abstract class =
+
+This is no secret, but just for reference. Need to specify both boost::noncopyable and no_init:
+
+{{{
+class_<A, ..., boost::noncopyable>("A", no_init)
+  // ...
+;
+}}}
+
+Reference: [http://wiki.python.org/moin/boost.python/FAQ#Whatistherelationbetweenthis.27.27.27noinit.27.27.27and.27.27.27boost.3A.3Anoncopyable.3F.27.27.27 What is the relation between this '''no_init''' and '''boost::noncopyable?''']
+
+= Make sure boost.python knows about ref_ptr =
+
+{{{
+namespace boost { namespace python
+{
+  template <class T> struct pointee<ref_ptr<T> >
+  {
+     typedef T type;
+  };
+}}
+
+// Then for all classes that derive from osg::Referenced, i.e. that can be 
+// held by a ref_ptr:
+class_<ClassName, bases<...>, ref_ptr<ClassName> >("ClassName")
+  // ...
+;
+}}}
+
+References: [http://www.boost.org/doc/libs/1_36_0/libs/python/doc/v2/pointee.html#pointee-spec Pointee documentation] -- [http://osdir.com/ml/python.c++/2002-07/msg00174.html mailing list post]
+
+= Build tuple to return small lists =
+
+Sometimes you'll want to return a small fixed-size list as a tuple. For example, osg::Uniform has getters that will return int, uint and bool vectors of 2, 3 and 4 components as reference arguments. For example, for 4 ints:
+
+{{{
+bool get( int& i0, int& i1, int& i2, int& i3 ) const;
+}}}
+
+but I prefer to wrap these as functions returning tuples of 2, 3 or 4 ints/uints/bools. For example, for the above method:
+
+{{{
+boost::python::list Uniform_getInt41(Uniform* u)
+{
+  if (!u) 
+    throw std::invalid_argument("Uniform is NULL"); 
+  boost::python::list result; 
+  int i[4];
+  if (!u->get(i[0], i[1], i[2], i[3]))
+    throw std::invalid_argument("Uniform does not contain a vector of 4 ints");
+  result.append(i[0]); 
+  result.append(i[1]); 
+  result.append(i[2]); 
+  result.append(i[3]); 
+  return result;
+}
+}}}
+
+Note that in the actual code I put all that on one line so the code file is less cluttered...
+
+= General example code =
+
+The Computational Crystallography Toolbox has some good boost.python wrappers and their code is inspiring, even if some parts are hard to understand without context.
+
+[http://cctbx.svn.sourceforge.net/viewvc/cctbx/trunk/scitbx/ Source code viewer]
+
+The [http://cctbx.svn.sourceforge.net/viewvc/cctbx/trunk/cctbx/LICENSE_2_0.txt?view=markup license] seems very permissive, so I don't think I'm violating it by using some code and inspiration from it.
+
+Parts that are inspired by cctbx are 
+  * The ArrayWrapper template in array.cpp (inspired by and in some cases lifted from [http://cctbx.svn.sourceforge.net/viewvc/cctbx/trunk/scitbx/array_family/boost_python/flex_wrapper.h?view=markup scitbx/array_family/boost_python/flex_wrapper.h])
+  * Some to_tuple converters in ContainerUtils.h (inspired by and in some cases lifted from [http://cctbx.svn.sourceforge.net/viewvc/cctbx/trunk/scitbx/boost_python/container_conversions.h?view=markup scitbx/boost_python/container_conversions.h])
+  * positive_getitem_index in ContainerUtils.h (lifted directly from [http://cctbx.svn.sourceforge.net/viewvc/cctbx/trunk/scitbx/misc/positive_getitem_index.h?view=markup scitbx/misc/positive_getitem_index.h])
+
+I'll soon add a LICENSE file in the repository (referring to the license that osgBoostPython is distributed under) in which I'll include methion and credit for the parts of the code that come from cctbx. 
+
+= Other things =
+
+TODO: continue
