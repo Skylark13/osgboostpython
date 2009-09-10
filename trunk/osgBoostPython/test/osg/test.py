@@ -130,7 +130,7 @@ def test_overriddenNodeVisitor():
     class DerivedVisitor1(osg.NodeVisitor):
         def __init__(self):
             # call parent class constructor with argument
-            osg.NodeVisitor.__init__(self, osg.NodeVisitor.TraversalMode.TRAVERSE_ALL_CHILDREN)
+            super(DerivedVisitor1,  self).__init__(osg.NodeVisitor.TraversalMode.TRAVERSE_ALL_CHILDREN)
         def apply_Node(self, node):
             print "python apply_Node - node name:", node.name
             self.traverse(node)
@@ -140,7 +140,7 @@ def test_overriddenNodeVisitor():
     class DerivedVisitor2(osg.NodeVisitor):
         def __init__(self):
             # call parent class constructor with argument
-            osg.NodeVisitor.__init__(self, osg.NodeVisitor.TraversalMode.TRAVERSE_ALL_CHILDREN)
+            super(DerivedVisitor2,  self).__init__(osg.NodeVisitor.TraversalMode.TRAVERSE_ALL_CHILDREN)
         def apply_Node(self, node):
             print "python apply_Node - node name:", node.name
             self.traverse(node)

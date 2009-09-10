@@ -21,7 +21,7 @@ struct NodeCallback_wrapper : public NodeCallback
     NodeCallback_wrapper(PyObject *p, const NodeCallback& x)
         : NodeCallback(x), self(p) {}
 
-    // Override handle to call back into Python
+    // Override operator() to call back into Python
     void operator()(Node* node, NodeVisitor* nv)
     {
         //std::cout << "in operator()(Node*, NodeVisitor*)" << std::endl;
@@ -35,7 +35,7 @@ struct NodeCallback_wrapper : public NodeCallback
         }
     }
 
-    // Supplies the default implementation of handle
+    // Supplies the default implementation of operator()
     void default_operator(NodeCallback& self_, Node* node, NodeVisitor* nv)
     {
         //std::cout << "in default_operator(Node*, NodeVisitor*)" << std::endl;
@@ -63,7 +63,7 @@ struct NodeVisitor_wrapper : public NodeVisitor
     // default_apply_* with some preprocessor magic... Then again there are
     // a finite number of versions.
 
-    // Override handle to call back into Python
+    // Override apply to call back into Python
     void apply(Node& node)
     {
         //std::cout << "in apply(Node&)" << std::endl;
@@ -77,14 +77,14 @@ struct NodeVisitor_wrapper : public NodeVisitor
         }
     }
 
-    // Supplies the default implementation of handle
+    // Supplies the default implementation of apply
     void default_apply_Node(NodeVisitor& self_, Node& node)
     {
         //std::cout << "in default_apply(Node&)" << std::endl;
         self_.NodeVisitor::apply(node);
     }
 
-    // Override handle to call back into Python
+    // Override apply to call back into Python
     void apply(Group& node)
     {
         //std::cout << "in apply(Group&)" << std::endl;
@@ -98,7 +98,7 @@ struct NodeVisitor_wrapper : public NodeVisitor
         }
     }
 
-    // Supplies the default implementation of handle
+    // Supplies the default implementation of apply
     void default_apply_Group(NodeVisitor& self_, Group& node)
     {
         //std::cout << "in default_apply(Group&)" << std::endl;

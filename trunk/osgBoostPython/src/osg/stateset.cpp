@@ -49,26 +49,26 @@ bool (Uniform::*Uniform_setBool41)( bool, bool, bool, bool ) = &Uniform::set;
 // a tuple by unpacking it with '*' like so:
 //     values = (False, True, False, False)
 //     u.setBool4(*values)
-float Uniform_getFloat1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); float f; u->get(f); return f; }
-int Uniform_getInt1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); int i; u->get(i); return i; }
-unsigned int Uniform_getUInt1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); unsigned int ui; u->get(ui); return ui; }
-bool Uniform_getBool1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); bool b; u->get(b); return b; }
-osg::Vec2 Uniform_getVec2f1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Vec2 v; u->get(v); return v; }
-osg::Vec3 Uniform_getVec3f1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Vec3 v; u->get(v); return v; }
-osg::Vec4 Uniform_getVec4f1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Vec4 v; u->get(v); return v; }
-osg::Matrix2 Uniform_getMatrix2f1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Matrix2 m; u->get(m); return m; }
-osg::Matrix3 Uniform_getMatrix3f1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Matrix3 m; u->get(m); return m; }
-osg::Matrixf Uniform_getMatrixf1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Matrixf m; u->get(m); return m; }
-osg::Matrixd Uniform_getMatrixd1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Matrixd m; u->get(m); return m; }
-boost::python::list Uniform_getInt21(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; int i[2]; u->get(i[0], i[1]); result.append(i[0]); result.append(i[1]); return result; }
-boost::python::list Uniform_getInt31(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; int i[3]; u->get(i[0], i[1], i[2]); result.append(i[0]); result.append(i[1]); result.append(i[2]); return result; }
-boost::python::list Uniform_getInt41(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; int i[4]; u->get(i[0], i[1], i[2], i[3]); result.append(i[0]); result.append(i[1]); result.append(i[2]); result.append(i[3]); return result; }
-boost::python::list Uniform_getUInt21(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; unsigned int ui[2]; u->get(ui[0], ui[1]); result.append(ui[0]); result.append(ui[1]); return result; }
-boost::python::list Uniform_getUInt31(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; unsigned int ui[2]; u->get(ui[0], ui[1], ui[2]); result.append(ui[0]); result.append(ui[1]); result.append(ui[2]); return result; }
-boost::python::list Uniform_getUInt41(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; unsigned int ui[2]; u->get(ui[0], ui[1], ui[2], ui[3]); result.append(ui[0]); result.append(ui[1]); result.append(ui[2]); result.append(ui[3]); return result; }
-boost::python::list Uniform_getBool21(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; bool b[2]; u->get(b[0], b[1]); result.append(b[0]); result.append(b[1]); return result; }
-boost::python::list Uniform_getBool31(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; bool b[2]; u->get(b[0], b[1], b[2]); result.append(b[0]); result.append(b[1]); result.append(b[2]); return result; }
-boost::python::list Uniform_getBool41(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; bool b[2]; u->get(b[0], b[1], b[2], b[3]); result.append(b[0]); result.append(b[1]); result.append(b[2]); result.append(b[3]); return result; }
+float               Uniform_getFloat1   (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); float f;         u->get(f); return f; }
+int                 Uniform_getInt1     (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); int i;           u->get(i); return i; }
+unsigned int        Uniform_getUInt1    (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); unsigned int ui; u->get(ui); return ui; }
+bool                Uniform_getBool1    (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); bool b;          u->get(b); return b; }
+osg::Vec2           Uniform_getVec2f1   (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Vec2 v;     u->get(v); return v; }
+osg::Vec3           Uniform_getVec3f1   (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Vec3 v;     u->get(v); return v; }
+osg::Vec4           Uniform_getVec4f1   (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Vec4 v;     u->get(v); return v; }
+osg::Matrix2        Uniform_getMatrix2f1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Matrix2 m;  u->get(m); return m; }
+osg::Matrix3        Uniform_getMatrix3f1(Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Matrix3 m;  u->get(m); return m; }
+osg::Matrixf        Uniform_getMatrixf1 (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Matrixf m;  u->get(m); return m; }
+osg::Matrixd        Uniform_getMatrixd1 (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); osg::Matrixd m;  u->get(m); return m; }
+boost::python::list Uniform_getInt21    (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; int i[2];           if (!u->get(i[0],  i[1]))                throw std::invalid_argument("Uniform does not contain a vector of 2 ints");  result.append(i[0]);  result.append(i[1]);                                              return result; }
+boost::python::list Uniform_getInt31    (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; int i[3];           if (!u->get(i[0],  i[1],  i[2]))         throw std::invalid_argument("Uniform does not contain a vector of 3 ints");  result.append(i[0]);  result.append(i[1]);  result.append(i[2]);                        return result; }
+boost::python::list Uniform_getInt41    (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; int i[4];           if (!u->get(i[0],  i[1],  i[2],  i[3]))  throw std::invalid_argument("Uniform does not contain a vector of 4 ints");  result.append(i[0]);  result.append(i[1]);  result.append(i[2]);  result.append(i[3]);  return result; }
+boost::python::list Uniform_getUInt21   (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; unsigned int ui[2]; if (!u->get(ui[0], ui[1]))               throw std::invalid_argument("Uniform does not contain a vector of 2 uints"); result.append(ui[0]); result.append(ui[1]);                                             return result; }
+boost::python::list Uniform_getUInt31   (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; unsigned int ui[2]; if (!u->get(ui[0], ui[1], ui[2]))        throw std::invalid_argument("Uniform does not contain a vector of 3 uints"); result.append(ui[0]); result.append(ui[1]); result.append(ui[2]);                       return result; }
+boost::python::list Uniform_getUInt41   (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; unsigned int ui[2]; if (!u->get(ui[0], ui[1], ui[2], ui[3])) throw std::invalid_argument("Uniform does not contain a vector of 4 uints"); result.append(ui[0]); result.append(ui[1]); result.append(ui[2]); result.append(ui[3]); return result; }
+boost::python::list Uniform_getBool21   (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; bool b[2];          if (!u->get(b[0],  b[1]))                throw std::invalid_argument("Uniform does not contain a vector of 2 bools"); result.append(b[0]);  result.append(b[1]);                                              return result; }
+boost::python::list Uniform_getBool31   (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; bool b[2];          if (!u->get(b[0],  b[1],  b[2]))         throw std::invalid_argument("Uniform does not contain a vector of 3 bools"); result.append(b[0]);  result.append(b[1]);  result.append(b[2]);                        return result; }
+boost::python::list Uniform_getBool41   (Uniform* u) { if (!u) throw std::invalid_argument("Uniform is NULL"); boost::python::list result; bool b[2];          if (!u->get(b[0],  b[1],  b[2],  b[3]))  throw std::invalid_argument("Uniform does not contain a vector of 4 bools"); result.append(b[0]);  result.append(b[1]);  result.append(b[2]);  result.append(b[3]);  return result; }
 
 bool (Uniform::*Uniform_setFloatArray1)(FloatArray*) = &Uniform::setArray;
 bool (Uniform::*Uniform_setIntArray1)(IntArray*) = &Uniform::setArray;
