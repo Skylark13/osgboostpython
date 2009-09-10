@@ -117,7 +117,7 @@ def test_osgViewer(testToRun):
     if (testToRun == -1 or testToRun == 1): test_osgViewerAndShapeDrawable(False, True)
     if (testToRun == -1 or testToRun == 2): test_osgViewerAndCow(False, True)
     if (testToRun == -1 or testToRun == 3): test_osgViewerAndGeometry(False, True)
-    if (testToRun == -1): print "Now, let's re-test the sphere and cow with changes to the StateSets to see if StateSet works."
+    if (testToRun == -1): print "-"*50, "\n", "Now, let's re-test the sphere, cow and quad with changes to the StateSets to see if StateSet works."
     if (testToRun == -1 or testToRun == 4): test_osgViewerAndShapeDrawable(True, True)
     if (testToRun == -1 or testToRun == 5): test_osgViewerAndCow(True, True)
     if (testToRun == -1 or testToRun == 6): test_osgViewerAndGeometry(True, True)
