@@ -9,6 +9,8 @@ class osgDBTest(unittest.TestCase):
         self.failUnless(cow,  'failed to read cow.osg')
 
 allTests = ['test_readCow']
+
+# To be able to run one single test from the command line. Could be name-based instead of index-based...
 if __name__ == "__main__":
     import sys
     testToRun = -1
@@ -21,5 +23,3 @@ if __name__ == "__main__":
         tests = [allTests[testToRun]]
         suite = unittest.TestSuite(map(osgDBTest, tests))
         unittest.TextTestRunner().run(suite)
-#else:
-#    unittest.main()
