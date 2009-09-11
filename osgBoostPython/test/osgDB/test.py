@@ -1,20 +1,25 @@
 #!/bin/python
 import osg
 import osgDB
+import unittest
 
-def test_osgDBReadCow():
-    print "-"*40
-    print "Reading cow.osg"
-    cow = osgDB.readNodeFile("cow.osg")
-    print "Done"
+class osgDBTest(unittest.TestCase):
+    def test_readCow(self):
+        cow = osgDB.readNodeFile("cow.osg")
+        self.failUnless(cow,  'failed to read cow.osg')
 
-def test_osgDB(testToRun):
-    if (testToRun == -1 or testToRun == 0): test_osgDBReadCow()
-
-testToRun = -1
+allTests = ['test_readCow']
 if __name__ == "__main__":
     import sys
+    testToRun = -1
     if (len(sys.argv) == 2):
         testToRun = int(sys.argv[1])
 
-test_osgDB(testToRun)
+    if (testToRun == -1):
+        unittest.main()
+    else:
+        tests = [allTests[testToRun]]
+        suite = unittest.TestSuite(map(osgDBTest, tests))
+        unittest.TextTestRunner().run(suite)
+#else:
+#    unittest.main()
