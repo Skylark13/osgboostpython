@@ -87,17 +87,51 @@ Node* (Group::*Group_getChild1)( unsigned int ) = &Group::getChild;
 bool (Group::*Group_removeChild1)( osg::Node* ) = &Group::removeChild;
 bool (Group::*Group_removeChild2)( unsigned int, unsigned int ) = &Group::removeChild;    // Can't find a way to use the default argument here.
 
+#define USE_PTRS_FOR_DRAWABLELIST
+#ifdef USE_PTRS_FOR_DRAWABLELIST
+typedef std::vector<Drawable*> DrawableList;
+const DrawableList Geode_getDrawableList1(osg::Geode* geode)
+{
+    const Geode::DrawableList& drawables = geode->getDrawableList();
+    DrawableList result;
+    for (unsigned int i = 0; i < drawables.size(); ++i)
+        result.push_back(drawables[i].get());
+    return result;
+}
+#else
 const Geode::DrawableList& (Geode::*Geode_getDrawableList1)() const = &Geode::getDrawableList;
+#endif
 Drawable* (Geode::*Geode_getDrawable1)( unsigned int ) = &Geode::getDrawable;
 bool (Geode::*Geode_removeDrawable1)( osg::Drawable* ) = &Geode::removeDrawable;
 
+// The equals that take ref_ptrs aren't called by python at all. To see that, 
+// uncomment the #define USE_PTRS_FOR_DRAWABLELIST above and try to do this:
+//   drawableList = geode.getDrawableList()
+//   drawableList[0].name  # assuming the geode contained at least one drawable
+// I guess it's because their type is ref_ptr<T> and not ref_ptr<T*> so it 
+// doesn't know it can call them for ref_ptr<ShapeDrawable> == ShapeDrawable*...
+template<typename T> bool equals_ref_ref(ref_ptr<T> lhs, ref_ptr<T> rhs) { /*std::cout << "equals_ref_ref" << std::endl;*/ return lhs == rhs; }
+template<typename T> bool equals_ref_ptr(ref_ptr<T> lhs, T* rhs) { /*std::cout << "equals_ref_ptr" << std::endl;*/ return lhs == rhs; }
+template<typename T> bool equals_ptr_ref(T* lhs, ref_ptr<T> rhs) { /*std::cout << "equals_ptr_ref" << std::endl;*/ return lhs == rhs.get(); }
+template<typename T> bool equals_ptr_ptr(T* lhs, T* rhs) { /*std::cout << "equals_ptr_ptr" << std::endl;*/ return lhs == rhs; }
 
 BOOST_PYTHON_MODULE(_osg)
 {
     export_math();
 
     class_<Referenced, ref_ptr<Referenced> >("Referenced")
-        .def("referenceCount", &Referenced::referenceCount);
+        .def("referenceCount", &Referenced::referenceCount)
+
+        // For testing
+        .def("equals_ref_ref", &equals_ref_ref<Referenced>)
+        .def("equals_ref_ptr", &equals_ref_ptr<Referenced>)
+        .def("equals_ptr_ref", &equals_ptr_ref<Referenced>)
+        .def("equals_ptr_ptr", &equals_ptr_ptr<Referenced>)
+
+        .def("__eq__", &equals_ref_ref<Referenced>)
+        .def("__eq__", &equals_ref_ptr<Referenced>)
+        .def("__eq__", &equals_ptr_ref<Referenced>)
+        .def("__eq__", &equals_ptr_ptr<Referenced>)
     ;
 
     // Object and its enum
@@ -222,6 +256,8 @@ BOOST_PYTHON_MODULE(_osg)
 
     // Geode
     {
+        typedef std::vector<Drawable*> DrawableList;
+
         class_<Geode, bases<Node>, ref_ptr<Geode> >("Geode")
             .def("addDrawable", &Geode::addDrawable)
             .def("getNumDrawables", &Geode::getNumDrawables)
@@ -236,24 +272,17 @@ BOOST_PYTHON_MODULE(_osg)
             .def("getDrawableIndex", &Geode::getDrawableIndex)
         ;
 
-        // For some reason, this doesn't work:
-        // sd = osg.ShapeDrawable(osg.Sphere(), None)
-        // sd.name = "sphere"
-        // geode = osg.Geode()
-        // geode.addDrawable(sd)
-        // dl = geode.getDrawableList()
-        // len(dl)    # returns 1
-        // sd.name    # returns 'sphere'
-        // dl[0].name # should return 'sphere', but causes this error instead:
-        // # Traceback (most recent call last):
-        // #   File "<stdin>", line 1, in <module>
-        // # Boost.Python.ArgumentError: Python argument types in
-        // #     None.None(Drawable)
-        // # did not match C++ signature:
-        // #     None(class osg::Object {lvalue})
+#ifdef USE_PTRS_FOR_DRAWABLELIST
+        // The local DrawableList (see near the top) contains Drawable*
+        class_<DrawableList>("DrawableList")
+            .def( vector_indexing_suite< DrawableList >() )
+        ;
+#else
+        // Geode::DrawableList contains ref_ptr<Drawable>
         class_<Geode::DrawableList>("DrawableList")
             .def( vector_indexing_suite< Geode::DrawableList >() )
         ;
+#endif
     }
 
     class_<View, bases<Object>, ref_ptr<View> >("View")

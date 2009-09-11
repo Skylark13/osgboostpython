@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Project SYSTEM "Project-4.6.dtd">
 <!-- eric4 project file for project osgBoostPython tests -->
-<!-- Saved: 2009-09-10, 00:15:09 -->
+<!-- Saved: 2009-09-11, 12:45:04 -->
 <!-- Copyright (C) 2009 Jean-Sebastien Guay, jean_seb@videotron.ca -->
 <Project version="4.6">
   <Language>en</Language>
@@ -12,11 +12,11 @@
   <Author>Jean-Sebastien Guay</Author>
   <Email>jean_seb@videotron.ca</Email>
   <Sources>
-    <Source>test-all.py</Source>
-    <Source>osg/test.py</Source>
-    <Source>osgDB/test.py</Source>
-    <Source>osgGA/test.py</Source>
-    <Source>osgViewer/test.py</Source>
+    <Source>test_all.py</Source>
+    <Source>test_osg.py</Source>
+    <Source>test_osgDB.py</Source>
+    <Source>test_osgGA.py</Source>
+    <Source>test_osgViewer.py</Source>
   </Sources>
   <Forms>
   </Forms>
@@ -28,9 +28,119 @@
   </Interfaces>
   <Others>
   </Others>
-  <MainScript>test-all.py</MainScript>
+  <MainScript>test_all.py</MainScript>
   <Vcs>
-    <VcsType>None</VcsType>
+    <VcsType>PySvn</VcsType>
+    <VcsOptions>
+      <dict>
+        <key>
+          <string>add</string>
+        </key>
+        <value>
+          <list>
+            <string></string>
+          </list>
+        </value>
+        <key>
+          <string>checkout</string>
+        </key>
+        <value>
+          <list>
+            <string></string>
+          </list>
+        </value>
+        <key>
+          <string>commit</string>
+        </key>
+        <value>
+          <list>
+            <string></string>
+          </list>
+        </value>
+        <key>
+          <string>diff</string>
+        </key>
+        <value>
+          <list>
+            <string></string>
+          </list>
+        </value>
+        <key>
+          <string>export</string>
+        </key>
+        <value>
+          <list>
+            <string></string>
+          </list>
+        </value>
+        <key>
+          <string>global</string>
+        </key>
+        <value>
+          <list>
+            <string></string>
+          </list>
+        </value>
+        <key>
+          <string>history</string>
+        </key>
+        <value>
+          <list>
+            <string></string>
+          </list>
+        </value>
+        <key>
+          <string>log</string>
+        </key>
+        <value>
+          <list>
+            <string></string>
+          </list>
+        </value>
+        <key>
+          <string>remove</string>
+        </key>
+        <value>
+          <list>
+            <string></string>
+          </list>
+        </value>
+        <key>
+          <string>status</string>
+        </key>
+        <value>
+          <list>
+            <string></string>
+          </list>
+        </value>
+        <key>
+          <string>tag</string>
+        </key>
+        <value>
+          <list>
+            <string></string>
+          </list>
+        </value>
+        <key>
+          <string>update</string>
+        </key>
+        <value>
+          <list>
+            <string></string>
+          </list>
+        </value>
+      </dict>
+    </VcsOptions>
+    <VcsOtherData>
+      <dict>
+        <key>
+          <string>standardLayout</string>
+        </key>
+        <value>
+          <bool>True</bool>
+        </value>
+      </dict>
+    </VcsOtherData>
   </Vcs>
   <FiletypeAssociations>
     <FiletypeAssociation pattern="*.pyw" type="SOURCES" />

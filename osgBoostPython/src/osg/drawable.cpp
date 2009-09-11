@@ -4,6 +4,7 @@ using namespace boost::python;
 
 #define WIN32
 
+#include <osg/Object>
 #include <osg/Drawable>
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
