@@ -21,7 +21,7 @@ class osgTest(unittest.TestCase):
         self.failUnless(v4array[0]._v[0] == 1.0 and v4array[0]._v[1] == 2.0 and v4array[0]._v[2] == 3.0 and v4array[0]._v[3] == 4.0)
         self.failUnless(v4array[1]._v[0] == 2.0 and v4array[1]._v[1] == 3.0 and v4array[1]._v[2] == 4.0 and v4array[1]._v[3] == 5.0)
         self.failUnless(v4array[2]._v[0] == 3.0 and v4array[2]._v[1] == 4.0 and v4array[2]._v[2] == 5.0 and v4array[2]._v[3] == 6.0)
-        
+
         v4array2 = v4array[0:2]
         self.failUnless(len(v4array2) == 2)
         self.failUnless(v4array2[0]._v[0] == 1.0 and v4array2[0]._v[1] == 2.0 and v4array2[0]._v[2] == 3.0 and v4array2[0]._v[3] == 4.0)
@@ -32,7 +32,7 @@ class osgTest(unittest.TestCase):
         self.failUnless(v4array[0]._v[0] == 1.0 and v4array[0]._v[1] == 2.0 and v4array[0]._v[2] == 3.0 and v4array[0]._v[3] == 4.0)
         self.failUnless(v4array[1]._v[0] == 2.0 and v4array[1]._v[1] == 3.0 and v4array[1]._v[2] == 4.0 and v4array[1]._v[3] == 5.0)
         self.failUnless(v4._v[0] == 3.0 and v4._v[1] == 4.0 and v4._v[2] == 5.0 and v4._v[3] == 6.0)
-        
+
         # Should test all methods...
 
     def test_osgMatrix(self):
@@ -55,7 +55,7 @@ class osgTest(unittest.TestCase):
         self.failUnless(n)
         self.failUnless(n.name == "node")
         self.failUnless(n.getNumParents() == 0)
-        
+
         g = osg.Group()
         g.name = "group"
         self.failUnless(g)
@@ -66,30 +66,39 @@ class osgTest(unittest.TestCase):
         g.addChild(n)
         self.failUnless(n.getNumParents() == 1)
         self.failUnless(g.getNumChildren() == 1)
-        
+        self.failUnless(n.getParent(0) == g)
+        n0 = n
+        self.failUnless(n0 == n)
+        n1 = g.getChild(0)
+        self.failUnless(n1 == n)
+        self.failUnless(g.getChild(0) == n)
+
         parents = n.getParents()
         self.failUnless(len(parents) == 1)
-        self.failUnless(parents[0] == g)     # Seems there's some copying going on - this fails.
+        self.failUnless(parents[0] == g)
 
     def test_osgGeodeAndShapeDrawable(self):
         sd = osg.ShapeDrawable(osg.Sphere(), None)
         sd.name = "sphere"
         self.failUnless(sd)
         self.failUnless(sd.name == "sphere")
-        
+
         geode = osg.Geode()
         geode.name = "geode"
         self.failUnless(geode)
         self.failUnless(geode.name == "geode")
         self.failUnless(geode.getNumDrawables() == 0)
-        
+
         geode.addDrawable(sd)
         self.failUnless(geode.getNumDrawables() == 1)
-        self.failUnless(geode.getDrawable(0) == sd)     # Seems there's some copying going on - this fails.
-        
+        parent = sd.getParent(0)
+        self.failUnless(parent == geode)
+        self.failUnless(sd.getParent(0) == geode)
+        self.failUnless(geode.getDrawable(0) == sd)
+
         drawables = geode.getDrawableList()
         self.failUnless(len(drawables) == 1)
-        self.failUnless(drawables[0] == sd)     # Seems there's some copying going on - this fails.
+        self.failUnless(drawables[0] == sd)
 
     def test_osgGeometry(self):
         g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
@@ -119,13 +128,13 @@ class osgTest(unittest.TestCase):
         self.failUnless(u.getBool4() == [False,  False,  False,  False])
         u.setBool4(False, True, True, False)
         self.failUnless(u.getBool4() == [False, True, True, False])
-        values = (True, False, True, False)
+        values = [True, False, True, False]
         u.setBool4(*values)
-        self.failUnless(u.getBool4() == [True, False, True, False])
-        
+        self.failUnless(u.getBool4() == values)
+
     def test_overriddenNodeVisitor(self):
         # Not quite sure how to use unittest for this one... For now we'll just let it print out and if it ran to completion, we'll assume success.
-        
+
         # DerivedVisitor1 verifies that apply_Node will be called for all node
         # subclasses if other apply_* methods are not overridden.
         class DerivedVisitor1(osg.NodeVisitor):
@@ -165,13 +174,13 @@ class osgTest(unittest.TestCase):
         print ""
         nv2 = DerivedVisitor2()
         g1.accept(nv2)
-        
+
         self.failUnless(True)
 
-allTests = ['test_osgVec4',  'test_osgVec4Array',  'test_osgMatrix',  
-               'test_osgBoundingSphere',  'test_osgNodeAndGroup',  
-               'test_osgGeodeAndShapeDrawable', 'test_osgGeometry', 
-               'test_osgStateSet',  'test_osgUniform',  
+allTests = ['test_osgVec4',  'test_osgVec4Array',  'test_osgMatrix',
+               'test_osgBoundingSphere',  'test_osgNodeAndGroup',
+               'test_osgGeodeAndShapeDrawable', 'test_osgGeometry',
+               'test_osgStateSet',  'test_osgUniform',
                'test_overriddenNodeVisitor']
 
 # To be able to run one single test from the command line. Could be name-based instead of index-based...
@@ -186,4 +195,4 @@ if __name__ == "__main__":
     else:
         tests = [allTests[testToRun]]
         suite = unittest.TestSuite(map(osgTest, tests))
-        unittest.TextTestRunner().run(suite)
+        unittest.TextTestRunner(verbosity = 2).run(suite)
