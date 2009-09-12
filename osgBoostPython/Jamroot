@@ -80,6 +80,11 @@ python-extension _osgViewer : src/osgViewer/osgViewer.cpp
                               osgGAlib
                               osgViewerlib ;
 
+install install_osg       : _osg       : <location>lib/osg ;
+install install_osgDB     : _osgDB     : <location>lib/osgDB ;
+install install_osgGA     : _osgGA     : <location>lib/osgGA ;
+install install_osgViewer : _osgViewer : <location>lib/osgViewer ;
+
 # A little "rule" (function) to clean up the syntax of declaring tests
 # of these extension modules.
 local rule run-test ( test-name : sources + )
@@ -89,8 +94,8 @@ local rule run-test ( test-name : sources + )
 }
 
 # Declare test targets
-#run-test osg : _osg test/osg/test.py ;
-#run-test osgDB : _osgDB test/osgDB/test.py ;
-#run-test osgGA : _osgGA test/osgGA/test.py ;
-#run-test osgViewer : _osgViewer test/osgViewer/test.py ;
-#run-test all : _osg _osgDB _osgGA _osgViewer test/test-all.py ;
+#run-test osg : _osg test/test_osg.py ;
+#run-test osgDB : _osgDB test/test_osgDB.py ;
+#run-test osgGA : _osgGA test/test_osgGA.py ;
+#run-test osgViewer : _osgViewer test/test_osgViewer.py ;
+#run-test all : _osg _osgDB _osgGA _osgViewer test/test_all.py ;

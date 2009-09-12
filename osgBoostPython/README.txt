@@ -16,11 +16,11 @@ Make sure OSG_ROOT and BOOST_ROOT are set properly. In general, run
 
 bjam release
 
-and then copy the resulting python modules into lib/osg/, lib/osgDB, etc.
+This will copy the resulting python modules into lib/osg/, lib/osgDB, etc.
 
 (Windows)
-build.bat does that for you, just make sure you run it with the "release"
-argument to avoid "release executable calling into debug DLL" problems.
+Make sure you run it with the "release" argument to avoid "release executable
+calling into debug DLL" problems. (.pyd modules are basically DLLs)
 
 Note that the Visual Studio solution and project files in build/ are NOT for
 actually building this project! They are just there for convenience when
@@ -28,14 +28,14 @@ working on the source.
 
 To run tests
 ------------------
-python test/test-all.py
+python test/test_all.py
 
 or individually:
 
-python test/osg/test.py
-python test/osgGA/test.py
-python test/osgDB/test.py
-python test/osgViewer/test.py
+python test/test_osg.py
+python test/test_osgGA.py
+python test/test_osgDB.py
+python test/test_osgViewer.py
 
 or
 
