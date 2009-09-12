@@ -4,7 +4,7 @@
 import sys
 import os
 sys.path = os.environ.get("PYTHONPATH").split(";") + sys.path[:]
-print "sys.path=",  sys.path
+print "sys.path=", sys.path
 
 # http://docs.python.org/library/unittest.html
 # http://www.doughellmann.com/PyMOTW/unittest/
