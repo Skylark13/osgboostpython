@@ -2,7 +2,7 @@
 
 = Introduction =
 
-I'll try not to dwell on the trivial details, but instead mention some tricks and info that I've gathered from different documentation and web links. When I kept the link, I'll mention the source.
+I'll try not to dwell on the trivial details, but instead mention some tricks and info that I've gathered from different documentation and web links. I'll try to mention the source where I first read each piece of advice, so if you want more reading click the links and read the rest of what they had to say.
 
 = Wrapping overridden methods =
 
@@ -160,6 +160,8 @@ Notes:
     # The copy would be used by value which would cause a compiler error for any class whose destructor is private/protected (which is often the case in OSG).
   # Note that in the `class_` wrapper, the wrapper class `NodeVisitor_wrapper` is mentioned after the real type `NodeVisitor`, and then the function pointers used in the .def() methods are `NodeVisitor_wrapper::default_*`.
 
+References: [http://www.boost.org/doc/libs/1_40_0/libs/python/doc/tutorial/doc/html/python/exposing.html#python.class_virtual_functions Using wrapper<class>] -- [http://wiki.python.org/moin/boost.python/OverridableVirtualFunctions  Using call_method<...>(...)]
+
 = Wrapping an abstract class =
 
 This is no secret, but just for reference. Need to specify both boost::noncopyable and no_init:
@@ -192,15 +194,15 @@ class_<ClassName, bases<...>, ref_ptr<ClassName> >("ClassName")
 
 References: [http://www.boost.org/doc/libs/1_36_0/libs/python/doc/v2/pointee.html#pointee-spec Pointee documentation] -- [http://osdir.com/ml/python.c++/2002-07/msg00174.html mailing list post]
 
-= Build tuple to return small lists =
+= Build python list to return small lists =
 
-Sometimes you'll want to return a small fixed-size list as a tuple. For example, osg::Uniform has getters that will return int, uint and bool vectors of 2, 3 and 4 components as reference arguments. For example, for 4 ints:
+Sometimes you'll want to return a small fixed-size list as an actual python list. For example, osg::Uniform has getters that will return int, uint and bool vectors of 2, 3 and 4 components as reference arguments. For example, for 4 ints:
 
 {{{
 bool get( int& i0, int& i1, int& i2, int& i3 ) const;
 }}}
 
-but I prefer to wrap these as functions returning tuples of 2, 3 or 4 ints/uints/bools. For example, for the above method:
+but I prefer to wrap these as functions returning python lists of 2, 3 or 4 ints/uints/bools. For example, for the above method:
 
 {{{
 boost::python::list Uniform_getInt41(Uniform* u)
