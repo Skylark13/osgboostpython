@@ -106,5 +106,3 @@ BOOST_PYTHON_MODULE(_osgGA)
         .def(init<StateSet*>())
     ;
 }
-
-#include "G:/boost_1_35_0/libs/python/test/module_tail.cpp"
