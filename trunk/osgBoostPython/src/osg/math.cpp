@@ -51,45 +51,54 @@ struct VecWrapper
             // default ctor
             .def(init<VecType>())
 
-            .def(-self)
-            .def(self + self)
-            .def(self - self)
-            .def(self != self)
-            .def(self == self)
-            .def(self < self)
             .def("dot", dot)
-        
+            .def("length", &VecType::length)
+            .def("length2", &VecType::length2)
+            .def("normalize", &VecType::normalize)
+            .def("valid", &VecType::valid)
+            .def("isNaN", &VecType::isNaN)
+
+            // Operators
+            .def(-self)                // __neg__
+            .def(self + self)          // __add__
+            .def(self - self)          // __sub__
+            .def(self * value_type())  // __mul__ (heterogenous)
+            .def(self / value_type())  // __div__ (heterogenous)
+            .def(self == self)         // __eq__
+            .def(self != self)         // __ne__
+            .def(self < self)          // ?
+
             // TODO:
-            //.def("__neg__", neg_a)
-            //.def("__add__", add_a_a)
-            //.def("__sub__", sub_a_a)
-            //.def("__mul__", mul_a_a)
-            //.def("__div__", div_a_a)
-            //.def("__truediv__", div_a_a)
-            //.def("__add__", add_a_s)
-            //.def("__radd__", add_a_s)
-            //.def("__sub__", sub_a_s)
-            //.def("__rsub__", rsub_a_s)
-            //.def("__mul__", mul_a_s)
-            //.def("__rmul__", mul_a_s)
-            //.def("__div__", div_a_s)
-            //.def("__truediv__", div_a_s)
-            //.def("__rdiv__", rdiv_a_s)
-            //.def("__rtruediv__", rdiv_a_s)
-            //.def("__iadd__", iadd_a_a)
-            //.def("__isub__", isub_a_a)
-            //.def("__imul__", imul_a_a)
-            //.def("__idiv__", idiv_a_a)
-            //.def("__itruediv__", idiv_a_a)
-            //.def("__iadd__", iadd_a_s)
-            //.def("__isub__", isub_a_s)
-            //.def("__imul__", imul_a_s)
-            //.def("__idiv__", idiv_a_s)
-            //.def("__itruediv__", idiv_a_s)
-            //.def("__eq__", eq_a_a)
-            //.def("__ne__", ne_a_a)
-            //.def("__eq__", eq_a_s)
-            //.def("__ne__", ne_a_s)
+            //.def("__neg__", neg_a)          // done
+            //.def("__add__", add_a_a)        // done
+            //.def("__sub__", sub_a_a)        // done
+            //.def("__mul__", mul_a_a)        // doesn't make sense
+            //.def("__div__", div_a_a)        // doesn't make sense
+            //.def("__truediv__", div_a_a)    // ?
+            //.def("__add__", add_a_s)        // doesn't make sense
+            //.def("__radd__", add_a_s)       // ?
+            //.def("__sub__", sub_a_s)        // doesn't make sense
+            //.def("__rsub__", rsub_a_s)      // ?
+            //.def("__mul__", mul_a_s)        // done for VecType * value_type
+            //.def("__rmul__", mul_a_s)       // ?
+            //.def("__div__", div_a_s)        // done for VecType / value_type
+            //.def("__truediv__", div_a_s)    // ?
+            //.def("__rdiv__", rdiv_a_s)      // ?
+            //.def("__rtruediv__", rdiv_a_s)  // ?
+            //.def("__iadd__", iadd_a_a)      // ?
+            //.def("__isub__", isub_a_a)      // ?
+            //.def("__imul__", imul_a_a)      // ?
+            //.def("__idiv__", idiv_a_a)      // ?
+            //.def("__itruediv__", idiv_a_a)  // ?
+            //.def("__iadd__", iadd_a_s)      // ?
+            //.def("__isub__", isub_a_s)      // ?
+            //.def("__imul__", imul_a_s)      // ?
+            //.def("__idiv__", idiv_a_s)      // ?
+            //.def("__itruediv__", idiv_a_s)  // ?
+            //.def("__eq__", eq_a_a)          // done
+            //.def("__ne__", ne_a_a)          // done
+            //.def("__eq__", eq_a_s)          // doesn't make sense
+            //.def("__ne__", ne_a_s)          // doesn't make sense
 
         ;
 
@@ -102,15 +111,10 @@ struct VecWrapper
 template<typename VecType>
 struct Vec2Wrapper : public VecWrapper<VecType>
 {
-    static value_type& x(VecType& vec)
-    {
-        return vec.x();
-    }
-
-    static value_type& y(VecType& vec)
-    {
-        return vec.y();
-    }
+    static void       setX(VecType& vec, value_type x) { vec.x() = x;    }
+    static value_type getX(VecType& vec)               { return vec.x(); }
+    static void       setY(VecType& vec, value_type y) { vec.y() = y;    }
+    static value_type getY(VecType& vec)               { return vec.y(); }
 
     static void set_2_components(VecType& vec, value_type x, value_type y)
     {
@@ -122,8 +126,8 @@ struct Vec2Wrapper : public VecWrapper<VecType>
         class_t result = VecWrapper::wrap(name);
         result
             .def(init<value_type, value_type>())
-            .def("x", x, osgBoostPython::default_reference_policy())        // Will this work when setting?
-            .def("y", y, osgBoostPython::default_reference_policy())        // Will this work when setting?
+            .add_property("x", getX, setX)
+            .add_property("y", getY, setY)
             .def("set", set_2_components)
         ;
         return result;
@@ -133,10 +137,8 @@ struct Vec2Wrapper : public VecWrapper<VecType>
 template<typename VecType>
 struct Vec3Wrapper : public Vec2Wrapper<VecType>
 {
-    static value_type& z(VecType& vec)
-    {
-        return vec.z();
-    }
+    static void       setZ(VecType& vec, value_type z) { vec.z() = z;    }
+    static value_type getZ(VecType& vec)               { return vec.z(); }
 
     static void set_3_components(VecType& vec, value_type x, value_type y, value_type z)
     {
@@ -148,9 +150,9 @@ struct Vec3Wrapper : public Vec2Wrapper<VecType>
         class_t result = VecWrapper::wrap(name);
         result
             .def(init<value_type, value_type, value_type>())
-            .def("x", x, osgBoostPython::default_reference_policy())        // Will this work when setting?
-            .def("y", y, osgBoostPython::default_reference_policy())        // Will this work when setting?
-            .def("z", z, osgBoostPython::default_reference_policy())        // Will this work when setting?
+            .add_property("x", getX, setX)
+            .add_property("y", getY, setY)
+            .add_property("z", getZ, setZ)
             .def("set", set_3_components)
             .def("cross", &VecType::operator^)
         ;
@@ -161,10 +163,8 @@ struct Vec3Wrapper : public Vec2Wrapper<VecType>
 template<typename VecType>
 struct Vec4Wrapper : public Vec3Wrapper<VecType>
 {
-    static value_type& w(VecType& vec)
-    {
-        return vec.w();
-    }
+    static void       setW(VecType& vec, value_type w) { vec.w() = w;    }
+    static value_type getW(VecType& vec)               { return vec.w(); }
 
     static void set_4_components(VecType& vec, value_type x, value_type y, value_type z, value_type w)
     {
@@ -176,11 +176,17 @@ struct Vec4Wrapper : public Vec3Wrapper<VecType>
         class_t result = VecWrapper::wrap(name);
         result
             .def(init<value_type, value_type, value_type, value_type>())
-            .def("x", x, osgBoostPython::default_reference_policy())        // Will this work when setting?
-            .def("y", y, osgBoostPython::default_reference_policy())        // Will this work when setting?
-            .def("z", z, osgBoostPython::default_reference_policy())        // Will this work when setting?
-            .def("w", w, osgBoostPython::default_reference_policy())        // Will this work when setting?
+            .add_property("x", getX, setX)
+            .add_property("y", getY, setY)
+            .add_property("z", getZ, setZ)
+            .add_property("w", getW, setW)
+            .add_property("r", getX, setX)
+            .add_property("g", getY, setY)
+            .add_property("b", getZ, setZ)
+            .add_property("a", getW, setW)
             .def("set", set_4_components)
+            .def("asABGR", &VecType::asABGR)
+            .def("asRGBA", &VecType::asRGBA)
         ;
         return result;
     }
