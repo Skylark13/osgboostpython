@@ -24,7 +24,7 @@ def runViewer(sceneRoot, handler = None):
     del viewer      # To cause the dtor to be called, hence the window to be destroyed.
 
 class osgViewerTest(unittest.TestCase):
-    def test_osgViewerSetups(self):
+    def test_000_osgViewerSetups(self):
         print "-"*40
         print "Testing osgViewer across all screens"
         viewer = osgViewer.Viewer()
@@ -43,11 +43,11 @@ class osgViewerTest(unittest.TestCase):
         del viewer
         self.failUnless(True)
 
-    def test_osgViewerAndShapeDrawable1(self):
+    def test_001_osgViewerAndShapeDrawable1(self):
         self.osgViewerAndShapeDrawable(False)
         self.failUnless(True)
 
-    def test_osgViewerAndShapeDrawable2(self):
+    def test_002_osgViewerAndShapeDrawable2(self):
         self.osgViewerAndShapeDrawable(True)
         self.failUnless(True)
 
@@ -63,10 +63,10 @@ class osgViewerTest(unittest.TestCase):
             s.setMode(osg.GL_LIGHTING, osg.StateAttribute.Values.OFF)
         runViewer(geode)
 
-    def test_osgViewerAndCow1(self):
+    def test_003_osgViewerAndCow1(self):
         self.osgViewerAndCow(False)
 
-    def test_osgViewerAndCow2(self):
+    def test_004_osgViewerAndCow2(self):
         self.osgViewerAndCow(True)
 
     def osgViewerAndCow(self,  testStateSet):
@@ -80,10 +80,10 @@ class osgViewerTest(unittest.TestCase):
         runViewer(cow)
         self.failUnless(True)
 
-    def test_osgViewerAndGeometry1(self):
+    def test_005_osgViewerAndGeometry1(self):
         self.osgViewerAndGeometry(False)
 
-    def test_osgViewerAndGeometry2(self):
+    def test_006_osgViewerAndGeometry2(self):
         self.osgViewerAndGeometry(True)
 
     def osgViewerAndGeometry(self,  testStateSet):
@@ -106,7 +106,7 @@ class osgViewerTest(unittest.TestCase):
         runViewer(geode)
         self.failUnless(True)
 
-    def test_osgViewerAndOverriddenGUIEventHandler(self):
+    def test_007_osgViewerAndOverriddenGUIEventHandler(self):
         print "-"*40
         print "Testing osgViewer with a GUIEventHandler derived in python code"
         class DerivedHandler(osgGA.GUIEventHandler):
@@ -127,7 +127,7 @@ class osgViewerTest(unittest.TestCase):
         runViewer(cow, DerivedHandler())
         self.failUnless(True)
 
-    def test_osgViewerAndOverriddenNodeCallback(self):
+    def test_008_osgViewerAndOverriddenNodeCallback(self):
         print "-"*40
         print "Will add a trivial CullCallback to the model - since traverse() is called the model should still be rendered."
         class DerivedCallback(osg.NodeCallback):
@@ -142,12 +142,15 @@ class osgViewerTest(unittest.TestCase):
         runViewer(cow)
         self.failUnless(True)
 
-allTests = ['test_osgViewerSetups',  
-               'test_osgViewerAndShapeDrawable1',  'test_osgViewerAndShapeDrawable2',  
-               'test_osgViewerAndCow1',  'test_osgViewerAndCow2',  
-               'test_osgViewerAndGeometry1', 'test_osgViewerAndGeometry2', 
-               'test_osgViewerAndOverriddenGUIEventHandler', 
-               'test_osgViewerAndOverriddenNodeCallback']
+allTests = ['test_000_osgViewerSetups',
+            'test_001_osgViewerAndShapeDrawable1',
+            'test_002_osgViewerAndShapeDrawable2',
+            'test_003_osgViewerAndCow1',
+            'test_004_osgViewerAndCow2',
+            'test_005_osgViewerAndGeometry1',
+            'test_006_osgViewerAndGeometry2',
+            'test_007_osgViewerAndOverriddenGUIEventHandler',
+            'test_008_osgViewerAndOverriddenNodeCallback']
 
 # To be able to run one single test from the command line. Could be name-based instead of index-based...
 if __name__ == "__main__":

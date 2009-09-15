@@ -5,13 +5,13 @@ import unittest
 # It is expected for now that some tests will fail, it's kind of a motivation to fix the problems you know :-)
 
 class osgTest(unittest.TestCase):
-    def test_osgVec4(self):
+    def test_000_osgVec4(self):
         v4d = osg.Vec4d()
         self.failUnless(v4d._v[0] == 0.0 and v4d._v[1] == 0.0 and v4d._v[2] == 0.0 and v4d._v[3] == 0.0)
         v4d.set(1,2,3,4)
         self.failUnless(v4d._v[0] == 1.0 and v4d._v[1] == 2.0 and v4d._v[2] == 3.0 and v4d._v[3] == 4.0)
 
-    def test_osgVec4Array(self):
+    def test_001_osgVec4Array(self):
         v4array = osg.Vec4Array()
         v4array.append(osg.Vec4f(1,2,3,4))
         v4array.append(osg.Vec4f(2,3,4,5))
@@ -35,11 +35,11 @@ class osgTest(unittest.TestCase):
 
         # Should test all methods...
 
-    def test_osgMatrix(self):
+    def test_002_osgMatrix(self):
         m = osg.Matrixd()
         self.failUnless(m.valid())
 
-    def test_osgBoundingSphere(self):
+    def test_003_osgBoundingSphere(self):
         bs = osg.BoundingSphere()
         c = bs._center
         self.failUnless(c._v[0] == 0.0 and c._v[1] == 0.0 and c._v[2] == 0.0 and bs._radius == -1)
@@ -49,7 +49,7 @@ class osgTest(unittest.TestCase):
         self.failUnless(c._v[0] == 0.0 and c._v[1] == 0.0 and c._v[2] == 0.0 and bs._radius == 1)
         self.failUnless(bs.valid())     # bs should now be valid
 
-    def test_osgNodeAndGroup(self):
+    def test_004_osgNodeAndGroup(self):
         n = osg.Node()
         n.name = "node"
         self.failUnless(n)
@@ -77,7 +77,7 @@ class osgTest(unittest.TestCase):
         self.failUnless(len(parents) == 1)
         self.failUnless(parents[0] == g)
 
-    def test_osgGeodeAndShapeDrawable(self):
+    def test_005_osgGeodeAndShapeDrawable(self):
         sd = osg.ShapeDrawable(osg.Sphere(), None)
         sd.name = "sphere"
         self.failUnless(sd)
@@ -100,7 +100,7 @@ class osgTest(unittest.TestCase):
         self.failUnless(len(drawables) == 1)
         self.failUnless(drawables[0] == sd)
 
-    def test_osgGeometry(self):
+    def test_006_osgGeometry(self):
         g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
         self.failUnless(g.getNumPrimitiveSets() == 1)
         self.failUnless(len(g.getVertexArray()) == 4)
@@ -108,7 +108,7 @@ class osgTest(unittest.TestCase):
         self.failUnless(len(g.getColorArray()) == 1)
         self.failUnless(len(g.getNormalArray()) == 1)
 
-    def test_osgStateSet(self):
+    def test_007_osgStateSet(self):
         g = osg.createTexturedQuadGeometry(osg.Vec3f(0,0,0), osg.Vec3f(1,0,0), osg.Vec3f(0,0,1), 0, 0, 1, 1)
         s = g.stateSet
         self.failUnless(s)
@@ -118,7 +118,7 @@ class osgTest(unittest.TestCase):
         s.setMode(osg.GL_LIGHTING, osg.StateAttribute.Values.ON)
         self.failUnless(s.getMode(osg.GL_LIGHTING))     # We set it on
 
-    def test_osgUniform(self):
+    def test_008_osgUniform(self):
         u = osg.Uniform(osg.Uniform.Type.FLOAT, "uFloat")
         self.failUnless(u.getFloat() == 0.0)
         u.setFloat(1.3)
@@ -132,7 +132,7 @@ class osgTest(unittest.TestCase):
         u.setBool4(*values)
         self.failUnless(u.getBool4() == values)
 
-    def test_overriddenNodeVisitor(self):
+    def test_009_overriddenNodeVisitor(self):
         # Not quite sure how to use unittest for this one... For now we'll just let it print out and if it ran to completion, we'll assume success.
 
         # DerivedVisitor1 verifies that apply_Node will be called for all node
@@ -177,11 +177,16 @@ class osgTest(unittest.TestCase):
 
         self.failUnless(True)
 
-allTests = ['test_osgVec4',  'test_osgVec4Array',  'test_osgMatrix',
-               'test_osgBoundingSphere',  'test_osgNodeAndGroup',
-               'test_osgGeodeAndShapeDrawable', 'test_osgGeometry',
-               'test_osgStateSet',  'test_osgUniform',
-               'test_overriddenNodeVisitor']
+allTests = ['test_000_osgVec4',
+            'test_001_osgVec4Array',
+            'test_002_osgMatrix',
+            'test_003_osgBoundingSphere',
+            'test_004_osgNodeAndGroup',
+            'test_005_osgGeodeAndShapeDrawable',
+            'test_006_osgGeometry',
+            'test_007_osgStateSet',
+            'test_008_osgUniform',
+            'test_009_overriddenNodeVisitor']
 
 # To be able to run one single test from the command line. Could be name-based instead of index-based...
 if __name__ == "__main__":

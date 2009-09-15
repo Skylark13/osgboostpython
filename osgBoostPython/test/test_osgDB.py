@@ -4,11 +4,11 @@ import osgDB
 import unittest
 
 class osgDBTest(unittest.TestCase):
-    def test_readCow(self):
+    def test_000_readCow(self):
         cow = osgDB.readNodeFile("cow.osg")
         self.failUnless(cow,  'failed to read cow.osg')
 
-allTests = ['test_readCow']
+allTests = ['test_000_readCow']
 
 # To be able to run one single test from the command line. Could be name-based instead of index-based...
 if __name__ == "__main__":
