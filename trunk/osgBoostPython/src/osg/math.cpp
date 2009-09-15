@@ -185,8 +185,8 @@ struct Vec4Wrapper : public Vec3Wrapper<VecType>
             .add_property("b", getZ, setZ)
             .add_property("a", getW, setW)
             .def("set", set_4_components)
-            .def("asABGR", &VecType::asABGR)
             .def("asRGBA", &VecType::asRGBA)
+            .def("asABGR", &VecType::asABGR)
         ;
         return result;
     }
