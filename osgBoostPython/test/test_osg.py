@@ -7,9 +7,9 @@ import unittest
 class osgTest(unittest.TestCase):
     def test_000_osgVec4(self):
         v4d = osg.Vec4d()
-        self.failUnless(v4d._v[0] == 0.0 and v4d._v[1] == 0.0 and v4d._v[2] == 0.0 and v4d._v[3] == 0.0)
+        self.failUnless(v4d.x == 0.0 and v4d.y == 0.0 and v4d.z == 0.0 and v4d.w == 0.0)
         v4d.set(1,2,3,4)
-        self.failUnless(v4d._v[0] == 1.0 and v4d._v[1] == 2.0 and v4d._v[2] == 3.0 and v4d._v[3] == 4.0)
+        self.failUnless(v4d.x == 1.0 and v4d.y == 2.0 and v4d.z == 3.0 and v4d.w == 4.0)
 
     def test_001_osgVec4Array(self):
         v4array = osg.Vec4Array()
@@ -18,20 +18,20 @@ class osgTest(unittest.TestCase):
         v4array.append(osg.Vec4f(3,4,5,6))
 
         self.failUnless(len(v4array) == 3)
-        self.failUnless(v4array[0]._v[0] == 1.0 and v4array[0]._v[1] == 2.0 and v4array[0]._v[2] == 3.0 and v4array[0]._v[3] == 4.0)
-        self.failUnless(v4array[1]._v[0] == 2.0 and v4array[1]._v[1] == 3.0 and v4array[1]._v[2] == 4.0 and v4array[1]._v[3] == 5.0)
-        self.failUnless(v4array[2]._v[0] == 3.0 and v4array[2]._v[1] == 4.0 and v4array[2]._v[2] == 5.0 and v4array[2]._v[3] == 6.0)
+        self.failUnless(v4array[0].x == 1.0 and v4array[0].y == 2.0 and v4array[0].z == 3.0 and v4array[0].w == 4.0)
+        self.failUnless(v4array[1].x == 2.0 and v4array[1].y == 3.0 and v4array[1].z == 4.0 and v4array[1].w == 5.0)
+        self.failUnless(v4array[2].x == 3.0 and v4array[2].y == 4.0 and v4array[2].z == 5.0 and v4array[2].w == 6.0)
 
         v4array2 = v4array[0:2]
         self.failUnless(len(v4array2) == 2)
-        self.failUnless(v4array2[0]._v[0] == 1.0 and v4array2[0]._v[1] == 2.0 and v4array2[0]._v[2] == 3.0 and v4array2[0]._v[3] == 4.0)
-        self.failUnless(v4array2[1]._v[0] == 2.0 and v4array2[1]._v[1] == 3.0 and v4array2[1]._v[2] == 4.0 and v4array2[1]._v[3] == 5.0)
+        self.failUnless(v4array2[0].x == 1.0 and v4array2[0].y == 2.0 and v4array2[0].z == 3.0 and v4array2[0].w == 4.0)
+        self.failUnless(v4array2[1].x == 2.0 and v4array2[1].y == 3.0 and v4array2[1].z == 4.0 and v4array2[1].w == 5.0)
 
         v4 = v4array.pop()
         self.failUnless(len(v4array) == 2)
-        self.failUnless(v4array[0]._v[0] == 1.0 and v4array[0]._v[1] == 2.0 and v4array[0]._v[2] == 3.0 and v4array[0]._v[3] == 4.0)
-        self.failUnless(v4array[1]._v[0] == 2.0 and v4array[1]._v[1] == 3.0 and v4array[1]._v[2] == 4.0 and v4array[1]._v[3] == 5.0)
-        self.failUnless(v4._v[0] == 3.0 and v4._v[1] == 4.0 and v4._v[2] == 5.0 and v4._v[3] == 6.0)
+        self.failUnless(v4array[0].x == 1.0 and v4array[0].y == 2.0 and v4array[0].z == 3.0 and v4array[0].w == 4.0)
+        self.failUnless(v4array[1].x == 2.0 and v4array[1].y == 3.0 and v4array[1].z == 4.0 and v4array[1].w == 5.0)
+        self.failUnless(v4.x == 3.0 and v4.y == 4.0 and v4.z == 5.0 and v4.w == 6.0)
 
         # Should test all methods...
 
@@ -42,11 +42,11 @@ class osgTest(unittest.TestCase):
     def test_003_osgBoundingSphere(self):
         bs = osg.BoundingSphere()
         c = bs._center
-        self.failUnless(c._v[0] == 0.0 and c._v[1] == 0.0 and c._v[2] == 0.0 and bs._radius == -1)
+        self.failUnless(c.x == 0.0 and c.y == 0.0 and c.z == 0.0 and bs._radius == -1)
         self.failIf(bs.valid())     # bs is not initially valid
         bs._center = osg.Vec3f(0,0,0)
         bs._radius = 1
-        self.failUnless(c._v[0] == 0.0 and c._v[1] == 0.0 and c._v[2] == 0.0 and bs._radius == 1)
+        self.failUnless(c.x == 0.0 and c.y == 0.0 and c.z == 0.0 and bs._radius == 1)
         self.failUnless(bs.valid())     # bs should now be valid
 
     def test_004_osgNodeAndGroup(self):
