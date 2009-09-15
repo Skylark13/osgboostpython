@@ -38,13 +38,12 @@ struct VecWrapper
 
     typedef boost::python::class_<VecType> class_t;
 
-    static VecType add(VecType const& lhs, VecType const& rhs)
-    {
-        return lhs + rhs;
-    }
+
 
     static class_t wrap(const std::string& name)
     {
+        value_type (VecType::*dot) (const VecType& rhs) const = &VecType::operator*;
+
         class_t result(name.c_str());
         result
             .def_readonly("_v", &VecType::_v)                                             // Should be readwrite...
@@ -52,7 +51,13 @@ struct VecWrapper
             // default ctor
             .def(init<VecType>())
 
-            .def("__add__", add)
+            .def(-self)
+            .def(self + self)
+            .def(self - self)
+            .def(self != self)
+            .def(self == self)
+            .def(self < self)
+            .def("dot", dot)
         
             // TODO:
             //.def("__neg__", neg_a)
@@ -147,6 +152,7 @@ struct Vec3Wrapper : public Vec2Wrapper<VecType>
             .def("y", y, osgBoostPython::default_reference_policy())        // Will this work when setting?
             .def("z", z, osgBoostPython::default_reference_policy())        // Will this work when setting?
             .def("set", set_3_components)
+            .def("cross", &VecType::operator^)
         ;
         return result;
     }
