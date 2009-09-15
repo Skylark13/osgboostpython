@@ -2,14 +2,23 @@
 import osg
 import unittest
 
-# It is expected for now that some tests will fail, it's kind of a motivation to fix the problems you know :-)
-
 class osgTest(unittest.TestCase):
     def test_000_osgVec4(self):
         v4d = osg.Vec4d()
         self.failUnless(v4d.x == 0.0 and v4d.y == 0.0 and v4d.z == 0.0 and v4d.w == 0.0)
+        self.failUnless(v4d == osg.Vec4d(0,0,0,0))  # test ==
         v4d.set(1,2,3,4)
-        self.failUnless(v4d.x == 1.0 and v4d.y == 2.0 and v4d.z == 3.0 and v4d.w == 4.0)
+        self.failUnless(v4d == osg.Vec4d(1,2,3,4))
+        v4d2 = osg.Vec4d(4,5,6,7)
+        result = v4d2 + v4d
+        self.failUnless(result == osg.Vec4d(5,7,9,11))
+        result = v4d2 - v4d
+        self.failUnless(result == osg.Vec4d(3,3,3,3))
+        result = v4d * 2
+        self.failUnless(result == osg.Vec4d(2,4,6,8))
+        result = result / 2             # v4d * 2 / 2 == v4d
+        self.failUnless(result == v4d)
+        self.failUnless(result != v4d2) # test !=
 
     def test_001_osgVec4Array(self):
         v4array = osg.Vec4Array()
