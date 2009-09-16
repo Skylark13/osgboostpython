@@ -2,8 +2,6 @@
 #include <boost/python/override.hpp>
 using namespace boost::python;
 
-#define WIN32
-
 #include <osgGA/GUIEventHandler>
 #include <osgGA/StateSetManipulator>
 #include <osgViewer/View>

@@ -1,16 +1,12 @@
 #include <boost/python.hpp>
 using namespace boost::python;
 
-#define WIN32
-
 #include <osg/Vec2f>
 #include <osg/Vec2d>
 #include <osg/Vec3f>
 #include <osg/Vec3d>
 #include <osg/Vec4f>
 #include <osg/Vec4d>
-#include <osg/Matrixf>
-#include <osg/Matrixd>
 #include <osg/BoundingSphere>
 #include <osg/BoundingBox>
 
@@ -35,10 +31,7 @@ template<typename VecType>
 struct VecWrapper
 {
     typedef typename VecType::value_type value_type;
-
     typedef boost::python::class_<VecType> class_t;
-
-
 
     static class_t wrap(const std::string& name)
     {
@@ -108,13 +101,18 @@ struct VecWrapper
     }
 };
 
+#define VEC_PROPERTY_HELPER(x) static value_type get##x(VecType& vec)                 { return vec.x(); } \
+                               static void       set##x(VecType& vec, value_type val) { vec.x() = val;  }
+
 template<typename VecType>
 struct Vec2Wrapper : public VecWrapper<VecType>
 {
-    static void       setX(VecType& vec, value_type x) { vec.x() = x;    }
-    static value_type getX(VecType& vec)               { return vec.x(); }
-    static void       setY(VecType& vec, value_type y) { vec.y() = y;    }
-    static value_type getY(VecType& vec)               { return vec.y(); }
+/*
+    typedef typename VecType::value_type value_type;
+    typedef boost::python::class_<VecType> class_t;
+*/
+    VEC_PROPERTY_HELPER(x)
+    VEC_PROPERTY_HELPER(y)
 
     static void set_2_components(VecType& vec, value_type x, value_type y)
     {
@@ -126,9 +124,10 @@ struct Vec2Wrapper : public VecWrapper<VecType>
         class_t result = VecWrapper::wrap(name);
         result
             .def(init<value_type, value_type>())
-            .add_property("x", getX, setX)
-            .add_property("y", getY, setY)
+            .add_property("x", getx, setx)
+            .add_property("y", gety, sety)
             .def("set", set_2_components)
+            .def("__getitem__", (value_type& (VecType::*)(int)) &VecType::operator[], return_value_policy<copy_non_const_reference>())
         ;
         return result;
     }
@@ -137,8 +136,13 @@ struct Vec2Wrapper : public VecWrapper<VecType>
 template<typename VecType>
 struct Vec3Wrapper : public Vec2Wrapper<VecType>
 {
-    static void       setZ(VecType& vec, value_type z) { vec.z() = z;    }
-    static value_type getZ(VecType& vec)               { return vec.z(); }
+/*
+    typedef typename VecType::value_type value_type;
+    typedef boost::python::class_<VecType> class_t;
+*/
+    VEC_PROPERTY_HELPER(x)
+    VEC_PROPERTY_HELPER(y)
+    VEC_PROPERTY_HELPER(z)
 
     static void set_3_components(VecType& vec, value_type x, value_type y, value_type z)
     {
@@ -150,10 +154,11 @@ struct Vec3Wrapper : public Vec2Wrapper<VecType>
         class_t result = VecWrapper::wrap(name);
         result
             .def(init<value_type, value_type, value_type>())
-            .add_property("x", getX, setX)
-            .add_property("y", getY, setY)
-            .add_property("z", getZ, setZ)
+            .add_property("x", getx, setx)
+            .add_property("y", gety, sety)
+            .add_property("z", getz, setz)
             .def("set", set_3_components)
+            .def("__getitem__", (value_type& (VecType::*)(int)) &VecType::operator[], return_value_policy<copy_non_const_reference>())
             .def("cross", &VecType::operator^)
         ;
         return result;
@@ -163,8 +168,14 @@ struct Vec3Wrapper : public Vec2Wrapper<VecType>
 template<typename VecType>
 struct Vec4Wrapper : public Vec3Wrapper<VecType>
 {
-    static void       setW(VecType& vec, value_type w) { vec.w() = w;    }
-    static value_type getW(VecType& vec)               { return vec.w(); }
+/*
+    typedef typename VecType::value_type value_type;
+    typedef boost::python::class_<VecType> class_t;
+*/
+    VEC_PROPERTY_HELPER(x)
+    VEC_PROPERTY_HELPER(y)
+    VEC_PROPERTY_HELPER(z)
+    VEC_PROPERTY_HELPER(w)
 
     static void set_4_components(VecType& vec, value_type x, value_type y, value_type z, value_type w)
     {
@@ -176,15 +187,16 @@ struct Vec4Wrapper : public Vec3Wrapper<VecType>
         class_t result = VecWrapper::wrap(name);
         result
             .def(init<value_type, value_type, value_type, value_type>())
-            .add_property("x", getX, setX)
-            .add_property("y", getY, setY)
-            .add_property("z", getZ, setZ)
-            .add_property("w", getW, setW)
-            .add_property("r", getX, setX)
-            .add_property("g", getY, setY)
-            .add_property("b", getZ, setZ)
-            .add_property("a", getW, setW)
+            .add_property("x", getx, setx)
+            .add_property("y", gety, sety)
+            .add_property("z", getz, setz)
+            .add_property("w", getw, setw)
+            .add_property("r", getx, setx)
+            .add_property("g", gety, sety)
+            .add_property("b", getz, setz)
+            .add_property("a", getw, setw)
             .def("set", set_4_components)
+            .def("__getitem__", (value_type& (VecType::*)(unsigned int)) &VecType::operator[], return_value_policy<copy_non_const_reference>())
             .def("asRGBA", &VecType::asRGBA)
             .def("asABGR", &VecType::asABGR)
         ;
@@ -223,19 +235,6 @@ void export_math()
     v4dwrapper
         .def(init<Vec4f>())
         .def(init<Vec3d, Vec4d::value_type>());
-
-
-    class_<Matrixf>("Matrixf")
-        .def(init<Matrixf>())
-        .def("valid", &Matrixf::valid)
-        // TODO
-    ;
-
-    class_<Matrixd>("Matrixd")
-        .def(init<Matrixd>())
-        .def("valid", &Matrixd::valid)
-        // TODO
-    ;
 
 
     class_<BoundingSphere>("BoundingSphere")

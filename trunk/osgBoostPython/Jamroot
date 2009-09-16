@@ -29,6 +29,8 @@ lib osgDBlib     : : <name>osgDB        <variant>release ;
 lib osgDBlib     : : <name>osgDBd       <variant>debug   ;
 lib osgGAlib     : : <name>osgGA        <variant>release ;
 lib osgGAlib     : : <name>osgGAd       <variant>debug   ;
+lib osgUtillib   : : <name>osgUtil      <variant>release ;
+lib osgUtillib   : : <name>osgUtild     <variant>debug   ;
 lib osgViewerlib : : <name>osgViewer    <variant>release ;
 lib osgViewerlib : : <name>osgViewerd   <variant>debug   ;
 
@@ -47,12 +49,15 @@ python-extension _osg       : src/osg/osg.cpp
                               src/osg/stateAttributes.cpp
                               src/osg/math.cpp
                               src/osg/util.cpp
+                              src/osg/camera.cpp
+                              src/osg/matrix.cpp
                               otlib
                               osglib
                             : <include>$(OSG_ROOT)/include
                               <include>./include
                               <linkflags>-LIBPATH:$(BOOST_ROOT)/lib
-                              <linkflags>-LIBPATH:$(OSG_ROOT)/lib ;
+                              <linkflags>-LIBPATH:$(OSG_ROOT)/lib
+                              <toolset>msvc:<define>WIN32 ;
 
 python-extension _osgDB     : src/osgDB/osgDB.cpp
                               otlib
@@ -61,7 +66,8 @@ python-extension _osgDB     : src/osgDB/osgDB.cpp
                             : <include>$(OSG_ROOT)/include
                               <include>./include
                               <linkflags>-LIBPATH:$(BOOST_ROOT)/lib
-                              <linkflags>-LIBPATH:$(OSG_ROOT)/lib ;
+                              <linkflags>-LIBPATH:$(OSG_ROOT)/lib
+                              <toolset>msvc:<define>WIN32 ;
 
 python-extension _osgGA     : src/osgGA/osgGA.cpp
                               otlib
@@ -70,7 +76,18 @@ python-extension _osgGA     : src/osgGA/osgGA.cpp
                             : <include>$(OSG_ROOT)/include
                               <include>./include
                               <linkflags>-LIBPATH:$(BOOST_ROOT)/lib
-                              <linkflags>-LIBPATH:$(OSG_ROOT)/lib ;
+                              <linkflags>-LIBPATH:$(OSG_ROOT)/lib
+                              <toolset>msvc:<define>WIN32 ;
+
+python-extension _osgUtil   : src/osgUtil/osgUtil.cpp
+                              otlib
+                              osglib
+                              osgUtillib
+                            : <include>$(OSG_ROOT)/include
+                              <include>./include
+                              <linkflags>-LIBPATH:$(BOOST_ROOT)/lib
+                              <linkflags>-LIBPATH:$(OSG_ROOT)/lib
+                              <toolset>msvc:<define>WIN32 ;
 
 python-extension _osgViewer : src/osgViewer/osgViewer.cpp
                               otlib
@@ -80,7 +97,8 @@ python-extension _osgViewer : src/osgViewer/osgViewer.cpp
                             : <include>$(OSG_ROOT)/include
                               <include>./include
                               <linkflags>-LIBPATH:$(BOOST_ROOT)/lib
-                              <linkflags>-LIBPATH:$(OSG_ROOT)/lib ;
+                              <linkflags>-LIBPATH:$(OSG_ROOT)/lib
+                              <toolset>msvc:<define>WIN32 ;
 
 install install_osg       : _osg       : <location>lib/osg ;
 install install_osgDB     : _osgDB     : <location>lib/osgDB ;
