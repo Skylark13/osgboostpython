@@ -2,11 +2,15 @@
 
 using namespace boost::python;
 
-#define WIN32
-
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
+#include <osgDB/Registry>
+
+class Node;
 
 using namespace osgDB;
+
+#include "defaults.h"
 
 osg::ref_ptr<osg::Node> readNodeFileWrapper(const std::string& filename)
 {
@@ -23,6 +27,12 @@ osg::ref_ptr<osg::Shader> readShaderFileWrapper(const std::string& filename)
     return osg::ref_ptr<osg::Shader>(osgDB::readShaderFile(filename));
 }
 
+bool writeNodeFileWrapper(const osg::Node* node, const std::string& filename)
+{
+    return osgDB::writeNodeFile(*node, filename,Registry::instance()->getOptions());
+}
+
+
 // Boost.Python and Smart Pointers
 // http://wiki.python.org/moin/boost.python/PointersAndSmartPointers
 // http://www.language-binding.net/pyplusplus/troubleshooting_guide/smart_ptrs/smart_ptrs.html
@@ -31,4 +41,5 @@ BOOST_PYTHON_MODULE(_osgDB)
     def("readNodeFile", readNodeFileWrapper);
     def("readImageFile", readImageFileWrapper);
     def("readShaderFile", readShaderFileWrapper);
+    def("writeNodeFile", writeNodeFileWrapper);
 }

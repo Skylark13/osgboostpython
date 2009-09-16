@@ -3,8 +3,6 @@
 #include <boost/python/slice.hpp>
 using namespace boost::python;
 
-#define WIN32
-
 #include <osg/Array>
 #include <osg/MixinVector>
 
@@ -36,7 +34,7 @@ struct ArrayWrapper
     {
         ref_ptr<ContainerType> result = new ContainerType;
 
-        slice::range<ContainerType::iterator> bounds;
+        slice::range<typename ContainerType::iterator> bounds;
         try 
         {
             bounds = sl.get_indicies<>(container.begin(), container.end());
@@ -99,7 +97,7 @@ struct ArrayWrapper
     // Untested
     static void delitem_1d_slice(ContainerType& container, slice const& sl)
     {
-        slice::range<ContainerType::iterator> bounds;
+        slice::range<typename ContainerType::iterator> bounds;
         try 
         {
             bounds = sl.get_indicies<>(container.begin(), container.end());
@@ -143,7 +141,7 @@ struct ArrayWrapper
     /// there is no such item.
     static void remove(ContainerType& container, ElementType const& element)
     {
-        ContainerType::iterator it = std::find(container.begin(), container.end(), element);
+        typename ContainerType::iterator it = std::find(container.begin(), container.end(), element);
         if (it != container.end())
             container.erase(it);
         else
@@ -179,7 +177,7 @@ struct ArrayWrapper
     static long index(ContainerType& container, ElementType const& element)
     {
         long i = 0;
-        for (ContainerType::const_iterator it = container.begin(); it != container.end(); ++it)
+        for (typename ContainerType::const_iterator it = container.begin(); it != container.end(); ++it)
         {
             if (*it == element)
                 return i;
@@ -193,7 +191,7 @@ struct ArrayWrapper
     static long count(ContainerType& container, ElementType const& element)
     {
         long num = 0;
-        for (ContainerType::const_iterator it = container.begin(); it != container.end(); ++it)
+        for (typename ContainerType::const_iterator it = container.begin(); it != container.end(); ++it)
         {
             if (*it == element)
                 num++;

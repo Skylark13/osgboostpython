@@ -1,8 +1,6 @@
 #include <boost/python.hpp>
 using namespace boost::python;
 
-#define WIN32
-
 #include <osgViewer/View>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>

@@ -2,8 +2,6 @@
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 using namespace boost::python;
 
-#define WIN32
-
 #include <osg/Object>
 #include <osg/Drawable>
 #include <osg/ShapeDrawable>
@@ -16,7 +14,6 @@ using namespace osg;
 
 #include "defaults.h"
 
-
 const Drawable::ParentList& (Drawable::*Drawable_getParents1)() const = &Drawable::getParents;
 Node* (Drawable::*Drawable_getParent1)( unsigned int ) = &Drawable::getParent;
 
@@ -27,6 +24,7 @@ Array* (Geometry::*Geometry_getSecondaryColorArray1)() = &Geometry::getSecondary
 Array* (Geometry::*Geometry_getTexCoordArray1)(unsigned int unit) = &Geometry::getTexCoordArray;
 Array* (Geometry::*Geometry_getVertexAttribArray1)(unsigned int index) = &Geometry::getVertexAttribArray;
 PrimitiveSet* (Geometry::*Geometry_getPrimitiveSet1)(unsigned int pos) = &Geometry::getPrimitiveSet;
+
 
 void export_drawable()
 {
@@ -45,6 +43,9 @@ void export_drawable()
             .def("dirtyBound", &Drawable::dirtyBound)
             .def("getBound", &Drawable::getBound, osgBoostPython::default_const_reference_policy())
             .def("computeBound", &Drawable::computeBound)
+            .def("setUpdateCallback", &Drawable::setUpdateCallback)
+            .def("setUseDisplayList", &Drawable::setUseDisplayList)
+            .def("setSupportsDisplayList", &Drawable::setSupportsDisplayList)
             // TODO: Methods to set/get the ComputeBBoxCallback
         ;
 
@@ -100,7 +101,6 @@ void export_drawable()
             .def("getNumPrimitiveSets", &Geometry::getNumPrimitiveSets)
             .def("getPrimitiveSet", Geometry_getPrimitiveSet1, osgBoostPython::default_pointer_policy())
             .def("removePrimitiveSet", &Geometry::removePrimitiveSet)
-            //.def()
         ;
 
         enum_<Geometry::AttributeBinding>("AttributeBinding")
@@ -115,7 +115,6 @@ void export_drawable()
     // PrimitiveSet
     {
         scope in_PrimitiveSet = class_<PrimitiveSet, bases<Object>, ref_ptr<PrimitiveSet>, boost::noncopyable >("PrimitiveSet", no_init)
-            //.def()
         ;
 
         enum_<PrimitiveSet::Type>("Type")
@@ -140,7 +139,7 @@ void export_drawable()
             .value("POLYGON",        PrimitiveSet::POLYGON)
         ;
     }
-
+    
     // DrawArrays
     {
         class_<DrawArrays, bases<PrimitiveSet>, ref_ptr<DrawArrays> >("DrawArrays")

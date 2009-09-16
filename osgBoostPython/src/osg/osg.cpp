@@ -1,14 +1,3 @@
-// To build, use the build.bat file in the project dir.
-// Before running, make sure you add the lib directory to PYTHONPATH
-// as well as the directories containing bjam and boost+OSG DLLs to the PATH.
-/*
-for /F "Tokens=1" %I in ('cd') do set osgBoostPython_Lib=%I\lib
-set PYTHONPATH=%PYTHONPATH%;%osgBoostPython_Lib%
-set PATH=%PATH%;G:\boost_1_35_0\tools\jam\src\bin.ntx86;G:\boost_1_35_0\lib;%OSG_BIN_PATH%
-
-cls && build
-*/
-
 // Good sources of information:
 // http://wiki.python.org/moin/boost.python
 // http://www.boost.org/doc/libs/1_36_0/libs/python/doc/tutorial/doc/html/index.html
@@ -27,8 +16,6 @@ cls && build
 
 using namespace boost::python;
 
-#define WIN32
-
 #include <osg/ref_ptr>
 
 #include <osg/Referenced>
@@ -43,6 +30,8 @@ using namespace boost::python;
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
 
+#include <osg/FrameStamp>
+
 using namespace osg;
 
 #include "defaults.h"
@@ -54,6 +43,8 @@ void export_util();
 void export_array();
 void export_drawable();
 void export_stateset();
+void export_camera();
+void export_matrix();
 
 // HeldType for objects which have a protected destructor.
 // http://osdir.com/ml/python.c++/2002-07/msg00174.html
@@ -115,9 +106,19 @@ template<typename T> bool equals_ref_ptr(ref_ptr<T> lhs, T* rhs) { /*std::cout <
 template<typename T> bool equals_ptr_ref(T* lhs, ref_ptr<T> rhs) { /*std::cout << "equals_ptr_ref" << std::endl;*/ return lhs == rhs.get(); }
 template<typename T> bool equals_ptr_ptr(T* lhs, T* rhs) { /*std::cout << "equals_ptr_ptr" << std::endl;*/ return lhs == rhs; }
 
+
+void export_framestamp() {
+    class_<FrameStamp, ref_ptr<FrameStamp> >("FrameStamp")
+        .def("getFrameNumber", &FrameStamp::getFrameNumber)
+        .def("getReferenceTime", &FrameStamp::getReferenceTime)
+        .def("getSimulationTime", &FrameStamp::getSimulationTime)
+    ;
+}
+
 BOOST_PYTHON_MODULE(_osg)
 {
     export_math();
+    export_framestamp();
 
     class_<Referenced, ref_ptr<Referenced> >("Referenced")
         .def("referenceCount", &Referenced::referenceCount)
@@ -169,6 +170,7 @@ BOOST_PYTHON_MODULE(_osg)
 
     export_util();
     export_array();
+    export_matrix();
     export_stateset();
 
     // Node
@@ -287,4 +289,6 @@ BOOST_PYTHON_MODULE(_osg)
 
     class_<View, bases<Object>, ref_ptr<View> >("View")
     ;
+    
+    export_camera();
 }

@@ -1,15 +1,19 @@
 #include <boost/python.hpp>
 using namespace boost::python;
 
-#define WIN32
-
 #include <osg/NodeCallback>
 #include <osg/NodeVisitor>
 #include <osg/Group>
+#include <osg/Drawable>
+#include <osg/FrameStamp>
 
 using namespace osg;
 
+#include "defaults.h"
+
 #include <iostream>
+
+typedef Drawable::UpdateCallback UpdateCallback;
 
 struct NodeCallback_wrapper : public NodeCallback
 {
@@ -109,6 +113,40 @@ struct NodeVisitor_wrapper : public NodeVisitor
     PyObject* self;
 };
 
+struct UpdateCallback_wrapper : public Drawable::UpdateCallback
+{
+    // NodeVisitor constructors storing initial self parameter
+    UpdateCallback_wrapper(PyObject *p) 
+        : Drawable::UpdateCallback(), self(p) {}
+    // In case UpdateCallback is returned by-value from a wrapped function
+    UpdateCallback_wrapper(PyObject *p, const Drawable::UpdateCallback& x) 
+        : Drawable::UpdateCallback(x), self(p) {}
+
+    // Override update to call back into Python
+    void update(NodeVisitor* nv, Drawable* d)
+    {
+        //std::cout << "in update(NodeVisitor*, Drawable*)" << std::endl;
+        try {
+            //std::cout << "Calling override" << std::endl;
+            call_method<void>(self, "update", boost::ref(nv), boost::ref(d));
+        }
+        // Catch boost::python exception, means method was not overridden in subclass.
+        catch (error_already_set) {
+            Drawable::UpdateCallback::update(nv,d);
+        }
+    }
+
+    // Supplies the default implementation of update
+    void default_update(Drawable::UpdateCallback& self_, NodeVisitor* nv, Drawable* d)
+    {
+        //std::cout << "in default_update(NodeVisitor*, Drawable*)" << std::endl;
+        self_.Drawable::UpdateCallback::update(nv,d);
+    }
+ private:
+    PyObject* self;
+};
+
+
 void export_util()
 {
     {
@@ -119,6 +157,8 @@ void export_util()
             .def("apply_Node", &NodeVisitor_wrapper::default_apply_Node)
             .def("apply_Group", &NodeVisitor_wrapper::default_apply_Group)
             .add_property("traversalMode", &NodeVisitor::getTraversalMode, &NodeVisitor::setTraversalMode)
+            .def("getFrameStamp", &NodeVisitor::getFrameStamp, osgBoostPython::default_pointer_policy())
+
         ;
 
         enum_<NodeVisitor::TraversalMode>("TraversalMode")
@@ -143,5 +183,8 @@ void export_util()
         .def("traverse", &NodeCallback::traverse)
     ;
 
+    class_<Drawable::UpdateCallback, UpdateCallback_wrapper, bases<Object>, ref_ptr<UpdateCallback> >("UpdateCallback")
+        .def("update", &UpdateCallback_wrapper::default_update)
+    ;
 
 }

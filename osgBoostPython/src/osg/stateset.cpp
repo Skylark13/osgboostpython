@@ -1,8 +1,6 @@
 #include <boost/python.hpp>
 using namespace boost::python;
 
-#define WIN32
-
 #include <osg/StateSet>
 #include <osg/StateAttribute>
 #include <osg/Uniform>
@@ -17,6 +15,7 @@ void export_stateAttributes();
 //----------------- StateAttribute -----------------
 const StateAttribute::ParentList& (StateAttribute::*StateAttribute_getParents1)() const = &StateAttribute::getParents;
 StateSet* (StateAttribute::*StateAttribute_getParent1)( unsigned int ) = &StateAttribute::getParent;
+void (StateSet::*StateSet_removeMode1)(StateAttribute::GLMode) = &StateSet::removeMode;
 //----------------- StateAttribute -----------------
 
 //----------------- Uniform -----------------
@@ -377,7 +376,7 @@ void export_stateset()
             .def("getParents", StateSet_getParents1, osgBoostPython::default_value_policy())
             .def("getParent", StateSet_getParent1, osgBoostPython::default_pointer_policy())
             .def("setMode", StateSet_setMode1)
-            .def("removeMode", &StateSet::removeMode)
+            .def("removeMode", StateSet_removeMode1)
             .def("getMode", StateSet_getMode1)
             .def("setAttribute", StateSet_setAttribute1)
             .def("setAttributeAndModes", &StateSet::setAttributeAndModes)
