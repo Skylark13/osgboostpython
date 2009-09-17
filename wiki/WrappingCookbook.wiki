@@ -4,6 +4,44 @@
 
 I'll try not to dwell on the trivial details, but instead mention some tricks and info that I've gathered from different documentation and web links. I'll try to mention the source where I first read each piece of advice, so if you want more reading click the links and read the rest of what they had to say.
 
+= Wrapping enums =
+
+Simple, but there's one little thing to watch for:
+
+{{{
+BOOST_PYTHON_MODULE(_osg)
+{
+  // ...
+  {
+    scope in_Object = class_<Object, /* ... */ >("Object", /* ... */)
+      // ...
+    ;
+
+    enum_<Object::DataVariance>("DataVariance")
+      .value("DYNAMIC",     Object::DYNAMIC)
+      .value("STATIC",      Object::STATIC)
+      .value("UNSPECIFIED", Object::UNSPECIFIED)
+    ;
+  }
+  // ...
+}
+}}}
+
+Note that the class where the enum needs to be is enclosed in a scope (curly brackets) and the result of the `class_` template is assigned to a `scope` object that lives for the duration of that scope. Then the `enum_` is created while that `scope` object lives.
+
+This means that the enum will be accessed as osg.Object.DataVariance. If we didn't do that, the enum would be in module scope, so it would be osg.DataVariance. In addition to cluttering the osg module's namespace, it makes it hard to see which enums apply to which kinds of objects. So it's preferable to do it as above.
+
+Eventually I might switch to read-only data members for the enum values instead of using `enum_`, because I don't like this:
+
+{{{
+n = osg.Node()  # Since Object is abstract
+n.dataVariance(osg.Object.DataVariance.DYNAMIC)  # Note we need to add DataVariance
+# I'd prefer:
+# n.dataVariance(osg.Object.DYNAMIC)  # Like in C++, less cluttered
+}}}
+
+But for now, it's ok.
+
 = Wrapping overridden methods =
 
 When wrapping methods like this:
@@ -191,6 +229,8 @@ class_<ClassName, bases<...>, ref_ptr<ClassName> >("ClassName")
   // ...
 ;
 }}}
+
+Note that I still have problems with conversion from ref_ptr<T> to T* and the opposite, so I'll update this when I've fixed it.
 
 References: [http://www.boost.org/doc/libs/1_36_0/libs/python/doc/v2/pointee.html#pointee-spec Pointee documentation] -- [http://osdir.com/ml/python.c++/2002-07/msg00174.html mailing list post]
 
