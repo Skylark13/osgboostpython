@@ -1,4 +1,5 @@
 #summary Why did I choose to do the wrapping manually?
+#labels Featured
 
 = Introduction =
 
