@@ -1,4 +1,5 @@
 #summary Recipes for wrapping with boost.python
+#labels Featured
 
 = Introduction =
 
