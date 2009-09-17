@@ -1,4 +1,5 @@
 #summary Guidelines I'd like people to follow when submitting changes.
+#labels Featured
 
 = Guidelines =
 
