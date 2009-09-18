@@ -107,10 +107,9 @@ struct VecWrapper
 template<typename VecType>
 struct Vec2Wrapper : public VecWrapper<VecType>
 {
-/*
     typedef typename VecType::value_type value_type;
     typedef boost::python::class_<VecType> class_t;
-*/
+
     VEC_PROPERTY_HELPER(x)
     VEC_PROPERTY_HELPER(y)
 
@@ -121,7 +120,7 @@ struct Vec2Wrapper : public VecWrapper<VecType>
 
     static class_t wrap(const std::string& name)
     {
-        class_t result = VecWrapper::wrap(name);
+        class_t result = VecWrapper<VecType>::wrap(name);
         result
             .def(init<value_type, value_type>())
             .add_property("x", getx, setx)
@@ -136,10 +135,9 @@ struct Vec2Wrapper : public VecWrapper<VecType>
 template<typename VecType>
 struct Vec3Wrapper : public Vec2Wrapper<VecType>
 {
-/*
-    typedef typename VecType::value_type value_type;
+    typedef typename VecType::value_type value_type; 
     typedef boost::python::class_<VecType> class_t;
-*/
+
     VEC_PROPERTY_HELPER(x)
     VEC_PROPERTY_HELPER(y)
     VEC_PROPERTY_HELPER(z)
@@ -151,7 +149,7 @@ struct Vec3Wrapper : public Vec2Wrapper<VecType>
 
     static class_t wrap(const std::string& name)
     {
-        class_t result = VecWrapper::wrap(name);
+        class_t result = VecWrapper<VecType>::wrap(name);
         result
             .def(init<value_type, value_type, value_type>())
             .add_property("x", getx, setx)
@@ -168,10 +166,9 @@ struct Vec3Wrapper : public Vec2Wrapper<VecType>
 template<typename VecType>
 struct Vec4Wrapper : public Vec3Wrapper<VecType>
 {
-/*
     typedef typename VecType::value_type value_type;
     typedef boost::python::class_<VecType> class_t;
-*/
+
     VEC_PROPERTY_HELPER(x)
     VEC_PROPERTY_HELPER(y)
     VEC_PROPERTY_HELPER(z)
@@ -184,7 +181,7 @@ struct Vec4Wrapper : public Vec3Wrapper<VecType>
 
     static class_t wrap(const std::string& name)
     {
-        class_t result = VecWrapper::wrap(name);
+        class_t result = VecWrapper<VecType>::wrap(name);
         result
             .def(init<value_type, value_type, value_type, value_type>())
             .add_property("x", getx, setx)
