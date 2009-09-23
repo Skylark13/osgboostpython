@@ -60,7 +60,7 @@ class osgViewerTest(unittest.TestCase):
         if (testStateSet):
             print "Will disable lighting"
             s = geode.stateSet
-            s.setMode(osg.GL_LIGHTING, osg.StateAttribute.Values.OFF)
+            s.setMode(osg.GL_LIGHTING, osg.StateAttribute.OFF)
         runViewer(geode)
 
     def test_003_osgViewerAndCow1(self):
@@ -76,7 +76,7 @@ class osgViewerTest(unittest.TestCase):
         if (testStateSet):
             print "Will disable texturing"
             s = cow.stateSet
-            s.setTextureMode(0, osg.GL_TEXTURE_2D, osg.StateAttribute.Values.OFF + osg.StateAttribute.Values.OVERRIDE)
+            s.setTextureMode(0, osg.GL_TEXTURE_2D, osg.StateAttribute.OFF + osg.StateAttribute.OVERRIDE)
         runViewer(cow)
         self.failUnless(True)
 
@@ -99,9 +99,9 @@ class osgViewerTest(unittest.TestCase):
             i = osgDB.readImageFile("Images/osg256.png")
             t = osg.Texture2D(i)
             s = geode.stateSet
-            s.setTextureAttributeAndModes(0, t, osg.StateAttribute.Values.ON)
-            s.setRenderingHint(osg.StateSet.RenderingHint.TRANSPARENT_BIN)
-            s.setMode(osg.GL_BLEND, osg.StateAttribute.Values.ON)
+            s.setTextureAttributeAndModes(0, t, osg.StateAttribute.ON)
+            s.setRenderingHint(osg.StateSet.TRANSPARENT_BIN)
+            s.setMode(osg.GL_BLEND, osg.StateAttribute.ON)
 
         runViewer(geode)
         self.failUnless(True)
@@ -127,7 +127,36 @@ class osgViewerTest(unittest.TestCase):
         runViewer(cow, DerivedHandler())
         self.failUnless(True)
 
-    def test_008_osgViewerAndOverriddenNodeCallback(self):
+    def test_008_osgViewerAndOverriddenGUIEventHandler2(self):
+        print "-"*40
+        print "Testing osgViewer with a GUIEventHandler derived in python code"
+        class DerivedHandler2(osgGA.GUIEventHandler):
+            def handle(self, ea, aa, obj, nv):
+                print "python handle"
+                if (ea):
+                    pass
+                else:
+                    print "ea is NULL"
+                if (aa):
+                    pass
+                else:
+                    print "aa is NULL"
+                if (obj):
+                    pass
+                else:
+                    print "obj is NULL"
+                if (nv):
+                    pass
+                else:
+                    print "nv is NULL"
+                return False
+
+        cow = osgDB.readNodeFile("cow.osg")
+
+        runViewer(cow, DerivedHandler2())
+        self.failUnless(True)
+
+    def test_009_osgViewerAndOverriddenNodeCallback(self):
         print "-"*40
         print "Will add a trivial CullCallback to the model - since traverse() is called the model should still be rendered."
         class DerivedCallback(osg.NodeCallback):
@@ -150,7 +179,8 @@ allTests = ['test_000_osgViewerSetups',
             'test_005_osgViewerAndGeometry1',
             'test_006_osgViewerAndGeometry2',
             'test_007_osgViewerAndOverriddenGUIEventHandler',
-            'test_008_osgViewerAndOverriddenNodeCallback']
+            'test_008_osgViewerAndOverriddenGUIEventHandler2',
+            'test_009_osgViewerAndOverriddenNodeCallback']
 
 # To be able to run one single test from the command line. Could be name-based instead of index-based...
 if __name__ == "__main__":

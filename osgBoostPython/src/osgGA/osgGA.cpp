@@ -11,6 +11,7 @@ using namespace boost::python;
 using namespace osg;
 using namespace osgGA;
 
+void export_guieventadapter();
 
 struct GUIEventHandler_wrapper : public GUIEventHandler
 {
@@ -80,13 +81,7 @@ struct GUIEventHandler_wrapper : public GUIEventHandler
 BOOST_PYTHON_MODULE(_osgGA)
 {
 
-    {
-        scope in_GUIEventAdapter = class_<GUIEventAdapter, bases<osg::Object>, ref_ptr<GUIEventAdapter> >("GUIEventAdapter")
-            .def(init<>())
-        ;
-
-        // TODO: many enums here...
-    }
+    export_guieventadapter();
 
     // Abstract base class for osgViewer::View
     class_<GUIActionAdapter, boost::noncopyable>("GUIActionAdapter", no_init)

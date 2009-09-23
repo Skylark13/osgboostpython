@@ -26,6 +26,18 @@ BoundingBox::value_type& (BoundingBox::*BoundingBox_xMax1)( ) = &BoundingBox::xM
 BoundingBox::value_type& (BoundingBox::*BoundingBox_yMax1)( ) = &BoundingBox::yMax;
 BoundingBox::value_type& (BoundingBox::*BoundingBox_zMax1)( ) = &BoundingBox::zMax;
 
+template <typename VecType>
+std::string Vector_str(VecType * self)
+{
+    std::ostringstream ost;
+    ost << "[";
+    for (unsigned int i=0 ; i< VecType::num_components ; i++) {
+        ost << (*self)[i];
+        if (i != VecType::num_components-1) ost << ",";
+    }
+    ost << "]";
+    return ost.str();
+}
 
 template<typename VecType>
 struct VecWrapper
@@ -117,7 +129,7 @@ struct Vec2Wrapper : public VecWrapper<VecType>
     {
         vec.set(x, y);
     }
-
+    
     static class_t wrap(const std::string& name)
     {
         class_t result = VecWrapper<VecType>::wrap(name);
@@ -127,6 +139,7 @@ struct Vec2Wrapper : public VecWrapper<VecType>
             .add_property("y", gety, sety)
             .def("set", set_2_components)
             .def("__getitem__", (value_type& (VecType::*)(int)) &VecType::operator[], return_value_policy<copy_non_const_reference>())
+            .def("__str__", &Vector_str<VecType>)
         ;
         return result;
     }
@@ -158,6 +171,7 @@ struct Vec3Wrapper : public Vec2Wrapper<VecType>
             .def("set", set_3_components)
             .def("__getitem__", (value_type& (VecType::*)(int)) &VecType::operator[], return_value_policy<copy_non_const_reference>())
             .def("cross", &VecType::operator^)
+            .def("__str__", &Vector_str<VecType>)
         ;
         return result;
     }
@@ -196,6 +210,7 @@ struct Vec4Wrapper : public Vec3Wrapper<VecType>
             .def("__getitem__", (value_type& (VecType::*)(unsigned int)) &VecType::operator[], return_value_policy<copy_non_const_reference>())
             .def("asRGBA", &VecType::asRGBA)
             .def("asABGR", &VecType::asABGR)
+            .def("__str__", &Vector_str<VecType>)
         ;
         return result;
     }

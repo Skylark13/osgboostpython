@@ -27,15 +27,15 @@ def createTexturedQuadGeometry(corner, widthVec, heightVec, l, b, r, t):
     colors = _osg.Vec4Array()
     colors.append(_osg.Vec4f(1,1,1,1))
     g.setColorArray(colors)
-    g.colorBinding = _osg.Geometry.AttributeBinding.BIND_OVERALL
+    g.colorBinding = _osg.Geometry.BIND_OVERALL
 
     #print "Creating and adding normal array"
     normals = _osg.Vec3Array()
     normals.append(_osg.Vec3f(0,-1,0))
     g.setNormalArray(normals)
-    g.normalBinding = _osg.Geometry.AttributeBinding.BIND_OVERALL
+    g.normalBinding = _osg.Geometry.BIND_OVERALL
 
     #print "Adding PrimitiveSet"
-    g.addPrimitiveSet(_osg.DrawArrays(_osg.PrimitiveSet.Mode.QUADS, 0, 4))
+    g.addPrimitiveSet(_osg.DrawArrays(_osg.PrimitiveSet.QUADS, 0, 4))
 
     return g

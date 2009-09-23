@@ -38,6 +38,8 @@ void export_drawable()
             .def("getParent", Drawable_getParent1, osgBoostPython::default_pointer_policy())
             // TODO: Wrap StateSet (big one)
             .add_property("stateSet", make_function(&Drawable::getOrCreateStateSet, osgBoostPython::default_pointer_policy()), &Drawable::setStateSet)     // TODO: wrapper returning ref_ptr for getOrCreateStateSet()
+            .def("setStateSet", &Drawable::setStateSet)     // same call as in c++
+            .def("getOrCreateStateSet", &Drawable::getOrCreateStateSet, osgBoostPython::default_pointer_policy())
             .def("setInitialBound", &Drawable::setInitialBound)
             .def("getInitialBound", &Drawable::getInitialBound, osgBoostPython::default_const_reference_policy())
             .def("dirtyBound", &Drawable::dirtyBound)
@@ -103,13 +105,13 @@ void export_drawable()
             .def("removePrimitiveSet", &Geometry::removePrimitiveSet)
         ;
 
-        enum_<Geometry::AttributeBinding>("AttributeBinding")
-            .value("BIND_OFF",               Geometry::BIND_OFF)
-            .value("BIND_OVERALL",           Geometry::BIND_OVERALL)
-            .value("BIND_PER_PRIMITIVE_SET", Geometry::BIND_PER_PRIMITIVE_SET)
-            .value("BIND_PER_PRIMITIVE",     Geometry::BIND_PER_PRIMITIVE)
-            .value("BIND_PER_VERTEX",        Geometry::BIND_PER_VERTEX)
-        ;
+        enum_<Geometry::AttributeBinding>("AttributeBinding");
+            scope().attr("BIND_OFF") =               Geometry::BIND_OFF;
+            scope().attr("BIND_OVERALL") =           Geometry::BIND_OVERALL;
+            scope().attr("BIND_PER_PRIMITIVE_SET") = Geometry::BIND_PER_PRIMITIVE_SET;
+            scope().attr("BIND_PER_PRIMITIVE") =     Geometry::BIND_PER_PRIMITIVE;
+            scope().attr("BIND_PER_VERTEX") =        Geometry::BIND_PER_VERTEX;
+
     }
 
     // PrimitiveSet
@@ -117,27 +119,26 @@ void export_drawable()
         scope in_PrimitiveSet = class_<PrimitiveSet, bases<Object>, ref_ptr<PrimitiveSet>, boost::noncopyable >("PrimitiveSet", no_init)
         ;
 
-        enum_<PrimitiveSet::Type>("Type")
-            .value("PrimitiveType",                   PrimitiveSet::PrimitiveType)
-            .value("DrawArraysPrimitiveType",         PrimitiveSet::DrawArraysPrimitiveType)
-            .value("DrawArrayLengthsPrimitiveType",   PrimitiveSet::DrawArrayLengthsPrimitiveType)
-            .value("DrawElementsUBytePrimitiveType",  PrimitiveSet::DrawElementsUBytePrimitiveType)
-            .value("DrawElementsUShortPrimitiveType", PrimitiveSet::DrawElementsUShortPrimitiveType)
-            .value("DrawElementsUIntPrimitiveType",   PrimitiveSet::DrawElementsUIntPrimitiveType)
-        ;
+        enum_<PrimitiveSet::Type>("Type");
+            scope().attr("PrimitiveType") =                   PrimitiveSet::PrimitiveType;
+            scope().attr("DrawArraysPrimitiveType") =         PrimitiveSet::DrawArraysPrimitiveType;
+            scope().attr("DrawArrayLengthsPrimitiveType") =   PrimitiveSet::DrawArrayLengthsPrimitiveType;
+            scope().attr("DrawElementsUBytePrimitiveType") =  PrimitiveSet::DrawElementsUBytePrimitiveType;
+            scope().attr("DrawElementsUShortPrimitiveType") = PrimitiveSet::DrawElementsUShortPrimitiveType;
+            scope().attr("DrawElementsUIntPrimitiveType") =   PrimitiveSet::DrawElementsUIntPrimitiveType;
 
-        enum_<PrimitiveSet::Mode>("Mode")
-            .value("POINTS",         PrimitiveSet::POINTS)
-            .value("LINES",          PrimitiveSet::LINES)
-            .value("LINE_STRIP",     PrimitiveSet::LINE_STRIP)
-            .value("LINE_LOOP",      PrimitiveSet::LINE_LOOP)
-            .value("TRIANGLES",      PrimitiveSet::TRIANGLES)
-            .value("TRIANGLE_STRIP", PrimitiveSet::TRIANGLE_STRIP)
-            .value("TRIANGLE_FAN",   PrimitiveSet::TRIANGLE_FAN)
-            .value("QUADS",          PrimitiveSet::QUADS)
-            .value("QUAD_STRIP",     PrimitiveSet::QUAD_STRIP)
-            .value("POLYGON",        PrimitiveSet::POLYGON)
-        ;
+        enum_<PrimitiveSet::Mode>("Mode");
+            scope().attr("POINTS") =         PrimitiveSet::POINTS;
+            scope().attr("LINES") =          PrimitiveSet::LINES;
+            scope().attr("LINE_STRIP") =     PrimitiveSet::LINE_STRIP;
+            scope().attr("LINE_LOOP") =      PrimitiveSet::LINE_LOOP;
+            scope().attr("TRIANGLES") =      PrimitiveSet::TRIANGLES;
+            scope().attr("TRIANGLE_STRIP") = PrimitiveSet::TRIANGLE_STRIP;
+            scope().attr("TRIANGLE_FAN") =   PrimitiveSet::TRIANGLE_FAN;
+            scope().attr("QUADS") =          PrimitiveSet::QUADS;
+            scope().attr("QUAD_STRIP") =     PrimitiveSet::QUAD_STRIP;
+            scope().attr("POLYGON") =        PrimitiveSet::POLYGON;
+
     }
     
     // DrawArrays
