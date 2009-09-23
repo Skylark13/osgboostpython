@@ -29,18 +29,16 @@ void export_stateAttributes()
             .def("setInternalFormat", &Texture2D::setInternalFormat)
         ;
 
-       enum_<Texture2D::FilterParameter>("FilterParameter")
-            .value("MIN_FILTER",     Texture2D::MIN_FILTER)
-            .value("MAG_FILTER",     Texture2D::MAG_FILTER)
-        ;
+       enum_<Texture2D::FilterParameter>("FilterParameter");
+            scope().attr("MIN_FILTER") = Texture2D::MIN_FILTER;
+            scope().attr("MAG_FILTER") = Texture2D::MAG_FILTER;
 
-       enum_<Texture2D::FilterMode>("FilterMode")
-            .value("LINEAR",     Texture2D::LINEAR)
-            .value("LINEAR_MIPMAP_LINEAR",     Texture2D::LINEAR_MIPMAP_LINEAR)
-            .value("LINEAR_MIPMAP_NEAREST",     Texture2D::LINEAR_MIPMAP_NEAREST)
-            .value("NEAREST",     Texture2D::NEAREST)
-            .value("NEAREST_MIPMAP_LINEAR",     Texture2D::NEAREST_MIPMAP_LINEAR)
-            .value("NEAREST_MIPMAP_NEAREST",     Texture2D::NEAREST_MIPMAP_NEAREST)
-        ;
+       enum_<Texture2D::FilterMode>("FilterMode");
+            scope().attr("LINEAR") = Texture2D::LINEAR;
+            scope().attr("LINEAR_MIPMAP_LINEAR") = Texture2D::LINEAR_MIPMAP_LINEAR;
+            scope().attr("LINEAR_MIPMAP_NEAREST") = Texture2D::LINEAR_MIPMAP_NEAREST;
+            scope().attr("NEAREST") = Texture2D::NEAREST;
+            scope().attr("NEAREST_MIPMAP_LINEAR") = Texture2D::NEAREST_MIPMAP_LINEAR;
+            scope().attr("NEAREST_MIPMAP_NEAREST") = Texture2D::NEAREST_MIPMAP_NEAREST;
     }
 }

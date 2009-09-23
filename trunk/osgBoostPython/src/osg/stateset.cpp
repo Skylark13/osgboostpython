@@ -88,6 +88,7 @@ StateAttribute::GLModeValue (StateSet::*StateSet_getMode1)(StateAttribute::GLMod
 
 // Attributes
 void (StateSet::*StateSet_setAttribute1)(StateAttribute*, StateAttribute::OverrideValue) = &StateSet::setAttribute;
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(StateSet_setAttribute_overloads, setAttribute, 1, 2)
 // getAttribute and removeAttribute have a default value on the second 
 // argument, the BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS allows us to use them.
 StateAttribute* (StateSet::*StateSet_getAttribute1)(StateAttribute::Type, unsigned int) = &StateSet::getAttribute;
@@ -108,71 +109,75 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(StateSet_getOrCreateUniform_overloads, ge
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(StateSet_addUniform_overloads, addUniform, 1, 2)
 void (StateSet::*StateSet_removeUniform1)(const std::string&) = &StateSet::removeUniform;
 void (StateSet::*StateSet_removeUniform2)(Uniform*) = &StateSet::removeUniform;
+
+// RenderBin
+void (StateSet::*StateSet_setRenderBinDetails1)(int, const std::string&, StateSet::RenderBinMode) = &StateSet::setRenderBinDetails;
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(StateSet_setRenderBinDetails_overloads, setRenderBinDetails, 2, 3)
 //----------------- StateSet -----------------
 
 void export_stateset()
 {
     // Expose all OpenGL modes so we can use them in StateSet::setMode()
-	scope().attr("GL_ALPHA_TEST")           = GL_ALPHA_TEST;
-	scope().attr("GL_AUTO_NORMAL")          = GL_AUTO_NORMAL;
-	scope().attr("GL_BLEND")                = GL_BLEND;
-	scope().attr("GL_CLIP_PLANE0")          = GL_CLIP_PLANE0;
-	scope().attr("GL_CLIP_PLANE1")          = GL_CLIP_PLANE1;
-	scope().attr("GL_CLIP_PLANE2")          = GL_CLIP_PLANE2;
-	scope().attr("GL_CLIP_PLANE3")          = GL_CLIP_PLANE3;
-	scope().attr("GL_CLIP_PLANE4")          = GL_CLIP_PLANE4;
-	scope().attr("GL_CLIP_PLANE5")          = GL_CLIP_PLANE5;
-	scope().attr("GL_COLOR_LOGIC_OP")       = GL_COLOR_LOGIC_OP;
-	scope().attr("GL_COLOR_MATERIAL")       = GL_COLOR_MATERIAL;
-	scope().attr("GL_CULL_FACE")            = GL_CULL_FACE;
-	scope().attr("GL_DEPTH_TEST")           = GL_DEPTH_TEST;
-	scope().attr("GL_DITHER")               = GL_DITHER;
-	scope().attr("GL_FOG")                  = GL_FOG;
-	scope().attr("GL_INDEX_LOGIC_OP")       = GL_INDEX_LOGIC_OP;
-	scope().attr("GL_LIGHTi")               = GL_LIGHT0;
-	scope().attr("GL_LIGHTi")               = GL_LIGHT1;
-	scope().attr("GL_LIGHTi")               = GL_LIGHT2;
-	scope().attr("GL_LIGHTi")               = GL_LIGHT3;
-	scope().attr("GL_LIGHTi")               = GL_LIGHT4;
-	scope().attr("GL_LIGHTi")               = GL_LIGHT5;
-	scope().attr("GL_LIGHTi")               = GL_LIGHT6;
-	scope().attr("GL_LIGHTi")               = GL_LIGHT7;
-	scope().attr("GL_LIGHTING")             = GL_LIGHTING;
-	scope().attr("GL_LINE_SMOOTH")          = GL_LINE_SMOOTH;
-	scope().attr("GL_LINE_STIPPLE")         = GL_LINE_STIPPLE;
-	scope().attr("GL_MAP1_COLOR_4")         = GL_MAP1_COLOR_4;
-	scope().attr("GL_MAP1_INDEX")           = GL_MAP1_INDEX;
-	scope().attr("GL_MAP1_NORMAL")          = GL_MAP1_NORMAL;
-	scope().attr("GL_MAP1_TEXTURE_COORD_1") = GL_MAP1_TEXTURE_COORD_1;
-	scope().attr("GL_MAP1_TEXTURE_COORD_2") = GL_MAP1_TEXTURE_COORD_2;
-	scope().attr("GL_MAP1_TEXTURE_COORD_3") = GL_MAP1_TEXTURE_COORD_3;
-	scope().attr("GL_MAP1_TEXTURE_COORD_4") = GL_MAP1_TEXTURE_COORD_4;
-	scope().attr("GL_MAP1_VERTEX_3")        = GL_MAP1_VERTEX_3;
-	scope().attr("GL_MAP1_VERTEX_4")        = GL_MAP1_VERTEX_4;
-	scope().attr("GL_MAP2_COLOR_4")         = GL_MAP2_COLOR_4;
-	scope().attr("GL_MAP2_INDEX")           = GL_MAP2_INDEX;
-	scope().attr("GL_MAP2_NORMAL")          = GL_MAP2_NORMAL;
-	scope().attr("GL_MAP2_TEXTURE_COORD_1") = GL_MAP2_TEXTURE_COORD_1;
-	scope().attr("GL_MAP2_TEXTURE_COORD_2") = GL_MAP2_TEXTURE_COORD_2;
-	scope().attr("GL_MAP2_TEXTURE_COORD_3") = GL_MAP2_TEXTURE_COORD_3;
-	scope().attr("GL_MAP2_TEXTURE_COORD_4") = GL_MAP2_TEXTURE_COORD_4;
-	scope().attr("GL_MAP2_VERTEX_3")        = GL_MAP2_VERTEX_3;
-	scope().attr("GL_MAP2_VERTEX_4")        = GL_MAP2_VERTEX_4;
-	scope().attr("GL_NORMALIZE")            = GL_NORMALIZE;
-	scope().attr("GL_POINT_SMOOTH")         = GL_POINT_SMOOTH;
-	scope().attr("GL_POLYGON_OFFSET_FILL")  = GL_POLYGON_OFFSET_FILL;
-	scope().attr("GL_POLYGON_OFFSET_LINE")  = GL_POLYGON_OFFSET_LINE;
-	scope().attr("GL_POLYGON_OFFSET_POINT") = GL_POLYGON_OFFSET_POINT;
-	scope().attr("GL_POLYGON_SMOOTH")       = GL_POLYGON_SMOOTH;
-	scope().attr("GL_POLYGON_STIPPLE")      = GL_POLYGON_STIPPLE;
-	scope().attr("GL_SCISSOR_TEST")         = GL_SCISSOR_TEST;
-	scope().attr("GL_STENCIL_TEST")         = GL_STENCIL_TEST;
-	scope().attr("GL_TEXTURE_1D")           = GL_TEXTURE_1D;
-	scope().attr("GL_TEXTURE_2D")           = GL_TEXTURE_2D;
-	scope().attr("GL_TEXTURE_GEN_Q")        = GL_TEXTURE_GEN_Q;
-	scope().attr("GL_TEXTURE_GEN_R")        = GL_TEXTURE_GEN_R;
-	scope().attr("GL_TEXTURE_GEN_S")        = GL_TEXTURE_GEN_S;
-	scope().attr("GL_TEXTURE_GEN_T")        = GL_TEXTURE_GEN_T;
+    scope().attr("GL_ALPHA_TEST") = GL_ALPHA_TEST;
+    scope().attr("GL_AUTO_NORMAL") = GL_AUTO_NORMAL;
+    scope().attr("GL_BLEND") = GL_BLEND;
+    scope().attr("GL_CLIP_PLANE0") = GL_CLIP_PLANE0;
+    scope().attr("GL_CLIP_PLANE1") = GL_CLIP_PLANE1;
+    scope().attr("GL_CLIP_PLANE2") = GL_CLIP_PLANE2;
+    scope().attr("GL_CLIP_PLANE3") = GL_CLIP_PLANE3;
+    scope().attr("GL_CLIP_PLANE4") = GL_CLIP_PLANE4;
+    scope().attr("GL_CLIP_PLANE5") = GL_CLIP_PLANE5;
+    scope().attr("GL_COLOR_LOGIC_OP") = GL_COLOR_LOGIC_OP;
+    scope().attr("GL_COLOR_MATERIAL") = GL_COLOR_MATERIAL;
+    scope().attr("GL_CULL_FACE") = GL_CULL_FACE;
+    scope().attr("GL_DEPTH_TEST") = GL_DEPTH_TEST;
+    scope().attr("GL_DITHER") = GL_DITHER;
+    scope().attr("GL_FOG") = GL_FOG;
+    scope().attr("GL_INDEX_LOGIC_OP") = GL_INDEX_LOGIC_OP;
+    scope().attr("GL_LIGHTi") = GL_LIGHT0;
+    scope().attr("GL_LIGHTi") = GL_LIGHT1;
+    scope().attr("GL_LIGHTi") = GL_LIGHT2;
+    scope().attr("GL_LIGHTi") = GL_LIGHT3;
+    scope().attr("GL_LIGHTi") = GL_LIGHT4;
+    scope().attr("GL_LIGHTi") = GL_LIGHT5;
+    scope().attr("GL_LIGHTi") = GL_LIGHT6;
+    scope().attr("GL_LIGHTi") = GL_LIGHT7;
+    scope().attr("GL_LIGHTING") = GL_LIGHTING;
+    scope().attr("GL_LINE_SMOOTH") = GL_LINE_SMOOTH;
+    scope().attr("GL_LINE_STIPPLE") = GL_LINE_STIPPLE;
+    scope().attr("GL_MAP1_COLOR_4") = GL_MAP1_COLOR_4;
+    scope().attr("GL_MAP1_INDEX") = GL_MAP1_INDEX;
+    scope().attr("GL_MAP1_NORMAL") = GL_MAP1_NORMAL;
+    scope().attr("GL_MAP1_TEXTURE_COORD_1") = GL_MAP1_TEXTURE_COORD_1;
+    scope().attr("GL_MAP1_TEXTURE_COORD_2") = GL_MAP1_TEXTURE_COORD_2;
+    scope().attr("GL_MAP1_TEXTURE_COORD_3") = GL_MAP1_TEXTURE_COORD_3;
+    scope().attr("GL_MAP1_TEXTURE_COORD_4") = GL_MAP1_TEXTURE_COORD_4;
+    scope().attr("GL_MAP1_VERTEX_3") = GL_MAP1_VERTEX_3;
+    scope().attr("GL_MAP1_VERTEX_4") = GL_MAP1_VERTEX_4;
+    scope().attr("GL_MAP2_COLOR_4") = GL_MAP2_COLOR_4;
+    scope().attr("GL_MAP2_INDEX") = GL_MAP2_INDEX;
+    scope().attr("GL_MAP2_NORMAL") = GL_MAP2_NORMAL;
+    scope().attr("GL_MAP2_TEXTURE_COORD_1") = GL_MAP2_TEXTURE_COORD_1;
+    scope().attr("GL_MAP2_TEXTURE_COORD_2") = GL_MAP2_TEXTURE_COORD_2;
+    scope().attr("GL_MAP2_TEXTURE_COORD_3") = GL_MAP2_TEXTURE_COORD_3;
+    scope().attr("GL_MAP2_TEXTURE_COORD_4") = GL_MAP2_TEXTURE_COORD_4;
+    scope().attr("GL_MAP2_VERTEX_3") = GL_MAP2_VERTEX_3;
+    scope().attr("GL_MAP2_VERTEX_4") = GL_MAP2_VERTEX_4;
+    scope().attr("GL_NORMALIZE") = GL_NORMALIZE;
+    scope().attr("GL_POINT_SMOOTH") = GL_POINT_SMOOTH;
+    scope().attr("GL_POLYGON_OFFSET_FILL") = GL_POLYGON_OFFSET_FILL;
+    scope().attr("GL_POLYGON_OFFSET_LINE") = GL_POLYGON_OFFSET_LINE;
+    scope().attr("GL_POLYGON_OFFSET_POINT") = GL_POLYGON_OFFSET_POINT;
+    scope().attr("GL_POLYGON_SMOOTH") = GL_POLYGON_SMOOTH;
+    scope().attr("GL_POLYGON_STIPPLE") = GL_POLYGON_STIPPLE;
+    scope().attr("GL_SCISSOR_TEST") = GL_SCISSOR_TEST;
+    scope().attr("GL_STENCIL_TEST") = GL_STENCIL_TEST;
+    scope().attr("GL_TEXTURE_1D") = GL_TEXTURE_1D;
+    scope().attr("GL_TEXTURE_2D") = GL_TEXTURE_2D;
+    scope().attr("GL_TEXTURE_GEN_Q") = GL_TEXTURE_GEN_Q;
+    scope().attr("GL_TEXTURE_GEN_R") = GL_TEXTURE_GEN_R;
+    scope().attr("GL_TEXTURE_GEN_S") = GL_TEXTURE_GEN_S;
+    scope().attr("GL_TEXTURE_GEN_T") = GL_TEXTURE_GEN_T;
 
 
     {
@@ -186,63 +191,62 @@ void export_stateset()
         ;
 
         // Need to use + instead of | to combine values, but otherwise works great.
-        enum_<StateAttribute::Values>("Values")
-            .value("OFF",       StateAttribute::OFF)
-            .value("ON",        StateAttribute::ON)
-            .value("OVERRIDE",  StateAttribute::OVERRIDE)
-            .value("PROTECTED", StateAttribute::PROTECTED)
-            .value("INHERIT",   StateAttribute::INHERIT)
-        ;
-        enum_<StateAttribute::Type>("Type")
-            .value("TEXTURE",                     StateAttribute::TEXTURE)
-            .value("POLYGONMODE",                 StateAttribute::POLYGONMODE)
-            .value("POLYGONOFFSET",               StateAttribute::POLYGONOFFSET)
-            .value("MATERIAL",                    StateAttribute::MATERIAL)
-            .value("ALPHAFUNC",                   StateAttribute::ALPHAFUNC)
-            .value("ANTIALIAS",                   StateAttribute::ANTIALIAS)
-            .value("COLORTABLE",                  StateAttribute::COLORTABLE)
-            .value("CULLFACE",                    StateAttribute::CULLFACE)
-            .value("FOG",                         StateAttribute::FOG)
-            .value("FRONTFACE",                   StateAttribute::FRONTFACE)
-            .value("LIGHT",                       StateAttribute::LIGHT)
-            .value("POINT",                       StateAttribute::POINT)
-            .value("LINEWIDTH",                   StateAttribute::LINEWIDTH)
-            .value("LINESTIPPLE",                 StateAttribute::LINESTIPPLE)
-            .value("POLYGONSTIPPLE",              StateAttribute::POLYGONSTIPPLE)
-            .value("SHADEMODEL",                  StateAttribute::SHADEMODEL)
-            .value("TEXENV",                      StateAttribute::TEXENV)
-            .value("TEXENVFILTER",                StateAttribute::TEXENVFILTER)
-            .value("TEXGEN",                      StateAttribute::TEXGEN)
-            .value("TEXMAT",                      StateAttribute::TEXMAT)
-            .value("LIGHTMODEL",                  StateAttribute::LIGHTMODEL)
-            .value("BLENDFUNC",                   StateAttribute::BLENDFUNC)
-            .value("BLENDEQUATION",               StateAttribute::BLENDEQUATION)
-            .value("LOGICOP",                     StateAttribute::LOGICOP)
-            .value("STENCIL",                     StateAttribute::STENCIL)
-            .value("COLORMASK",                   StateAttribute::COLORMASK)
-            .value("DEPTH",                       StateAttribute::DEPTH)
-            .value("VIEWPORT",                    StateAttribute::VIEWPORT)
-            .value("SCISSOR",                     StateAttribute::SCISSOR)
-            .value("BLENDCOLOR",                  StateAttribute::BLENDCOLOR)
-            .value("MULTISAMPLE",                 StateAttribute::MULTISAMPLE)
-            .value("CLIPPLANE",                   StateAttribute::CLIPPLANE)
-            .value("COLORMATRIX",                 StateAttribute::COLORMATRIX)
-            .value("VERTEXPROGRAM",               StateAttribute::VERTEXPROGRAM)
-            .value("FRAGMENTPROGRAM",             StateAttribute::FRAGMENTPROGRAM)
-            .value("POINTSPRITE",                 StateAttribute::POINTSPRITE)
-            .value("PROGRAM",                     StateAttribute::PROGRAM)
-            .value("CLAMPCOLOR",                  StateAttribute::CLAMPCOLOR)
-            .value("HINT",                        StateAttribute::HINT)
-            .value("VALIDATOR",                   StateAttribute::VALIDATOR)
-            .value("VIEWMATRIXEXTRACTOR",         StateAttribute::VIEWMATRIXEXTRACTOR)
-            .value("OSGNV_PARAMETER_BLOCK",       StateAttribute::OSGNV_PARAMETER_BLOCK)
-            .value("OSGNVEXT_TEXTURE_SHADER",     StateAttribute::OSGNVEXT_TEXTURE_SHADER)
-            .value("OSGNVEXT_VERTEX_PROGRAM",     StateAttribute::OSGNVEXT_VERTEX_PROGRAM)
-            .value("OSGNVEXT_REGISTER_COMBINERS", StateAttribute::OSGNVEXT_REGISTER_COMBINERS)
-            .value("OSGNVCG_PROGRAM",             StateAttribute::OSGNVCG_PROGRAM)
-            .value("OSGNVSLANG_PROGRAM",          StateAttribute::OSGNVSLANG_PROGRAM)
-            .value("OSGNVPARSE_PROGRAM_PARSER",   StateAttribute::OSGNVPARSE_PROGRAM_PARSER)
-        ;
+        enum_<StateAttribute::Values>("Values");
+            scope().attr("OFF") = StateAttribute::OFF;
+            scope().attr("ON") = StateAttribute::ON;
+            scope().attr("OVERRIDE") = StateAttribute::OVERRIDE;
+            scope().attr("PROTECTED") = StateAttribute::PROTECTED;
+            scope().attr("INHERIT") = StateAttribute::INHERIT;
+
+        enum_<StateAttribute::Type>("Type");
+            scope().attr("TEXTURE") = StateAttribute::TEXTURE;
+            scope().attr("POLYGONMODE") = StateAttribute::POLYGONMODE;
+            scope().attr("POLYGONOFFSET") = StateAttribute::POLYGONOFFSET;
+            scope().attr("MATERIAL") = StateAttribute::MATERIAL;
+            scope().attr("ALPHAFUNC") = StateAttribute::ALPHAFUNC;
+            scope().attr("ANTIALIAS") = StateAttribute::ANTIALIAS;
+            scope().attr("COLORTABLE") = StateAttribute::COLORTABLE;
+            scope().attr("CULLFACE") = StateAttribute::CULLFACE;
+            scope().attr("FOG") = StateAttribute::FOG;
+            scope().attr("FRONTFACE") = StateAttribute::FRONTFACE;
+            scope().attr("LIGHT") = StateAttribute::LIGHT;
+            scope().attr("POINT") = StateAttribute::POINT;
+            scope().attr("LINEWIDTH") = StateAttribute::LINEWIDTH;
+            scope().attr("LINESTIPPLE") = StateAttribute::LINESTIPPLE;
+            scope().attr("POLYGONSTIPPLE") = StateAttribute::POLYGONSTIPPLE;
+            scope().attr("SHADEMODEL") = StateAttribute::SHADEMODEL;
+            scope().attr("TEXENV") = StateAttribute::TEXENV;
+            scope().attr("TEXENVFILTER") = StateAttribute::TEXENVFILTER;
+            scope().attr("TEXGEN") = StateAttribute::TEXGEN;
+            scope().attr("TEXMAT") = StateAttribute::TEXMAT;
+            scope().attr("LIGHTMODEL") = StateAttribute::LIGHTMODEL;
+            scope().attr("BLENDFUNC") = StateAttribute::BLENDFUNC;
+            scope().attr("BLENDEQUATION") = StateAttribute::BLENDEQUATION;
+            scope().attr("LOGICOP") = StateAttribute::LOGICOP;
+            scope().attr("STENCIL") = StateAttribute::STENCIL;
+            scope().attr("COLORMASK") = StateAttribute::COLORMASK;
+            scope().attr("DEPTH") = StateAttribute::DEPTH;
+            scope().attr("VIEWPORT") = StateAttribute::VIEWPORT;
+            scope().attr("SCISSOR") = StateAttribute::SCISSOR;
+            scope().attr("BLENDCOLOR") = StateAttribute::BLENDCOLOR;
+            scope().attr("MULTISAMPLE") = StateAttribute::MULTISAMPLE;
+            scope().attr("CLIPPLANE") = StateAttribute::CLIPPLANE;
+            scope().attr("COLORMATRIX") = StateAttribute::COLORMATRIX;
+            scope().attr("VERTEXPROGRAM") = StateAttribute::VERTEXPROGRAM;
+            scope().attr("FRAGMENTPROGRAM") = StateAttribute::FRAGMENTPROGRAM;
+            scope().attr("POINTSPRITE") = StateAttribute::POINTSPRITE;
+            scope().attr("PROGRAM") = StateAttribute::PROGRAM;
+            scope().attr("CLAMPCOLOR") = StateAttribute::CLAMPCOLOR;
+            scope().attr("HINT") = StateAttribute::HINT;
+            scope().attr("VALIDATOR") = StateAttribute::VALIDATOR;
+            scope().attr("VIEWMATRIXEXTRACTOR") = StateAttribute::VIEWMATRIXEXTRACTOR;
+            scope().attr("OSGNV_PARAMETER_BLOCK") = StateAttribute::OSGNV_PARAMETER_BLOCK;
+            scope().attr("OSGNVEXT_TEXTURE_SHADER") = StateAttribute::OSGNVEXT_TEXTURE_SHADER;
+            scope().attr("OSGNVEXT_VERTEX_PROGRAM") = StateAttribute::OSGNVEXT_VERTEX_PROGRAM;
+            scope().attr("OSGNVEXT_REGISTER_COMBINERS") = StateAttribute::OSGNVEXT_REGISTER_COMBINERS;
+            scope().attr("OSGNVCG_PROGRAM") = StateAttribute::OSGNVCG_PROGRAM;
+            scope().attr("OSGNVSLANG_PROGRAM") = StateAttribute::OSGNVSLANG_PROGRAM;
+            scope().attr("OSGNVPARSE_PROGRAM_PARSER") = StateAttribute::OSGNVPARSE_PROGRAM_PARSER;
     }
 
     export_stateAttributes();
@@ -312,62 +316,62 @@ void export_stateset()
 
         ;
 
-        enum_<Uniform::Type>("Type")
-            .value("FLOAT",                         Uniform::FLOAT)
-            .value("FLOAT_VEC2",                    Uniform::FLOAT_VEC2)
-            .value("FLOAT_VEC3",                    Uniform::FLOAT_VEC3)
-            .value("FLOAT_VEC4",                    Uniform::FLOAT_VEC4)
-            .value("INT",                           Uniform::INT)
-            .value("INT_VEC2",                      Uniform::INT_VEC2)
-            .value("INT_VEC3",                      Uniform::INT_VEC3)
-            .value("INT_VEC4",                      Uniform::INT_VEC4)
-            .value("BOOL",                          Uniform::BOOL)
-            .value("BOOL_VEC2",                     Uniform::BOOL_VEC2)
-            .value("BOOL_VEC3",                     Uniform::BOOL_VEC3)
-            .value("BOOL_VEC4",                     Uniform::BOOL_VEC4)
-            .value("FLOAT_MAT2",                    Uniform::FLOAT_MAT2)
-            .value("FLOAT_MAT3",                    Uniform::FLOAT_MAT3)
-            .value("FLOAT_MAT4",                    Uniform::FLOAT_MAT4)
-            .value("SAMPLER_1D",                    Uniform::SAMPLER_1D)
-            .value("SAMPLER_2D",                    Uniform::SAMPLER_2D)
-            .value("SAMPLER_3D",                    Uniform::SAMPLER_3D)
-            .value("SAMPLER_CUBE",                  Uniform::SAMPLER_CUBE)
-            .value("SAMPLER_1D_SHADOW",             Uniform::SAMPLER_1D_SHADOW)
-            .value("SAMPLER_2D_SHADOW",             Uniform::SAMPLER_2D_SHADOW)
-            .value("SAMPLER_1D_ARRAY ",             Uniform::SAMPLER_1D_ARRAY )
-            .value("SAMPLER_2D_ARRAY",              Uniform::SAMPLER_2D_ARRAY)
-            .value("SAMPLER_1D_ARRAY_SHADOW",       Uniform::SAMPLER_1D_ARRAY_SHADOW)
-            .value("SAMPLER_2D_ARRAY_SHADOW",       Uniform::SAMPLER_2D_ARRAY_SHADOW)
-            .value("FLOAT_MAT2x3",                  Uniform::FLOAT_MAT2x3)
-            .value("FLOAT_MAT2x4",                  Uniform::FLOAT_MAT2x4)
-            .value("FLOAT_MAT3x2",                  Uniform::FLOAT_MAT3x2)
-            .value("FLOAT_MAT3x4",                  Uniform::FLOAT_MAT3x4)
-            .value("FLOAT_MAT4x2",                  Uniform::FLOAT_MAT4x2)
-            .value("FLOAT_MAT4x3",                  Uniform::FLOAT_MAT4x3)
-            .value("SAMPLER_BUFFER",                Uniform::SAMPLER_BUFFER)
-            .value("SAMPLER_CUBE_SHADOW",           Uniform::SAMPLER_CUBE_SHADOW)
-            .value("UNSIGNED_INT",                  Uniform::UNSIGNED_INT)
-            .value("UNSIGNED_INT_VEC2",             Uniform::UNSIGNED_INT_VEC2)
-            .value("UNSIGNED_INT_VEC3",             Uniform::UNSIGNED_INT_VEC3)
-            .value("UNSIGNED_INT_VEC4",             Uniform::UNSIGNED_INT_VEC4)
-            .value("INT_SAMPLER_1D",                Uniform::INT_SAMPLER_1D)
-            .value("INT_SAMPLER_2D",                Uniform::INT_SAMPLER_2D)
-            .value("INT_SAMPLER_3D",                Uniform::INT_SAMPLER_3D)
-            .value("INT_SAMPLER_CUBE",              Uniform::INT_SAMPLER_CUBE)
-            .value("INT_SAMPLER_2D_RECT",           Uniform::INT_SAMPLER_2D_RECT)
-            .value("INT_SAMPLER_1D_ARRAY",          Uniform::INT_SAMPLER_1D_ARRAY)
-            .value("INT_SAMPLER_2D_ARRAY",          Uniform::INT_SAMPLER_2D_ARRAY)
-            .value("INT_SAMPLER_BUFFER",            Uniform::INT_SAMPLER_BUFFER)
-            .value("UNSIGNED_INT_SAMPLER_1D",       Uniform::UNSIGNED_INT_SAMPLER_1D)
-            .value("UNSIGNED_INT_SAMPLER_2D",       Uniform::UNSIGNED_INT_SAMPLER_2D)
-            .value("UNSIGNED_INT_SAMPLER_3D",       Uniform::UNSIGNED_INT_SAMPLER_3D)
-            .value("UNSIGNED_INT_SAMPLER_CUBE",     Uniform::UNSIGNED_INT_SAMPLER_CUBE)
-            .value("UNSIGNED_INT_SAMPLER_2D_RECT",  Uniform::UNSIGNED_INT_SAMPLER_2D_RECT)
-            .value("UNSIGNED_INT_SAMPLER_1D_ARRAY", Uniform::UNSIGNED_INT_SAMPLER_1D_ARRAY)
-            .value("UNSIGNED_INT_SAMPLER_2D_ARRAY", Uniform::UNSIGNED_INT_SAMPLER_2D_ARRAY)
-            .value("UNSIGNED_INT_SAMPLER_BUFFER",   Uniform::UNSIGNED_INT_SAMPLER_BUFFER)
-            .value("UNDEFINED",                     Uniform::UNDEFINED)
-        ;
+        enum_<Uniform::Type>("Type");
+            scope().attr("FLOAT") = Uniform::FLOAT;
+            scope().attr("FLOAT_VEC2") = Uniform::FLOAT_VEC2;
+            scope().attr("FLOAT_VEC3") = Uniform::FLOAT_VEC3;
+            scope().attr("FLOAT_VEC4") = Uniform::FLOAT_VEC4;
+            scope().attr("INT") = Uniform::INT;
+            scope().attr("INT_VEC2") = Uniform::INT_VEC2;
+            scope().attr("INT_VEC3") = Uniform::INT_VEC3;
+            scope().attr("INT_VEC4") = Uniform::INT_VEC4;
+            scope().attr("BOOL") = Uniform::BOOL;
+            scope().attr("BOOL_VEC2") = Uniform::BOOL_VEC2;
+            scope().attr("BOOL_VEC3") = Uniform::BOOL_VEC3;
+            scope().attr("BOOL_VEC4") = Uniform::BOOL_VEC4;
+            scope().attr("FLOAT_MAT2") = Uniform::FLOAT_MAT2;
+            scope().attr("FLOAT_MAT3") = Uniform::FLOAT_MAT3;
+            scope().attr("FLOAT_MAT4") = Uniform::FLOAT_MAT4;
+            scope().attr("SAMPLER_1D") = Uniform::SAMPLER_1D;
+            scope().attr("SAMPLER_2D") = Uniform::SAMPLER_2D;
+            scope().attr("SAMPLER_3D") = Uniform::SAMPLER_3D;
+            scope().attr("SAMPLER_CUBE") = Uniform::SAMPLER_CUBE;
+            scope().attr("SAMPLER_1D_SHADOW") = Uniform::SAMPLER_1D_SHADOW;
+            scope().attr("SAMPLER_2D_SHADOW") = Uniform::SAMPLER_2D_SHADOW;
+            scope().attr("SAMPLER_1D_ARRAY ") = Uniform::SAMPLER_1D_ARRAY ;
+            scope().attr("SAMPLER_2D_ARRAY") = Uniform::SAMPLER_2D_ARRAY;
+            scope().attr("SAMPLER_1D_ARRAY_SHADOW") = Uniform::SAMPLER_1D_ARRAY_SHADOW;
+            scope().attr("SAMPLER_2D_ARRAY_SHADOW") = Uniform::SAMPLER_2D_ARRAY_SHADOW;
+            scope().attr("FLOAT_MAT2x3") = Uniform::FLOAT_MAT2x3;
+            scope().attr("FLOAT_MAT2x4") = Uniform::FLOAT_MAT2x4;
+            scope().attr("FLOAT_MAT3x2") = Uniform::FLOAT_MAT3x2;
+            scope().attr("FLOAT_MAT3x4") = Uniform::FLOAT_MAT3x4;
+            scope().attr("FLOAT_MAT4x2") = Uniform::FLOAT_MAT4x2;
+            scope().attr("FLOAT_MAT4x3") = Uniform::FLOAT_MAT4x3;
+            scope().attr("SAMPLER_BUFFER") = Uniform::SAMPLER_BUFFER;
+            scope().attr("SAMPLER_CUBE_SHADOW") = Uniform::SAMPLER_CUBE_SHADOW;
+            scope().attr("UNSIGNED_INT") = Uniform::UNSIGNED_INT;
+            scope().attr("UNSIGNED_INT_VEC2") = Uniform::UNSIGNED_INT_VEC2;
+            scope().attr("UNSIGNED_INT_VEC3") = Uniform::UNSIGNED_INT_VEC3;
+            scope().attr("UNSIGNED_INT_VEC4") = Uniform::UNSIGNED_INT_VEC4;
+            scope().attr("INT_SAMPLER_1D") = Uniform::INT_SAMPLER_1D;
+            scope().attr("INT_SAMPLER_2D") = Uniform::INT_SAMPLER_2D;
+            scope().attr("INT_SAMPLER_3D") = Uniform::INT_SAMPLER_3D;
+            scope().attr("INT_SAMPLER_CUBE") = Uniform::INT_SAMPLER_CUBE;
+            scope().attr("INT_SAMPLER_2D_RECT") = Uniform::INT_SAMPLER_2D_RECT;
+            scope().attr("INT_SAMPLER_1D_ARRAY") = Uniform::INT_SAMPLER_1D_ARRAY;
+            scope().attr("INT_SAMPLER_2D_ARRAY") = Uniform::INT_SAMPLER_2D_ARRAY;
+            scope().attr("INT_SAMPLER_BUFFER") = Uniform::INT_SAMPLER_BUFFER;
+            scope().attr("UNSIGNED_INT_SAMPLER_1D") = Uniform::UNSIGNED_INT_SAMPLER_1D;
+            scope().attr("UNSIGNED_INT_SAMPLER_2D") = Uniform::UNSIGNED_INT_SAMPLER_2D;
+            scope().attr("UNSIGNED_INT_SAMPLER_3D") = Uniform::UNSIGNED_INT_SAMPLER_3D;
+            scope().attr("UNSIGNED_INT_SAMPLER_CUBE") = Uniform::UNSIGNED_INT_SAMPLER_CUBE;
+            scope().attr("UNSIGNED_INT_SAMPLER_2D_RECT") = Uniform::UNSIGNED_INT_SAMPLER_2D_RECT;
+            scope().attr("UNSIGNED_INT_SAMPLER_1D_ARRAY") = Uniform::UNSIGNED_INT_SAMPLER_1D_ARRAY;
+            scope().attr("UNSIGNED_INT_SAMPLER_2D_ARRAY") = Uniform::UNSIGNED_INT_SAMPLER_2D_ARRAY;
+            scope().attr("UNSIGNED_INT_SAMPLER_BUFFER") = Uniform::UNSIGNED_INT_SAMPLER_BUFFER;
+            scope().attr("UNDEFINED") = Uniform::UNDEFINED;
+
     }
 
     {
@@ -378,7 +382,7 @@ void export_stateset()
             .def("setMode", StateSet_setMode1)
             .def("removeMode", StateSet_removeMode1)
             .def("getMode", StateSet_getMode1)
-            .def("setAttribute", StateSet_setAttribute1)
+            .def("setAttribute", StateSet_setAttribute1, StateSet_setAttribute_overloads())
             .def("setAttributeAndModes", &StateSet::setAttributeAndModes)
             .def("removeAttribute", StateSet_removeAttribute1, StateSet_removeAttribute_overloads())
             .def("removeAttribute", StateSet_removeAttribute2)
@@ -398,13 +402,18 @@ void export_stateset()
             .def("removeUniform", StateSet_removeUniform2)
             .def("getUniform", StateSet_getUniform1, osgBoostPython::default_pointer_policy())
             .def("getOrCreateUniform", &StateSet::getOrCreateUniform, osgBoostPython::default_pointer_policy(), StateSet_getOrCreateUniform_overloads())
+             .def("setRenderBinDetails", StateSet_setRenderBinDetails1, StateSet_setRenderBinDetails_overloads())
         ;
 
-        enum_<StateSet::RenderingHint>("RenderingHint")
-            .value("DEFAULT_BIN",     StateSet::DEFAULT_BIN)
-            .value("OPAQUE_BIN",      StateSet::OPAQUE_BIN)
-            .value("TRANSPARENT_BIN", StateSet::TRANSPARENT_BIN)
-        ;
+        enum_<StateSet::RenderingHint>("RenderingHint");
+            scope().attr("DEFAULT_BIN") = StateSet::DEFAULT_BIN;
+            scope().attr("OPAQUE_BIN") = StateSet::OPAQUE_BIN;
+            scope().attr("TRANSPARENT_BIN") = StateSet::TRANSPARENT_BIN;
+
+        enum_<StateSet::RenderBinMode>("RenderBinMode");
+            scope().attr("INHERIT_RENDERBIN_DETAILS") = StateSet::INHERIT_RENDERBIN_DETAILS;
+            scope().attr("USE_RENDERBIN_DETAILS") = StateSet::USE_RENDERBIN_DETAILS;
+            scope().attr("OVERRIDE_RENDERBIN_DETAILS") = StateSet::OVERRIDE_RENDERBIN_DETAILS;
 
     }
 }

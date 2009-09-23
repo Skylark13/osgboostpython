@@ -12,6 +12,9 @@ using namespace osgDB;
 
 #include "defaults.h"
 
+void export_registry();
+void export_options();
+
 osg::ref_ptr<osg::Node> readNodeFileWrapper(const std::string& filename)
 {
     return osg::ref_ptr<osg::Node>(osgDB::readNodeFile(filename));
@@ -32,6 +35,10 @@ bool writeNodeFileWrapper(const osg::Node* node, const std::string& filename)
     return osgDB::writeNodeFile(*node, filename,Registry::instance()->getOptions());
 }
 
+static osg::ref_ptr<osgDB::Registry> getRegistry() {
+    return osg::ref_ptr<osgDB::Registry>(osgDB::Registry::instance());
+}
+
 
 // Boost.Python and Smart Pointers
 // http://wiki.python.org/moin/boost.python/PointersAndSmartPointers
@@ -42,4 +49,8 @@ BOOST_PYTHON_MODULE(_osgDB)
     def("readImageFile", readImageFileWrapper);
     def("readShaderFile", readShaderFileWrapper);
     def("writeNodeFile", writeNodeFileWrapper);
+    
+    export_options();
+    export_registry();
+    def("Registry", &getRegistry);
 }

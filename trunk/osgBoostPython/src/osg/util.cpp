@@ -161,20 +161,18 @@ void export_util()
 
         ;
 
-        enum_<NodeVisitor::TraversalMode>("TraversalMode")
-            .value("TRAVERSE_NONE",            NodeVisitor::TRAVERSE_NONE)
-            .value("TRAVERSE_PARENTS",         NodeVisitor::TRAVERSE_PARENTS)
-            .value("TRAVERSE_ALL_CHILDREN",    NodeVisitor::TRAVERSE_ALL_CHILDREN)
-            .value("TRAVERSE_ACTIVE_CHILDREN", NodeVisitor::TRAVERSE_ACTIVE_CHILDREN)
-        ;
+        enum_<NodeVisitor::TraversalMode>("TraversalMode");
+            scope().attr("TRAVERSE_NONE") = NodeVisitor::TRAVERSE_NONE;
+            scope().attr("TRAVERSE_PARENTS") = NodeVisitor::TRAVERSE_PARENTS;
+            scope().attr("TRAVERSE_ALL_CHILDREN") = NodeVisitor::TRAVERSE_ALL_CHILDREN;
+            scope().attr("TRAVERSE_ACTIVE_CHILDREN") = NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
 
-        enum_<NodeVisitor::VisitorType>("VisitorType")
-            .value("NODE_VISITOR",             NodeVisitor::NODE_VISITOR)
-            .value("UPDATE_VISITOR",           NodeVisitor::UPDATE_VISITOR)
-            .value("EVENT_VISITOR",            NodeVisitor::EVENT_VISITOR)
-            .value("COLLECT_OCCLUDER_VISITOR", NodeVisitor::COLLECT_OCCLUDER_VISITOR)
-            .value("CULL_VISITOR",             NodeVisitor::CULL_VISITOR)
-        ;
+        enum_<NodeVisitor::VisitorType>("VisitorType");
+            scope().attr("NODE_VISITOR") = NodeVisitor::NODE_VISITOR;
+            scope().attr("UPDATE_VISITOR") = NodeVisitor::UPDATE_VISITOR;
+            scope().attr("EVENT_VISITOR") = NodeVisitor::EVENT_VISITOR;
+            scope().attr("COLLECT_OCCLUDER_VISITOR") = NodeVisitor::COLLECT_OCCLUDER_VISITOR;
+            scope().attr("CULL_VISITOR") = NodeVisitor::CULL_VISITOR;
 
     }
 

@@ -122,17 +122,17 @@ class osgTest(unittest.TestCase):
         s = g.stateSet
         self.failUnless(s)
         self.failUnless(s.getMode(osg.GL_LIGHTING))     # Initially on
-        s.setMode(osg.GL_LIGHTING, osg.StateAttribute.Values.OFF)
+        s.setMode(osg.GL_LIGHTING, osg.StateAttribute.OFF)
         self.failIf(s.getMode(osg.GL_LIGHTING))     # We set it off
-        s.setMode(osg.GL_LIGHTING, osg.StateAttribute.Values.ON)
+        s.setMode(osg.GL_LIGHTING, osg.StateAttribute.ON)
         self.failUnless(s.getMode(osg.GL_LIGHTING))     # We set it on
 
     def test_008_osgUniform(self):
-        u = osg.Uniform(osg.Uniform.Type.FLOAT, "uFloat")
+        u = osg.Uniform(osg.Uniform.FLOAT, "uFloat")
         self.failUnless(u.getFloat() == 0.0)
         u.setFloat(1.3)
         self.failUnlessAlmostEqual(u.getFloat(),  1.3)
-        u = osg.Uniform(osg.Uniform.Type.BOOL_VEC4, "uBVec4")
+        u = osg.Uniform(osg.Uniform.BOOL_VEC4, "uBVec4")
         # Should return a tuple not a list... Unless I should be setting from a list not a tuple? Anyways, it should be consistent.
         self.failUnless(u.getBool4() == [False,  False,  False,  False])
         u.setBool4(False, True, True, False)
@@ -149,7 +149,7 @@ class osgTest(unittest.TestCase):
         class DerivedVisitor1(osg.NodeVisitor):
             def __init__(self):
                 # call parent class constructor with argument
-                super(DerivedVisitor1,  self).__init__(osg.NodeVisitor.TraversalMode.TRAVERSE_ALL_CHILDREN)
+                super(DerivedVisitor1,  self).__init__(osg.NodeVisitor.TRAVERSE_ALL_CHILDREN)
             def apply_Node(self, node):
                 print "python apply_Node - node name:", node.name
                 self.traverse(node)
@@ -159,7 +159,7 @@ class osgTest(unittest.TestCase):
         class DerivedVisitor2(osg.NodeVisitor):
             def __init__(self):
                 # call parent class constructor with argument
-                super(DerivedVisitor2,  self).__init__(osg.NodeVisitor.TraversalMode.TRAVERSE_ALL_CHILDREN)
+                super(DerivedVisitor2,  self).__init__(osg.NodeVisitor.TRAVERSE_ALL_CHILDREN)
             def apply_Node(self, node):
                 print "python apply_Node - node name:", node.name
                 self.traverse(node)

@@ -308,30 +308,29 @@ void export_array()
             .def("getType", &Array::getType)
         ;
 
-        enum_<Array::Type>("Type")
-            .value("ArrayType",       Array::ArrayType       )
-            .value("ByteArrayType",   Array::ByteArrayType   )
-            .value("ShortArrayType",  Array::ShortArrayType  )
-            .value("IntArrayType",    Array::IntArrayType    )
-            .value("UByteArrayType",  Array::UByteArrayType  )
-            .value("UShortArrayType", Array::UShortArrayType )
-            .value("UIntArrayType",   Array::UIntArrayType   )
-            .value("Vec4ubArrayType", Array::Vec4ubArrayType )
-            .value("FloatArrayType",  Array::FloatArrayType  )
-            .value("Vec2ArrayType",   Array::Vec2ArrayType   )
-            .value("Vec3ArrayType",   Array::Vec3ArrayType   )
-            .value("Vec4ArrayType",   Array::Vec4ArrayType   )
-            .value("Vec2sArrayType",  Array::Vec2sArrayType  )
-            .value("Vec3sArrayType",  Array::Vec3sArrayType  )
-            .value("Vec4sArrayType",  Array::Vec4sArrayType  )
-            .value("Vec2bArrayType",  Array::Vec2bArrayType  )
-            .value("Vec3bArrayType",  Array::Vec3bArrayType  )
-            .value("Vec4bArrayType",  Array::Vec4bArrayType  )
-            .value("DoubleArrayType", Array::DoubleArrayType )
-            .value("Vec2dArrayType",  Array::Vec2dArrayType  )
-            .value("Vec3dArrayType",  Array::Vec3dArrayType  )
-            .value("Vec4dArrayType",  Array::Vec4dArrayType  )
-        ;
+        enum_<Array::Type>("Type");
+            scope().attr("ArrayType") =       Array::ArrayType       ;
+            scope().attr("ByteArrayType") =   Array::ByteArrayType   ;
+            scope().attr("ShortArrayType") =  Array::ShortArrayType  ;
+            scope().attr("IntArrayType") =    Array::IntArrayType    ;
+            scope().attr("UByteArrayType") =  Array::UByteArrayType  ;
+            scope().attr("UShortArrayType") = Array::UShortArrayType ;
+            scope().attr("UIntArrayType") =   Array::UIntArrayType   ;
+            scope().attr("Vec4ubArrayType") = Array::Vec4ubArrayType ;
+            scope().attr("FloatArrayType") =  Array::FloatArrayType  ;
+            scope().attr("Vec2ArrayType") =   Array::Vec2ArrayType   ;
+            scope().attr("Vec3ArrayType") =   Array::Vec3ArrayType   ;
+            scope().attr("Vec4ArrayType") =   Array::Vec4ArrayType   ;
+            scope().attr("Vec2sArrayType") =  Array::Vec2sArrayType  ;
+            scope().attr("Vec3sArrayType") =  Array::Vec3sArrayType  ;
+            scope().attr("Vec4sArrayType") =  Array::Vec4sArrayType  ;
+            scope().attr("Vec2bArrayType") =  Array::Vec2bArrayType  ;
+            scope().attr("Vec3bArrayType") =  Array::Vec3bArrayType  ;
+            scope().attr("Vec4bArrayType") =  Array::Vec4bArrayType  ;
+            scope().attr("DoubleArrayType") = Array::DoubleArrayType ;
+            scope().attr("Vec2dArrayType") =  Array::Vec2dArrayType  ;
+            scope().attr("Vec3dArrayType") =  Array::Vec3dArrayType  ;
+            scope().attr("Vec4dArrayType") =  Array::Vec4dArrayType  ;
     }
 
     // TODO: Not all array types are needed...

@@ -25,6 +25,7 @@ using namespace boost::python;
 #include <osg/Group>
 #include <osg/Geode>
 #include <osg/Image>
+#include <osg/DisplaySettings>
 
 #include <osg/Transform>
 #include <osg/MatrixTransform>
@@ -45,6 +46,15 @@ void export_drawable();
 void export_stateset();
 void export_camera();
 void export_matrix();
+void export_colormask();
+void export_depth();
+void export_stencil();
+void export_plane();
+void export_clipplane();
+void export_clipnode();
+void export_blendfunc();
+void export_displaysettings();
+
 
 // HeldType for objects which have a protected destructor.
 // http://osdir.com/ml/python.c++/2002-07/msg00174.html
@@ -115,11 +125,15 @@ void export_framestamp() {
     ;
 }
 
+static ref_ptr<DisplaySettings> getDisplaySettings() {
+    return ref_ptr<DisplaySettings>(DisplaySettings::instance());
+}
+
 BOOST_PYTHON_MODULE(_osg)
 {
     export_math();
-    export_framestamp();
-
+    export_framestamp();  
+    
     class_<Referenced, ref_ptr<Referenced> >("Referenced")
         .def("referenceCount", &Referenced::referenceCount)
 
@@ -134,6 +148,9 @@ BOOST_PYTHON_MODULE(_osg)
         .def("__eq__", &equals_ptr_ref<Referenced>)
         .def("__eq__", &equals_ptr_ptr<Referenced>)
     ;
+
+    export_displaysettings();
+    def("DisplaySettings", &getDisplaySettings);
 
     // Object and its enum
     {
@@ -150,11 +167,10 @@ BOOST_PYTHON_MODULE(_osg)
             .add_property("dataVariance", &Object::getDataVariance, &Object::setDataVariance)
         ;
 
-        enum_<Object::DataVariance>("DataVariance")
-            .value("DYNAMIC",     Object::DYNAMIC)
-            .value("STATIC",      Object::STATIC)
-            .value("UNSPECIFIED", Object::UNSPECIFIED)
-        ;
+        enum_<Object::DataVariance>("DataVariance");
+            scope().attr("DYNAMIC") = Object::DYNAMIC;
+            scope().attr("STATIC") = Object::STATIC;
+            scope().attr("UNSPECIFIED") = Object::UNSPECIFIED;
 
     }
 
@@ -172,6 +188,13 @@ BOOST_PYTHON_MODULE(_osg)
     export_array();
     export_matrix();
     export_stateset();
+    export_colormask();
+    export_depth();
+    export_stencil();
+    export_blendfunc();
+    export_plane();
+    export_clipplane();
+
 
     // Node
     {
@@ -200,6 +223,8 @@ BOOST_PYTHON_MODULE(_osg)
             .add_property("nodeMask", &Node::getNodeMask, &Node::setNodeMask)
             // TODO: Need methods related to descriptions?
             .add_property("stateSet", make_function(&Node::getOrCreateStateSet, osgBoostPython::default_pointer_policy()), &Node::setStateSet)     // TODO: wrapper returning ref_ptr for getOrCreateStateSet()
+            .def("setStateSet", &Node::setStateSet)     // same call as in c++
+            .def("getOrCreateStateSet", &Node::getOrCreateStateSet, osgBoostPython::default_pointer_policy())            
             .def("setInitialBound", &Node::setInitialBound)
             .def("getInitialBound", &Node::getInitialBound, osgBoostPython::default_const_reference_policy())
             .def("dirtyBound", &Node::dirtyBound)
@@ -237,16 +262,18 @@ BOOST_PYTHON_MODULE(_osg)
             .def("computeWorldToLocalMatrix", &Transform::computeWorldToLocalMatrix)
         ;
 
-        enum_<Transform::ReferenceFrame>("ReferenceFrame")
-            .value("RELATIVE_RF",                   Transform::RELATIVE_RF)
-            .value("ABSOLUTE_RF",                   Transform::ABSOLUTE_RF)
-            .value("ABSOLUTE_RF_INHERIT_VIEWPOINT", Transform::ABSOLUTE_RF_INHERIT_VIEWPOINT)
-        ;
+        enum_<Transform::ReferenceFrame>("ReferenceFrame");
+            scope().attr("RELATIVE_RF") = Transform::RELATIVE_RF;
+            scope().attr("ABSOLUTE_RF") = Transform::ABSOLUTE_RF;
+            scope().attr("ABSOLUTE_RF_INHERIT_VIEWPOINT") = Transform::ABSOLUTE_RF_INHERIT_VIEWPOINT;
+
     }
 
     class_<MatrixTransform, bases<Transform>, ref_ptr<MatrixTransform> >("MatrixTransform")
         .def(init<Matrixd>())
         .add_property("matrix", make_function(&MatrixTransform::getMatrix, osgBoostPython::default_const_reference_policy()), &MatrixTransform::setMatrix)
+        .def("setMatrix", &MatrixTransform::setMatrix)
+        .def("getMatrix", &MatrixTransform::getMatrix, osgBoostPython::default_const_reference_policy())
         .def("preMult", &MatrixTransform::preMult)
         .def("postMult", &MatrixTransform::postMult)
         .def("getInverseMatrix", &MatrixTransform::getInverseMatrix, osgBoostPython::default_const_reference_policy())
@@ -285,6 +312,8 @@ BOOST_PYTHON_MODULE(_osg)
             .def( vector_indexing_suite< Geode::DrawableList >() )
         ;
 #endif
+        //Needs Group do be ready...
+        export_clipnode();
     }
 
     class_<View, bases<Object>, ref_ptr<View> >("View")
