@@ -175,6 +175,10 @@
 			Name="osgGA"
 			>
 			<File
+				RelativePath="..\src\osgGA\guieventadapter.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\osgGA\osgGA.cpp"
 				>
 			</File>
@@ -187,6 +191,34 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\osg\blendfunc.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\osg\camera.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\osg\clipnode.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\osg\clipplane.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\osg\colormask.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\osg\depth.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\osg\displaysettings.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\osg\drawable.cpp"
 				>
 			</File>
@@ -195,7 +227,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\osg\matrix.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\osg\osg.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\osg\plane.cpp"
 				>
 			</File>
 			<File
@@ -207,6 +247,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\osg\stencil.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\osg\util.cpp"
 				>
 			</File>
@@ -215,7 +259,31 @@
 			Name="osgDB"
 			>
 			<File
+				RelativePath="..\src\osgDB\options.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\osgDB\osgDB.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\osgDB\registry.cpp"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="osgUtil"
+			>
+			<File
+				RelativePath="..\src\osgUtil\intersectionvisitor.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\osgUtil\linesegmentintersector.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\osgUtil\osgUtil.cpp"
 				>
 			</File>
 		</Filter>
