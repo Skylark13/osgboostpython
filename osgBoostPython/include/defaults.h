@@ -30,4 +30,16 @@ namespace osgBoostPython
     typedef return_value_policy<reference_existing_object> default_pointer_policy;
 }
 
+#define FUNC_PTR0(retval, classname, funcname, ptr) retval (classname::*funcname)() = &ptr;
+#define FUNC_PTR1(retval, classname, funcname, argtype1, ptr) retval (classname::*funcname)(argtype1) = &ptr;
+#define FUNC_PTR2(retval, classname, funcname, argtype1, argtype2, ptr) retval (classname::*funcname)(argtype1, argtype2) = &ptr;
+#define FUNC_PTR3(retval, classname, funcname, argtype1, argtype2, argtype3, ptr) retval (classname::*funcname)(argtype1, argtype2, argtype3) = &ptr;
+#define FUNC_PTR4(retval, classname, funcname, argtype1, argtype2, argtype3, argtype4, ptr) retval (classname::*funcname)(argtype1, argtype2, argtype3, argtype4) = &ptr;
+
+#define FUNC_PTR0_CONST(retval, classname, funcname, ptr) retval (classname::*funcname)() const = &ptr;
+#define FUNC_PTR1_CONST(retval, classname, funcname, argtype1, ptr) retval (classname::*funcname)(argtype1) const = &ptr;
+#define FUNC_PTR2_CONST(retval, classname, funcname, argtype1, argtype2, ptr) retval (classname::*funcname)(argtype1, argtype2) const = &ptr;
+#define FUNC_PTR3_CONST(retval, classname, funcname, argtype1, argtype2, argtype3, ptr) retval (classname::*funcname)(argtype1, argtype2, argtype3) const = &ptr;
+#define FUNC_PTR4_CONST(retval, classname, funcname, argtype1, argtype2, argtype3, argtype4, ptr) retval (classname::*funcname)(argtype1, argtype2, argtype3, argtype4) const = &ptr;
+
 #endif  // __OSGBOOSTPYTHON_DEFAULTS_H__

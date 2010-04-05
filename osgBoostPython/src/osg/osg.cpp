@@ -74,19 +74,7 @@ namespace python {
 }
 
 
-// Pointer calling a specific version of an overloaded method
-// http://www.boost.org/doc/libs/1_36_0/libs/python/doc/tutorial/doc/html/python/functions.html#python.overloading
-void (Object::*Object_setName1)( const std::string& ) = &Object::setName;
-
-const Node::ParentList& (Node::*Node_getParents1)() const = &Node::getParents;
-Group* (Node::*Node_getParent1)( unsigned int ) = &Node::getParent;
-const NodeCallback* (Node::*Node_getUpdateCallback1)() const = &Node::getUpdateCallback;
-const NodeCallback* (Node::*Node_getEventCallback1)() const = &Node::getEventCallback;
-const NodeCallback* (Node::*Node_getCullCallback1)() const = &Node::getCullCallback;
-
-Node* (Group::*Group_getChild1)( unsigned int ) = &Group::getChild;
-bool (Group::*Group_removeChild1)( osg::Node* ) = &Group::removeChild;
-bool (Group::*Group_removeChild2)( unsigned int, unsigned int ) = &Group::removeChild;    // Can't find a way to use the default argument here.
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(Group_removeChild2_overloads, removeChild, 1, 2)
 
 #define USE_PTRS_FOR_DRAWABLELIST
 #ifdef USE_PTRS_FOR_DRAWABLELIST
@@ -99,11 +87,7 @@ const DrawableList Geode_getDrawableList1(osg::Geode* geode)
         result.push_back(drawables[i].get());
     return result;
 }
-#else
-const Geode::DrawableList& (Geode::*Geode_getDrawableList1)() const = &Geode::getDrawableList;
 #endif
-Drawable* (Geode::*Geode_getDrawable1)( unsigned int ) = &Geode::getDrawable;
-bool (Geode::*Geode_removeDrawable1)( osg::Drawable* ) = &Geode::removeDrawable;
 
 // The equals that take ref_ptrs aren't called by python at all. To see that, 
 // uncomment the #define USE_PTRS_FOR_DRAWABLELIST above and try to do this:
@@ -154,6 +138,10 @@ BOOST_PYTHON_MODULE(_osg)
 
     // Object and its enum
     {
+        // Pointer calling a specific version of an overloaded method
+        // http://www.boost.org/doc/libs/1_36_0/libs/python/doc/tutorial/doc/html/python/functions.html#python.overloading
+        FUNC_PTR1(void, Object, Object_setName1, const std::string&, Object::setName)
+
         // Abstract class --> boost::noncopyable and no_init
         // http://mail.python.org/pipermail/c++-sig/2003-April/003699.html
         // http://wiki.python.org/moin/boost.python/FAQ#head-df5c8d3477ac287acce31b86042ab57642288f37
@@ -198,6 +186,12 @@ BOOST_PYTHON_MODULE(_osg)
 
     // Node
     {
+        FUNC_PTR0_CONST(const Node::ParentList&, Node, Node_getParents1, Node::getParents)
+        FUNC_PTR1(Group*, Node, Node_getParent1, unsigned int, Node::getParent)
+        FUNC_PTR0_CONST(const NodeCallback*, Node, Node_getUpdateCallback1, Node::getUpdateCallback)
+        FUNC_PTR0_CONST(const NodeCallback*, Node, Node_getEventCallback1, Node::getEventCallback)
+        FUNC_PTR0_CONST(const NodeCallback*, Node, Node_getCullCallback1, Node::getCullCallback)
+
         scope in_Node = class_<Node, bases<Object>, ref_ptr<Node> >("Node")
             .def("getNumParents", &Node::getNumParents)
             .def("getParents", Node_getParents1, osgBoostPython::default_value_policy())
@@ -239,19 +233,25 @@ BOOST_PYTHON_MODULE(_osg)
     }
 
     // Group
-    class_<Group, bases<Node>, ref_ptr<Group> >("Group")
-        .def("getNumChildren", &Group::getNumChildren)
-        .def("getChild", Group_getChild1, osgBoostPython::default_pointer_policy())
-        .def("addChild", &Group::addChild)
-        .def("insertChild", &Group::insertChild)
-        .def("removeChild", Group_removeChild1)
-        .def("removeChild", Group_removeChild2)
-        .def("removeChildren", &Group::removeChildren)
-        .def("replaceChild", &Group::replaceChild)
-        .def("setChild", &Group::setChild)
-        .def("containsNode", &Group::containsNode)
-        .def("getChildIndex", &Group::getChildIndex)
-    ;
+    {
+        FUNC_PTR1(Node*, Group, Group_getChild1, unsigned int, Group::getChild)
+        FUNC_PTR1(bool, Group, Group_removeChild1, osg::Node*, Group::removeChild)
+        FUNC_PTR2(bool, Group, Group_removeChild2, unsigned int, unsigned int, Group::removeChild)
+
+        class_<Group, bases<Node>, ref_ptr<Group> >("Group")
+            .def("getNumChildren", &Group::getNumChildren)
+            .def("getChild", Group_getChild1, osgBoostPython::default_pointer_policy())
+            .def("addChild", &Group::addChild)
+            .def("insertChild", &Group::insertChild)
+            .def("removeChild", Group_removeChild1)
+            .def("removeChild", Group_removeChild2, Group_removeChild2_overloads())
+            .def("removeChildren", &Group::removeChildren)
+            .def("replaceChild", &Group::replaceChild)
+            .def("setChild", &Group::setChild)
+            .def("containsNode", &Group::containsNode)
+            .def("getChildIndex", &Group::getChildIndex)
+        ;
+    }
 
     // Transform and its enum
     {
@@ -285,7 +285,11 @@ BOOST_PYTHON_MODULE(_osg)
 
     // Geode
     {
-        typedef std::vector<Drawable*> DrawableList;
+#ifndef USE_PTRS_FOR_DRAWABLELIST
+        FUNC_PTR0_CONST(const Geode::DrawableList&, Geode, Geode_getDrawableList1, Geode::getDrawableList)
+#endif
+        FUNC_PTR1(Drawable*, Geode, Geode_getDrawable1, unsigned int , Geode::getDrawable)
+        FUNC_PTR1(bool, Geode, Geode_removeDrawable1, osg::Drawable*, Geode::removeDrawable)
 
         class_<Geode, bases<Node>, ref_ptr<Geode> >("Geode")
             .def("addDrawable", &Geode::addDrawable)
