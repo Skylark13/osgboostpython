@@ -4,7 +4,7 @@ import osgUtil
 import osgDB
 import unittest
 import time
-        
+
 class osgLineSegmentIntersectorTest(unittest.TestCase):
     def test_000_testClassAvailable(self):
         o = osgUtil.LineSegmentIntersector(osg.Vec3d(0,0,0),osg.Vec3d(100,0,0))
@@ -38,23 +38,23 @@ class osgLineSegmentIntersectorTest(unittest.TestCase):
         model = osgDB.readNodeFile('cow.osg')
         group = osg.Group()
         group.addChild(model)
-        
+
         g1 = osgUtil.IntersectorGroup()
         l1 = osgUtil.LineSegmentIntersector(osg.Vec3d(0,0,0),osg.Vec3d(100,0,0))
         g1.addIntersector(l1)
         v1 = osgUtil.IntersectionVisitor(g1)
-        
+
         group.accept(v1)
-        self.assert_(g1.containsIntersections())  # _____ cow should be hit _____ 
-        
+        self.assert_(g1.containsIntersections())  # _____ cow should be hit _____
+
         g2 = osgUtil.IntersectorGroup()
         l2 = osgUtil.LineSegmentIntersector(osg.Vec3d(90,0,0),osg.Vec3d(100,0,0))
         g2.addIntersector(l2)
         v2 = osgUtil.IntersectionVisitor(g2)
-        
-        group.accept(v2)    
+
+        group.accept(v2)
         self.assert_(not g2.containsIntersections())  # _____ no hit ______
-        
+
         isect = l1.getFirstIntersection()
         isect.drawable
         n = isect.getLocalIntersectNormal()
@@ -73,7 +73,7 @@ class osgLineSegmentIntersectorTest(unittest.TestCase):
 
 #        for i in g1.getIntersectors():
  #           print i
-         
+
     def test_003_testIntersectionPerformance(self):
         osgDB.Registry().setBuildKdTreesHint(osgDB.Options.BUILD_KDTREES);
 #        osgDB.Registry().setBuildKdTreesHint(osgDB.Options.DO_NOT_BUILD_KDTREES);
@@ -81,7 +81,7 @@ class osgLineSegmentIntersectorTest(unittest.TestCase):
         for name in ['cow.osg', 'cessna.osg', 'spaceship.osg', 'dumptruck.osg']:
             model = osgDB.readNodeFile(name)
             group.addChild(model)
-        
+
         g1 = osgUtil.IntersectorGroup()
         for x in range(100):
             for y in range(100):
@@ -89,13 +89,13 @@ class osgLineSegmentIntersectorTest(unittest.TestCase):
                 g1.addIntersector(lsi)
         v1 = osgUtil.IntersectionVisitor(g1)
         v1.setUseKdTreeWhenAvailable(True)
-        
+
         start = time.clock()
         for i in range(1):
             group.accept(v1)
         end = time.clock()
         seconds_needed = end - start
-        #print 'Needed %f seconds.' % seconds_needed         
+        #print 'Needed %f seconds.' % seconds_needed
         self.assert_(seconds_needed < 1.0) #without kdtree it should take 50x longer...
 
 

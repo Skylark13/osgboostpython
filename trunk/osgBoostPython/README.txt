@@ -28,7 +28,7 @@ working on the source.
 
 To run tests
 ------------------
-python test/test_all.py
+python test/runtests.py
 
 or individually:
 
