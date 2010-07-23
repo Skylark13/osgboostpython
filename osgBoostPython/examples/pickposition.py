@@ -83,7 +83,6 @@ root.addChild(dynamicTransform1)
 
 #create the viewer, set the scene and run
 viewer = osgViewer.Viewer()
-viewer.setUpViewInWindow(50, 50, 640,480);
 
 #set the scene data
 viewer.setSceneData(root)
