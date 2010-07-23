@@ -304,12 +304,10 @@ def main(argv):
 
     viewer.addEventHandler(osgViewer.HelpHandler())
     viewer.addEventHandler(osgViewer.StatsHandler())
-    if (rootNode):
-        viewer.addEventHandler(osgGA.StateSetManipulator(rootNode.stateSet))
-        viewer.setSceneData(rootNode)
-        print "set scene data"
+    viewer.addEventHandler(osgGA.StateSetManipulator(rootNode.stateSet))
+    viewer.setSceneData(rootNode)
+    print "set scene data"
 
-    viewer.addEventHandler(osgViewer.StatsHandler());
     #hint to tell viewer to request stencil buffer when setting up windows
     osg.DisplaySettings().setMinimumNumStencilBits(8)
 #    osg.DisplaySettings.instance().setMinimumNumStencilBits(8);

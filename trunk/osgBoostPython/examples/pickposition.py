@@ -88,7 +88,9 @@ viewer = osgViewer.Viewer()
 viewer.setSceneData(root)
 
 #add the stats event handler
+viewer.addEventHandler(osgViewer.HelpHandler());
 viewer.addEventHandler(osgViewer.StatsHandler());
+viewer.addEventHandler(osgGA.StateSetManipulator(root.stateSet));
 pickhandler = PickHandler()
 viewer.addEventHandler(pickhandler);
 #run the viewer

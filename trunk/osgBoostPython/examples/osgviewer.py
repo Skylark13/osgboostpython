@@ -29,5 +29,7 @@ root.addChild(dynamicTransform1)
 #create the viewer, set the scene and run
 viewer = osgViewer.Viewer()
 viewer.setSceneData(root)
+viewer.addEventHandler(osgViewer.HelpHandler());
 viewer.addEventHandler(osgViewer.StatsHandler());
+viewer.addEventHandler(osgGA.StateSetManipulator(root.stateSet));
 viewer.run()
