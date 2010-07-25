@@ -52,8 +52,23 @@ specifying an integer (0 to ntests-1).
 
 Python version
 ------------------
-Whenever you change your Python version, jam will rebuild boost_python*.dll.
-You need to either copy the new dll into <boost_root>/lib or into the
-osgBoostPython root directory otherwise it will try to use the DLL for the
-previous version of Python and will give an ImportError. This is on Windows,
-I'm not sure if this applies to Linux and other OSes.
+Whenever you change your Python version, jam will rebuild boost_python*.dll
+to match your new Python version. By default it will be built into 
+
+  %BOOST_ROOT%\bin.v2\libs\python\build\msvc-9.0\release
+
+You should copy the new DLL into the osgBoostPython root directory so it finds
+it first when running the tests, otherwise it will try to use the DLL for the
+previous version of Python (or the one that ships with boost) and will give an 
+ImportError. This is on Windows, I'm not sure if this applies to Linux and 
+other OSes.
+
+Just to summarize, when building osgBoostPython, bjam will link with the 
+
+  boost_python-vc90-mt-x_y.lib
+  
+that ships with boost, but at runtime you need to use the 
+
+  boost_python-vc90-1_43.dll
+  
+that's built when building osgBoostPython to match your Python version.
