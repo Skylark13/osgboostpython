@@ -277,8 +277,18 @@ BOOST_PYTHON_MODULE(_osg)
         .def("preMult", &MatrixTransform::preMult)
         .def("postMult", &MatrixTransform::postMult)
         .def("getInverseMatrix", &MatrixTransform::getInverseMatrix, osgBoostPython::default_const_reference_policy())
-        .def("computeLocalToWorldMatrix", &MatrixTransform::computeLocalToWorldMatrix)
-        .def("computeWorldToLocalMatrix", &MatrixTransform::computeWorldToLocalMatrix)
+        //.def("computeLocalToWorldMatrix", &MatrixTransform::computeLocalToWorldMatrix)
+        //.def("computeWorldToLocalMatrix", &MatrixTransform::computeWorldToLocalMatrix)
+    ;
+
+    class_<PositionAttitudeTransform, bases<Transform>, ref_ptr<PositionAttitudeTransform> >("PositionAttitudeTransform")
+        .def(init<>())
+        .add_property("position",   make_function(&PositionAttitudeTransform::getPosition,   osgBoostPython::default_const_reference_policy()), &PositionAttitudeTransform::setPosition  )
+        .add_property("attitude",   make_function(&PositionAttitudeTransform::getAttitude,   osgBoostPython::default_const_reference_policy()), &PositionAttitudeTransform::setAttitude  )
+        .add_property("scale",      make_function(&PositionAttitudeTransform::getScale,      osgBoostPython::default_const_reference_policy()), &PositionAttitudeTransform::setScale     )
+        .add_property("pivotPoint", make_function(&PositionAttitudeTransform::getPivotPoint, osgBoostPython::default_const_reference_policy()), &PositionAttitudeTransform::setPivotPoint)
+        //.def("computeLocalToWorldMatrix", &MatrixTransform::computeLocalToWorldMatrix)
+        //.def("computeWorldToLocalMatrix", &MatrixTransform::computeWorldToLocalMatrix)
     ;
 
     export_drawable();
