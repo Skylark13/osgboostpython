@@ -9,6 +9,7 @@ using namespace boost::python;
 #include <osg/Vec4d>
 #include <osg/BoundingSphere>
 #include <osg/BoundingBox>
+#include <osg/Quat>
 
 using namespace osg;
 
@@ -247,6 +248,18 @@ void export_math()
     v4dwrapper
         .def(init<Vec4f>())
         .def(init<Vec3d, Vec4d::value_type>());
+
+    class_<Quat>("Quat")
+        .def(init<>())
+        // TODO: other constructors
+	    .def("makeRotate",
+		    (void (Quat::*)(const osg::Vec3f&, const osg::Vec3f&))
+		    &Quat::makeRotate)
+	    .def("makeRotate",
+		    (void (Quat::*)(const osg::Vec3d&, const osg::Vec3d&))
+		    &Quat::makeRotate)
+        // TODO: expand methods
+    ;
 
 
     class_<BoundingSphere>("BoundingSphere")
