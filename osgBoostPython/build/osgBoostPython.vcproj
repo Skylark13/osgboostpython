@@ -5,6 +5,7 @@
 	Name="osgBoostPython"
 	ProjectGUID="{621A77AA-85B8-42F3-8CB8-EEC59F72D71E}"
 	RootNamespace="osgBoostPython"
+	TargetFrameworkVersion="0"
 	>
 	<Platforms>
 		<Platform
@@ -82,9 +83,6 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -151,9 +149,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

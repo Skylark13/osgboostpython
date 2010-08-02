@@ -6,6 +6,7 @@ using namespace boost::python;
 #include <osg/Group>
 #include <osg/Drawable>
 #include <osg/FrameStamp>
+#include <osg/RenderInfo>
 
 using namespace osg;
 
@@ -15,6 +16,9 @@ using namespace osg;
 
 typedef Drawable::UpdateCallback UpdateCallback;
 
+/// Note, need a way to document that the method that needs to be 
+/// implemented in Python is call, not operator() or __call__ or
+/// anything like that.
 struct NodeCallback_wrapper : public NodeCallback
 {
     // NodeCallback constructor storing initial self parameter
@@ -28,21 +32,12 @@ struct NodeCallback_wrapper : public NodeCallback
     // Override operator() to call back into Python
     void operator()(Node* node, NodeVisitor* nv)
     {
-        //std::cout << "in operator()(Node*, NodeVisitor*)" << std::endl;
-        try {
-            //std::cout << "Calling override" << std::endl;
-            call_method<void>(self, "call", ptr(node), ptr(nv));
-        }
-        // Catch boost::python exception, means method was not overridden in subclass.
-        catch (error_already_set) {
-            NodeCallback::operator()(node, nv);
-        }
+        call_method<void>(self, "call", ptr(node), ptr(nv));
     }
 
     // Supplies the default implementation of operator()
-    void default_operator(NodeCallback& self_, Node* node, NodeVisitor* nv)
+    void default_call(NodeCallback& self_, Node* node, NodeVisitor* nv)
     {
-        //std::cout << "in default_operator(Node*, NodeVisitor*)" << std::endl;
         self_.NodeCallback::operator()(node, nv);
     }
 
@@ -70,42 +65,24 @@ struct NodeVisitor_wrapper : public NodeVisitor
     // Override apply to call back into Python
     void apply(Node& node)
     {
-        //std::cout << "in apply(Node&)" << std::endl;
-        try {
-            //std::cout << "Calling override" << std::endl;
-            call_method<void>(self, "apply_Node", boost::ref(node));
-        }
-        // Catch boost::python exception, means method was not overridden in subclass.
-        catch (error_already_set) {
-            NodeVisitor::apply(node);
-        }
+        call_method<void>(self, "apply_Node", boost::ref(node));
     }
 
     // Supplies the default implementation of apply
     void default_apply_Node(NodeVisitor& self_, Node& node)
     {
-        //std::cout << "in default_apply(Node&)" << std::endl;
         self_.NodeVisitor::apply(node);
     }
 
     // Override apply to call back into Python
     void apply(Group& node)
     {
-        //std::cout << "in apply(Group&)" << std::endl;
-        try {
-            //std::cout << "Calling override" << std::endl;
-            call_method<void>(self, "apply_Group", boost::ref(node));
-        }
-        // Catch boost::python exception, means method was not overridden in subclass.
-        catch (error_already_set) {
-            NodeVisitor::apply(node);
-        }
+        call_method<void>(self, "apply_Group", boost::ref(node));
     }
 
     // Supplies the default implementation of apply
     void default_apply_Group(NodeVisitor& self_, Group& node)
     {
-        //std::cout << "in default_apply(Group&)" << std::endl;
         self_.NodeVisitor::apply(node);
     }
 
@@ -113,33 +90,25 @@ struct NodeVisitor_wrapper : public NodeVisitor
     PyObject* self;
 };
 
-struct UpdateCallback_wrapper : public Drawable::UpdateCallback
+
+struct Drawable_UpdateCallback_wrapper : public Drawable::UpdateCallback
 {
-    // NodeVisitor constructors storing initial self parameter
-    UpdateCallback_wrapper(PyObject *p) 
+    // Drawable::UpdateCallback constructors storing initial self parameter
+    Drawable_UpdateCallback_wrapper(PyObject *p) 
         : Drawable::UpdateCallback(), self(p) {}
-    // In case UpdateCallback is returned by-value from a wrapped function
-    UpdateCallback_wrapper(PyObject *p, const Drawable::UpdateCallback& x) 
+    // In case Drawable::UpdateCallback is returned by-value from a wrapped function
+    Drawable_UpdateCallback_wrapper(PyObject *p, const Drawable::UpdateCallback& x) 
         : Drawable::UpdateCallback(x), self(p) {}
 
     // Override update to call back into Python
     void update(NodeVisitor* nv, Drawable* d)
     {
-        //std::cout << "in update(NodeVisitor*, Drawable*)" << std::endl;
-        try {
-            //std::cout << "Calling override" << std::endl;
-            call_method<void>(self, "update", boost::ref(nv), boost::ref(d));
-        }
-        // Catch boost::python exception, means method was not overridden in subclass.
-        catch (error_already_set) {
-            Drawable::UpdateCallback::update(nv,d);
-        }
+        call_method<void>(self, "update", ptr(nv), ptr(d));
     }
 
     // Supplies the default implementation of update
     void default_update(Drawable::UpdateCallback& self_, NodeVisitor* nv, Drawable* d)
     {
-        //std::cout << "in default_update(NodeVisitor*, Drawable*)" << std::endl;
         self_.Drawable::UpdateCallback::update(nv,d);
     }
  private:
@@ -147,8 +116,106 @@ struct UpdateCallback_wrapper : public Drawable::UpdateCallback
 };
 
 
+struct Drawable_EventCallback_wrapper : public Drawable::EventCallback
+{
+    // Drawable::EventCallback constructor storing initial self parameter
+    Drawable_EventCallback_wrapper(PyObject *p)
+        : Drawable::EventCallback(), self(p) {}
+
+    // In case Drawable::EventCallback is returned by-value from a wrapped function
+    Drawable_EventCallback_wrapper(PyObject *p, const Drawable::EventCallback& x)
+        : Drawable::EventCallback(x), self(p) {}
+
+    // This version will be called by OSG, and calls the python version.
+    void event(osg::NodeVisitor* nv, osg::Drawable* drawable)
+    {
+        call_method<void>(self, "event", ptr(nv), ptr(drawable));
+    }
+
+    // Supplies the default implementation of update
+    void default_event(Drawable::EventCallback& self_, osg::NodeVisitor* nv, osg::Drawable* drawable)
+    {
+        self_.Drawable::EventCallback::event(nv, drawable);
+    }
+
+private:
+    PyObject* self;
+};
+
+
+struct Drawable_CullCallback_wrapper : public Drawable::CullCallback
+{
+    // Drawable::CullCallback constructor storing initial self parameter
+    Drawable_CullCallback_wrapper(PyObject *p)
+        : Drawable::CullCallback(), self(p) {}
+
+    // In case Drawable::CullCallback is returned by-value from a wrapped function
+    Drawable_CullCallback_wrapper(PyObject *p, const Drawable::CullCallback& x)
+        : Drawable::CullCallback(x), self(p) {}
+
+    // This version will be called by OSG, and calls the python version.
+    bool cull(osg::NodeVisitor* nv, osg::Drawable* drawable, osg::State* state)
+    {
+        return call_method<bool>(self, "cull", ptr(nv), ptr(drawable), ptr(state));
+    }
+
+    // Supplies the default implementation of update
+    bool default_cull1(Drawable::CullCallback& self_, osg::NodeVisitor* nv, osg::Drawable* drawable, osg::State* state)
+    {
+        return self_.Drawable::CullCallback::cull(nv, drawable, state);
+    }
+
+    // This version will be called by OSG, and calls the python version.
+    bool cull(osg::NodeVisitor* nv, osg::Drawable* drawable, osg::RenderInfo* renderInfo)
+    {
+        return call_method<bool>(self, "cull", ptr(nv), ptr(drawable), ptr(renderInfo));
+    }
+
+    // Supplies the default implementation of update
+    bool default_cull2(Drawable::CullCallback& self_, osg::NodeVisitor* nv, osg::Drawable* drawable, osg::RenderInfo* renderInfo)
+    {
+        return self_.Drawable::CullCallback::cull(nv, drawable, renderInfo);
+    }
+
+private:
+    PyObject* self;
+};
+
+
+struct Drawable_DrawCallback_wrapper : public Drawable::DrawCallback
+{
+    // Drawable::DrawCallback constructor storing initial self parameter
+    Drawable_DrawCallback_wrapper(PyObject *p)
+        : Drawable::DrawCallback(), self(p) {}
+
+    // In case Drawable::DrawCallback is returned by-value from a wrapped function
+    Drawable_DrawCallback_wrapper(PyObject *p, const Drawable::DrawCallback& x)
+        : Drawable::DrawCallback(x), self(p) {}
+
+    // This version will be called by OSG, and calls the python version.
+    void drawImplementation(osg::RenderInfo& renderInfo, const osg::Drawable* drawable)
+    {
+        call_method<void>(self, "drawImplementation", boost::ref(renderInfo), ptr(drawable));
+    }
+
+    // Supplies the default implementation of update
+    void default_drawImplementation(Drawable::DrawCallback& self_, osg::RenderInfo& renderInfo, const osg::Drawable* drawable)
+    {
+        self_.Drawable::DrawCallback::drawImplementation(renderInfo, drawable);
+    }
+
+private:
+    PyObject* self;
+};
+
+
+
 void export_util()
 {
+    class_<RenderInfo>("RenderInfo")
+        // TODO
+    ;
+
     {
         scope in_NodeVisitor = class_<NodeVisitor, NodeVisitor_wrapper, bases<Referenced>, ref_ptr<NodeVisitor> >("NodeVisitor")
             .def(init<NodeVisitor::TraversalMode>())
@@ -177,12 +244,25 @@ void export_util()
     }
 
     class_<NodeCallback, NodeCallback_wrapper, bases<Object>, ref_ptr<NodeCallback> >("NodeCallback")
-        .def("call", &NodeCallback_wrapper::default_operator)
+        .def("call", &NodeCallback_wrapper::default_call)
         .def("traverse", &NodeCallback::traverse)
     ;
 
-    class_<Drawable::UpdateCallback, UpdateCallback_wrapper, bases<Object>, ref_ptr<UpdateCallback> >("UpdateCallback")
-        .def("update", &UpdateCallback_wrapper::default_update)
+    class_<Drawable::UpdateCallback, Drawable_UpdateCallback_wrapper, bases<Object>, ref_ptr<UpdateCallback> >("UpdateCallback")
+        .def("update", &Drawable_UpdateCallback_wrapper::default_update)
+    ;
+
+    class_<Drawable::EventCallback, Drawable_EventCallback_wrapper, bases<Object>, ref_ptr<Drawable::EventCallback> >("EventCallback")
+        .def("event", &Drawable_EventCallback_wrapper::default_event)
+    ;
+
+    class_<Drawable::CullCallback, Drawable_CullCallback_wrapper, bases<Object>, ref_ptr<Drawable::CullCallback> >("CullCallback")
+        .def("cull", &Drawable_CullCallback_wrapper::default_cull1)
+        .def("cull", &Drawable_CullCallback_wrapper::default_cull2)
+    ;
+
+    class_<Drawable::DrawCallback, Drawable_DrawCallback_wrapper, bases<Object>, ref_ptr<Drawable::DrawCallback> >("DrawCallback")
+        .def("drawImplementation", &Drawable_DrawCallback_wrapper::default_drawImplementation)
     ;
 
 }

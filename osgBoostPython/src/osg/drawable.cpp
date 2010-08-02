@@ -36,7 +36,6 @@ void export_drawable()
             .def("getNumParents", &Drawable::getNumParents)
             .def("getParents", Drawable_getParents1, osgBoostPython::default_value_policy())
             .def("getParent", Drawable_getParent1, osgBoostPython::default_pointer_policy())
-            // TODO: Wrap StateSet (big one)
             .add_property("stateSet", make_function(&Drawable::getOrCreateStateSet, osgBoostPython::default_pointer_policy()), &Drawable::setStateSet)     // TODO: wrapper returning ref_ptr for getOrCreateStateSet()
             .def("setStateSet", &Drawable::setStateSet)     // same call as in c++
             .def("getOrCreateStateSet", &Drawable::getOrCreateStateSet, osgBoostPython::default_pointer_policy())
@@ -46,6 +45,13 @@ void export_drawable()
             .def("getBound", &Drawable::getBound, osgBoostPython::default_const_reference_policy())
             .def("computeBound", &Drawable::computeBound)
             .def("setUpdateCallback", &Drawable::setUpdateCallback)
+            .def("getUpdateCallback", (Drawable::UpdateCallback* (Drawable::*)(void))&Drawable::getUpdateCallback, osgBoostPython::default_pointer_policy())
+            .def("setEventCallback", &Drawable::setEventCallback)
+            .def("getEventCallback", (Drawable::EventCallback* (Drawable::*)(void))&Drawable::getEventCallback, osgBoostPython::default_pointer_policy())
+            .def("setCullCallback", &Drawable::setCullCallback)
+            .def("getCullCallback", (Drawable::CullCallback* (Drawable::*)(void))&Drawable::getCullCallback, osgBoostPython::default_pointer_policy())
+            .def("setDrawCallback", &Drawable::setDrawCallback)
+            .def("getDrawCallback", (Drawable::DrawCallback* (Drawable::*)(void))&Drawable::getDrawCallback, osgBoostPython::default_pointer_policy())
             .def("setUseDisplayList", &Drawable::setUseDisplayList)
             .def("setSupportsDisplayList", &Drawable::setSupportsDisplayList)
             // TODO: Methods to set/get the ComputeBBoxCallback
@@ -55,8 +61,6 @@ void export_drawable()
             .def( vector_indexing_suite< Drawable::ParentList >() )
         ;
 
-        class_<Drawable::DrawCallback, bases<Object>, ref_ptr<Drawable::DrawCallback> >("DrawCallback")
-        ;
     }
 
     // Abstract class

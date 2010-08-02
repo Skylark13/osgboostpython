@@ -26,13 +26,7 @@ struct GUIEventHandler_wrapper : public GUIEventHandler
     // Override handle to call back into Python
     bool handle(const GUIEventAdapter* ea, GUIActionAdapter* aa, osg::Object* obj, osg::NodeVisitor* nv)
     {
-        //std::cout << "in handle(ea, aa, obj, nv) - call_method" << std::endl;
-        try {
-            return call_method<bool>(self, "handle", ptr(ea), ptr(aa), ptr(obj), ptr(nv));
-        }
-        catch (error_already_set) {
-            return GUIEventHandler::handle(*ea, *aa, obj, nv);
-        }
+        return call_method<bool>(self, "handle", ptr(ea), ptr(aa), ptr(obj), ptr(nv));
     }
 
     // This version will be called by OSG, and calls the other version.
@@ -44,33 +38,24 @@ struct GUIEventHandler_wrapper : public GUIEventHandler
     // Supplies the default implementation of handle
     bool default_handle1(GUIEventHandler& self_, const GUIEventAdapter* ea, GUIActionAdapter* aa, osg::Object* obj, osg::NodeVisitor* nv)
     {
-        //std::cout << "in default_handle()" << std::endl;
         return self_.GUIEventHandler::handle(*ea, *aa, obj, nv);
     }
 
     // Override handle to call back into Python
     bool handle(const GUIEventAdapter* ea, GUIActionAdapter* aa)
     {
-        //std::cout << "in handle(ea, aa) - call_method" << std::endl;
-        try {
-            return call_method<bool>(self, "handle", ptr(ea), ptr(aa));
-        }
-        catch (error_already_set) {
-            return GUIEventHandler::handle(*ea, *aa);
-        }
+        return call_method<bool>(self, "handle", ptr(ea), ptr(aa));
     }
 
     // This version will be called by OSG, and calls the other version.
     bool handle(const GUIEventAdapter& ea, GUIActionAdapter& aa)
     {
-        //std::cout << "in handle() - calling other version" << std::endl;
         return handle(&ea, &aa);
     }
 
     // Supplies the default implementation of handle
     bool default_handle2(GUIEventHandler& self_, const GUIEventAdapter* ea, GUIActionAdapter* aa)
     {
-        //std::cout << "in default_handle()" << std::endl;
         return self_.GUIEventHandler::handle(*ea, *aa);
     }
 
