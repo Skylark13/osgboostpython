@@ -252,12 +252,18 @@ void export_math()
     class_<Quat>("Quat")
         .def(init<>())
         // TODO: other constructors
-	    .def("makeRotate",
-		    (void (Quat::*)(const osg::Vec3f&, const osg::Vec3f&))
-		    &Quat::makeRotate)
-	    .def("makeRotate",
-		    (void (Quat::*)(const osg::Vec3d&, const osg::Vec3d&))
-		    &Quat::makeRotate)
+        .def("makeRotate",
+            (void (Quat::*)(const osg::Vec3&, const osg::Vec3&))
+            &Quat::makeRotate)
+        .def("makeRotate",
+            (void (Quat::*)(double, const osg::Vec3&))
+            &Quat::makeRotate)
+        .def("makeRotate",
+            (void (Quat::*)(double, const osg::Vec3&, double, const osg::Vec3&, double, const osg::Vec3&))
+            &Quat::makeRotate)
+        .def("makeRotate",
+            (void (Quat::*)(double, double, double, double))
+            &Quat::makeRotate)
         // TODO: expand methods
     ;
 

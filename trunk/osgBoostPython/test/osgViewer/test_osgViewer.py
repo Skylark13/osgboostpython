@@ -162,7 +162,7 @@ class osgViewerTest(unittest.TestCase):
         class DerivedCallback(osg.NodeCallback):
             def call(self, node, nv):
                 print "python callback"
-                self.traverse(node, nv)     # Seems like this slices off the node, it thinks it's an osg::Node instead of an osg::Group.
+                self.traverse(node, nv)
 
         cow = osgDB.readNodeFile("cow.osg")
         cb = DerivedCallback()
