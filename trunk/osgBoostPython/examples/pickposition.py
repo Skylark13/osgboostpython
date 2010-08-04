@@ -95,4 +95,3 @@ pickhandler = PickHandler()
 viewer.addEventHandler(pickhandler);
 #run the viewer
 viewer.run()
-del viewer #Removes the segfault...

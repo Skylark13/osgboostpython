@@ -12,15 +12,21 @@ setenv.bat does that for you when run from the osgBoostPython root directory.
 
 To build
 ------------------
-Make sure OSG_ROOT and BOOST_ROOT are set properly. In general, run
+Make sure OSG_ROOT and BOOST_ROOT are set properly. Run
 
 bjam release
 
 This will copy the resulting python modules into lib/osg/, lib/osgDB, etc.
 
 (Windows)
-Make sure you run it with the "release" argument to avoid "release executable
-calling into debug DLL" problems. (.pyd modules are basically DLLs)
+Both building in release and debug should work (bjam release, bjam debug).
+You need to have the appropriate boost_python lib+dll for the type of build
+you're doing of course (see below). You also need the OSG libs+dlls for that
+type of build. Once it's built in debug, you can attach the Visual Studio 
+debugger to the running python.exe process and put breakpoints in OSG code
+or your wrapping code to debug it. It can be useful to put a raw_input() call
+at the beginning of your python program so that it waits for input, at which
+time you can attach the debugger and then press any key to continue.
 
 Note that the Visual Studio solution and project files in build/ are NOT for
 actually building this project! They are just there for convenience when
@@ -58,17 +64,19 @@ to match your new Python version. By default it will be built into
   %BOOST_ROOT%\bin.v2\libs\python\build\msvc-9.0\release
 
 You should copy the new DLL into the osgBoostPython root directory so it finds
-it first when running the tests, otherwise it will try to use the DLL for the
-previous version of Python (or the one that ships with boost) and will give an 
-ImportError. This is on Windows, I'm not sure if this applies to Linux and 
-other OSes.
+it first when running a script that uses osgBoostPython, otherwise it will try 
+to use the DLL for the previous version of Python (or the one that ships with 
+boost) and will give an ImportError. This is on Windows, I'm not sure if this 
+applies to Linux and other OSes.
 
 Just to summarize, when building osgBoostPython, bjam will link with the 
 
-  boost_python-vc90-mt-x_y.lib
+  boost_python-vc90-mt-x_y.lib    (release)
+  boost_python-vc90-mt-gd-x_y.lib (debug)
   
 that ships with boost, but at runtime you need to use the 
 
-  boost_python-vc90-1_43.dll
+  boost_python-vc90-x_y.dll    (release)
+  boost_python-vc90-gd-x_y.dll (debug)
   
 that's built when building osgBoostPython to match your Python version.
