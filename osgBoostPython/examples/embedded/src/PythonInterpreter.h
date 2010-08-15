@@ -26,6 +26,7 @@ public:
     ~PythonInterpreter();
 
     void execute(const std::string& command);
+    std::string getOutput();
 
 private:
     boost::python::object _main_module;

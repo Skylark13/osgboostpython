@@ -35,6 +35,8 @@ int main( int argc, char ** argv )
         // Try to execute the command.
         interpreter.execute(command);
 
+        std::cout << interpreter.getOutput();
+
         // I just want to be a bit more lenient that the python 
         // interpreter, which nags you to type exit() or quit()
         // when it's already pretty clear you want to exit the
