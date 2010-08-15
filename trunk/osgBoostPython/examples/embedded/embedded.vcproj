@@ -59,7 +59,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalLibraryDirectories="$(PYTHON_ROOT)/libs;G:\OSG-Nodekits\___myprojects\osgBoostPython;G:\OSG-Nodekits\___myprojects\osgBoostPython\lib"
+				AdditionalLibraryDirectories="$(PYTHON_ROOT)/libs;G:\OSG-Nodekits\___myprojects\osgBoostPython"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -130,8 +130,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="osgBoostPython.lib"
-				AdditionalLibraryDirectories="$(PYTHON_ROOT)/libs;G:\OSG-Nodekits\___myprojects\osgBoostPython;G:\OSG-Nodekits\___myprojects\osgBoostPython\lib"
+				AdditionalLibraryDirectories="$(PYTHON_ROOT)/libs;G:\OSG-Nodekits\___myprojects\osgBoostPython"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
