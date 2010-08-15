@@ -62,6 +62,8 @@
 
 #include <osg/Version>
 
+#include "defaults.h"
+
 /// @cond DOXYGEN_SHOULD_SKIP_THIS
 using namespace osg;
 using namespace boost::python;
