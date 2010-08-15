@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="$(BOOST_ROOT);$(PYTHON_ROOT)/include;"
+				AdditionalIncludeDirectories="$(BOOST_ROOT);$(PYTHON_ROOT)/include;$(OSG_INCLUDE_PATH)"
 				PreprocessorDefinitions="WIN32;_WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -59,7 +59,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalLibraryDirectories="$(PYTHON_ROOT)/libs;G:\OSG-Nodekits\___myprojects\osgBoostPython"
+				AdditionalDependencies="osgd.lib osgDBd.lib osgGAd.lib osgUtild.lib osgViewerd.lib osgTextd.lib osgWidgetd.lib"
+				AdditionalLibraryDirectories="$(PYTHON_ROOT)/libs;G:\OSG-Nodekits\___myprojects\osgBoostPython;$(OSG_LIB_PATH)"
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -112,7 +113,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="$(BOOST_ROOT);$(PYTHON_ROOT)/include;"
+				AdditionalIncludeDirectories="$(BOOST_ROOT);$(PYTHON_ROOT)/include;$(OSG_INCLUDE_PATH)"
 				PreprocessorDefinitions="WIN32;_WIN32;_WINDOWS;NDEBUG"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -130,7 +131,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalLibraryDirectories="$(PYTHON_ROOT)/libs;G:\OSG-Nodekits\___myprojects\osgBoostPython"
+				AdditionalDependencies="osg.lib osgDB.lib osgGA.lib osgUtil.lib osgViewer.lib osgText.lib osgWidget.lib"
+				AdditionalLibraryDirectories="$(PYTHON_ROOT)/libs;G:\OSG-Nodekits\___myprojects\osgBoostPython;$(OSG_LIB_PATH)"
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -171,12 +173,20 @@
 				RelativePath=".\main.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\PythonInterpreter.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\PythonInterpreter.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
