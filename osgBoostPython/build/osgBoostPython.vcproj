@@ -17,9 +17,9 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)../lib"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="2"
 			>
 			<Tool
@@ -40,12 +40,13 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="G:\boost_1_35_0;$(SolutionDir)include;&quot;$(OSG_INCLUDE_PATH)&quot;"
+				AdditionalIncludeDirectories="$(BOOST_ROOT);$(PYTHON_ROOT)/include;$(SolutionDir)../include;&quot;$(OSG_INCLUDE_PATH)&quot;"
+				PreprocessorDefinitions="OSGBOOSTPYTHON_LIBRARY;WIN32;_WIN32;_WINDOWS;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -59,8 +60,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="osgd.lib"
-				AdditionalLibraryDirectories="$(OSG_LIB_PATH)"
+				AdditionalDependencies="osgd.lib osgDBd.lib osgGAd.lib osgUtild.lib osgViewerd.lib"
+				OutputFile="$(OutDir)\$(ProjectName)d.dll"
+				AdditionalLibraryDirectories="$(OSG_LIB_PATH);$(PYTHON_ROOT)/libs;$(SolutionDir).."
 				GenerateDebugInformation="true"
 				TargetMachine="1"
 			/>
@@ -88,9 +90,9 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)../lib"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
@@ -111,9 +113,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="$(BOOST_ROOT);$(PYTHON_ROOT)/include;$(SolutionDir)../include;&quot;$(OSG_INCLUDE_PATH)&quot;"
+				PreprocessorDefinitions="OSGBOOSTPYTHON_LIBRARY;WIN32;_WIN32;_WINDOWS;NDEBUG"
 				RuntimeLibrary="2"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -127,6 +131,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="osg.lib osgDB.lib osgGA.lib osgUtil.lib osgViewer.lib"
+				OutputFile="$(OutDir)\$(ProjectName).dll"
+				AdditionalLibraryDirectories="$(OSG_LIB_PATH);$(PYTHON_ROOT)/libs;$(SolutionDir).."
 				GenerateDebugInformation="true"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"

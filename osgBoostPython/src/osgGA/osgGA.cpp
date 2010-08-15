@@ -8,6 +8,8 @@ using namespace boost::python;
 
 #include <iostream>
 
+#include "defaults.h"
+
 using namespace osg;
 using namespace osgGA;
 
@@ -72,7 +74,7 @@ BOOST_PYTHON_MODULE(_osgGA)
     class_<GUIActionAdapter, boost::noncopyable>("GUIActionAdapter", no_init)
     ;
 
-    class_<GUIEventHandler, GUIEventHandler_wrapper, bases<osg::NodeCallback, osg::Drawable::DrawCallback>, ref_ptr<GUIEventHandler> >("GUIEventHandler")
+    class_<GUIEventHandler, GUIEventHandler_wrapper, bases<osg::NodeCallback, osg::Drawable::EventCallback>, ref_ptr<GUIEventHandler> >("GUIEventHandler")
         .def(init<>())
         .def("handle", &GUIEventHandler_wrapper::default_handle1)
         .def("handle", &GUIEventHandler_wrapper::default_handle2)

@@ -23,11 +23,22 @@ struct NodeCallback_wrapper : public NodeCallback
 {
     // NodeCallback constructor storing initial self parameter
     NodeCallback_wrapper(PyObject *p)
-        : NodeCallback(), self(p) {}
+        : NodeCallback(), self(p)
+    {
+        //PyINCREF(self);
+        std::cout << "NodeCallback_wrapper(p) : ref count is " << this->referenceCount() << std::endl;
+        //this->ref();
+    }
 
     // In case NodeCallback is returned by-value from a wrapped function
     NodeCallback_wrapper(PyObject *p, const NodeCallback& x)
-        : NodeCallback(x), self(p) {}
+        : NodeCallback(x), self(p)
+    {
+        //PyINCREF(self);
+        std::cout << "NodeCallback_wrapper(p,x) : ref count is " << this->referenceCount() << std::endl;
+        std::cout << "x had " << x.referenceCount() << " refs" << std::endl;
+        //this->ref();
+    }
 
     // Override operator() to call back into Python
     void operator()(Node* node, NodeVisitor* nv)
@@ -40,6 +51,15 @@ struct NodeCallback_wrapper : public NodeCallback
     {
         self_.NodeCallback::operator()(node, nv);
     }
+
+//protected:
+    ~NodeCallback_wrapper()
+    {
+        //PyDECREF(self);
+        std::cout << "~NodeCallback_wrapper : ref count is " << this->referenceCount() << std::endl;
+        //this->unref();
+    }
+
 
  private:
     PyObject* self;
