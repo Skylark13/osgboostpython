@@ -14,36 +14,78 @@
 * http://www.gnu.org/copyleft/lesser.txt.
 */
 
-// This code initially from http://wiki.python.org/moin/boost.python/EmbeddingPython
-// with some modifications.
 #include <iostream>
 #include <string>
 
+#include <osg/Group>
+#include <osgDB/ReadFile>
+#include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
+
 #include "PythonInterpreter.h"
+#include "Console.h"
 
 int main( int argc, char ** argv )
 {
-    PythonInterpreter interpreter;
+    osg::ArgumentParser arguments(&argc,argv);
+    arguments.getApplicationUsage()->addCommandLineOption("--noViewer","Start in console mode, no graphical viewer.");
 
-    std::string command;
-    while (true)
+    osgViewer::Viewer viewer(arguments);
+
+    unsigned int helpType = 0;
+    if ((helpType = arguments.readHelpType()))
     {
-        // Print a prompt and read the command from the user.
-        std::cout << "> ";
-        getline(std::cin, command);
+        arguments.getApplicationUsage()->write(std::cout, helpType);
+        return 1;
+    }
 
-        // Try to execute the command.
-        interpreter.execute(command);
+    // report any errors if they have occurred when parsing the program arguments.
+    if (arguments.errors())
+    {
+        arguments.writeErrorMessages(std::cout);
+        return 1;
+    }
 
-        std::cout << interpreter.getOutput();
+    bool useViewer = true;
+    if (arguments.read("--noViewer")) useViewer = false;
 
-        // I just want to be a bit more lenient that the python 
-        // interpreter, which nags you to type exit() or quit()
-        // when it's already pretty clear you want to exit the
-        // interpreter...
-        if (command == "exit" || command == "quit")
+    if (useViewer)
+    {
+        osg::Group* root = new osg::Group;
+        root->addChild(osgDB::readNodeFile("cow.osg"));
+
+        viewer.setSceneData(root);
+        viewer.addEventHandler(new osgViewer::StatsHandler);
+
+        Console* console = new Console(&viewer);
+
+        viewer.setUpViewInWindow(50, 50, 1024, 768);
+        viewer.run();
+    }
+    else
+    {
+        PythonInterpreter interpreter;
+
+        std::string command;
+        while (true)
         {
-            break;
+            // Print a prompt and read the command from the user.
+            std::cout << "> ";
+            getline(std::cin, command);
+
+            // Try to execute the command.
+            interpreter.execute(command);
+
+            std::cout << interpreter.getOutput();
+
+            // I just want to be a bit more lenient that the python 
+            // interpreter, which nags you to type exit() or quit()
+            // when it's already pretty clear you want to exit the
+            // interpreter...
+            if (command == "exit" || command == "quit")
+            {
+                break;
+            }
         }
     }
 }

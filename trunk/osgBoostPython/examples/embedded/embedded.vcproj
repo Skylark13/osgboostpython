@@ -165,6 +165,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\src\Console.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\src\Console.h"
+			>
+		</File>
+		<File
 			RelativePath=".\src\main.cpp"
 			>
 		</File>
