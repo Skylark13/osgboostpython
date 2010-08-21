@@ -14,6 +14,9 @@
 * http://www.gnu.org/copyleft/lesser.txt.
 */
 
+// This code initially from http://wiki.python.org/moin/boost.python/EmbeddingPython
+// with some modifications.
+
 #include "PythonInterpreter.h"
 
 using namespace boost::python;
@@ -34,6 +37,8 @@ PythonInterpreter::PythonInterpreter()
                     "\t\tself.data = ''\n"
                 "\tdef write(self, stuff):\n"
                     "\t\tself.data = self.data + stuff\n\n"
+                "\tdef clear(self):\n"
+                    "\t\tself.data = ''\n\n"
             "import sys\n"
             "_catcher = OutputCatcher()\n"
             "sys.stdout = _catcher\n"
@@ -70,6 +75,11 @@ std::string PythonInterpreter::getOutput()
     object cstr(catcher.attr("data"));
     if (char *sstr = PyString_AsString(cstr.ptr()))
         output = sstr;
+
+    handle<> clearCatcher(
+        PyRun_String(
+            "_catcher.clear()\n",
+            Py_file_input, _main_namespace.ptr(), _main_namespace.ptr()));
 
     return output;
 }
