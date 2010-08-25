@@ -120,7 +120,7 @@ protected:
 
     Console::ExecuteCallbacks _executeCallbacks;
     std::vector<std::string> _commandHistory;
-    unsigned int _curCommandHistory;
+    unsigned int _commandHistoryIndex;
 };
 
 
@@ -141,7 +141,7 @@ Console::Impl::Impl(osgViewer::View* view)
     , _transitionTime(0.5)
     , _executeCallbacks()
     , _commandHistory()
-    , _curCommandHistory(0)
+    , _commandHistoryIndex(0)
 {
     osgWidget::Frame::createSimpleFrame(
         "console",
@@ -387,30 +387,30 @@ bool Console::Impl::handleKeyUp(osgWidget::Event& ev)
     }
     else if (ev.key == osgGA::GUIEventAdapter::KEY_Up && ev.keyMask == 0x0)
     {
-        if (_curCommandHistory > 0)
-            --_curCommandHistory;
+        if (_commandHistoryIndex > 0)
+            --_commandHistoryIndex;
 
         if (_commandHistory.size() > 0)
         {
             _input->clear();
-            _input->setCommand(_commandHistory[_curCommandHistory]);
+            _input->setCommand(_commandHistory[_commandHistoryIndex]);
         }
 
         return true;
     }
     else if (ev.key == osgGA::GUIEventAdapter::KEY_Down && ev.keyMask == 0x0)
     {
-        if (_curCommandHistory < _commandHistory.size())
-            ++_curCommandHistory;
+        if (_commandHistoryIndex < _commandHistory.size())
+            ++_commandHistoryIndex;
 
         // When pressing down, when we get to the end of the command history, 
         // the command should be empty (as it was before we started to press 
         // up). So in both cases we clear the command input field.
         _input->clear();
 
-        if (_curCommandHistory < _commandHistory.size())
+        if (_commandHistoryIndex < _commandHistory.size())
         {
-            _input->setCommand(_commandHistory[_curCommandHistory]);
+            _input->setCommand(_commandHistory[_commandHistoryIndex]);
         }
 
         return true;
