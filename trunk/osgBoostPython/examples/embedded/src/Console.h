@@ -17,18 +17,16 @@
 #ifndef __CONSOLE_H__
 #define __CONSOLE_H__
 
-#include <osg/Group>
-#include <osgGA/GUIEventHandler>
-
-namespace osg
-{
-    class Camera;
-}
+#include <osg/Vec4>
+#include <osg/ref_ptr>
+#include <osg/Referenced>
 
 namespace osgViewer
 {
     class View;
 }
+
+#include <vector>
 
 class Console
 {
@@ -47,6 +45,18 @@ public:
 
     void setColor(const osg::Vec4& color);
     osg::Vec4 getColor() const;
+
+
+    class ExecuteCallback : public osg::Referenced
+    {
+    public:
+        virtual std::string operator()(const std::string& command) = 0;
+    };
+
+    typedef std::vector< osg::ref_ptr<ExecuteCallback> > ExecuteCallbacks;
+    void addExecuteCallback(ExecuteCallback* callback);
+    void removeExecuteCallback(ExecuteCallback* callback);
+    const ExecuteCallbacks& getExecuteCallbacks() const;
 
 protected:
     class Impl;
