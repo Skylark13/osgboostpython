@@ -25,6 +25,30 @@
 #include "PythonInterpreter.h"
 #include "Console.h"
 
+
+class PythonExecuteCallback : public Console::ExecuteCallback
+{
+public:
+    PythonExecuteCallback()
+        : _pythonInterpreter()
+    {
+    }
+
+    virtual ~PythonExecuteCallback()
+    {
+    }
+
+    virtual std::string operator()(const std::string& command)
+    {
+        _pythonInterpreter.execute(command);
+        return _pythonInterpreter.getOutput();
+    }
+
+protected:
+    PythonInterpreter _pythonInterpreter;
+};
+
+
 int main( int argc, char ** argv )
 {
     osg::ArgumentParser arguments(&argc,argv);
@@ -58,6 +82,7 @@ int main( int argc, char ** argv )
         viewer.addEventHandler(new osgViewer::StatsHandler);
 
         Console* console = new Console(&viewer);
+        console->addExecuteCallback(new PythonExecuteCallback);
 
         viewer.setUpViewInWindow(50, 50, 1024, 768);
         viewer.run();

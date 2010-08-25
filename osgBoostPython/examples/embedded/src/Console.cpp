@@ -25,6 +25,32 @@
 #include <osgWidget/EventInterface>
 
 
+class CommandInput : public osgWidget::Input
+{
+public:
+    CommandInput(const std::string& name = "", const std::string& label = "", unsigned int size = 20)
+        : osgWidget::Input(name, label, size)
+    {
+    }
+
+    void setCommand(const std::string& command)
+    {
+        _text->setText(command);
+
+        _index = command.length();
+        _selectionStartIndex = _selectionEndIndex = _index;
+
+        _text->update();
+
+        _calculateCursorOffsets();
+
+        _calculateSize(getTextSize());
+
+        getParent()->resize();
+    }
+};
+
+
 const unsigned int MASK_2D = 0xF0000000;
 
 class Console::Impl : public osgWidget::Frame
@@ -51,6 +77,10 @@ public:
 
     virtual bool handleKeyUp(osgWidget::Event& ev);
 
+    void addExecuteCallback(ExecuteCallback* callback);
+    void removeExecuteCallback(ExecuteCallback* callback);
+    const ExecuteCallbacks& getExecuteCallbacks() const;
+
 protected:
     class ConsoleEventHandler : public osgGA::GUIEventHandler
     {
@@ -73,7 +103,7 @@ protected:
 
     osgWidget::Box*   _box;
     osgWidget::Label* _history;
-    osgWidget::Input* _input;
+    CommandInput*     _input;
 
     bool _visible;
     double _heightPercent;
@@ -87,6 +117,10 @@ protected:
     double _oldHeight;
 
     double _transitionTime; // Number of seconds for transition
+
+    Console::ExecuteCallbacks _executeCallbacks;
+    std::vector<std::string> _commandHistory;
+    unsigned int _curCommandHistory;
 };
 
 
@@ -95,8 +129,8 @@ Console::Impl::Impl(osgViewer::View* view)
     , _thisPtr()
     , _box(new osgWidget::Box("consoleBox", osgWidget::Box::VERTICAL))
     , _history(new osgWidget::Label("consoleHistory", ""))
-    , _input(new osgWidget::Input("consoleInput", "", 80))
-    , _visible(true)
+    , _input(new CommandInput("consoleInput", "", 80))
+    , _visible(false)
     , _heightPercent(0.7)
     , _prevSimulationTime(0.0)
     , _eventHandler(NULL)
@@ -105,6 +139,9 @@ Console::Impl::Impl(osgViewer::View* view)
     , _oldWidth(1024.0)
     , _oldHeight(768.0)
     , _transitionTime(0.5)
+    , _executeCallbacks()
+    , _commandHistory()
+    , _curCommandHistory(0)
 {
     osgWidget::Frame::createSimpleFrame(
         "console",
@@ -145,10 +182,17 @@ Console::Impl::Impl(osgViewer::View* view)
 
     _history->setCanFill(true);
     _history->setColor(osg::Vec4(0.0, 0.0, 0.0, 0.0));
+    _history->setFont("fonts/VeraMono.ttf");
+    _history->setFontColor(1.0f, 1.0f, 1.0f, 1.0f);
+    _history->setFontSize(15);
     _history->setSize(1024.0, 768.0 - _input->getText()->getCharacterHeight());
+    _history->getText()->setMaximumWidth(1024.0);
+    _history->getText()->setMaximumHeight(768.0 - _input->getText()->getCharacterHeight());
     _history->setAlignHorizontal(osgWidget::Widget::HA_LEFT);
     _history->setAlignVertical(osgWidget::Widget::VA_BOTTOM);
     _history->getText()->setAlignment(osgText::Text::LEFT_BOTTOM_BASE_LINE);
+    _history->getText()->setKerningType(osgText::KERNING_NONE);
+    _history->getText()->update();
     _box->addWidget(_history);
 
     // To apply the correct initial position.
@@ -296,12 +340,79 @@ void Console::Impl::deleteThis()
     _thisPtr = 0;
 }
 
+void Console::Impl::addExecuteCallback(ExecuteCallback* callback)
+{
+    _executeCallbacks.push_back(callback);
+}
+
+void Console::Impl::removeExecuteCallback(ExecuteCallback* callback)
+{
+    ExecuteCallbacks::iterator it = std::find(_executeCallbacks.begin(), _executeCallbacks.end(), callback);
+    if (it != _executeCallbacks.end())
+        _executeCallbacks.erase(it);
+}
+
+const Console::ExecuteCallbacks& Console::Impl::getExecuteCallbacks() const
+{
+    return _executeCallbacks;
+}
+
 bool Console::Impl::handleKeyUp(osgWidget::Event& ev)
 {
     if (ev.key == osgGA::GUIEventAdapter::KEY_Return && ev.keyMask == 0x0)
     {
-        _history->setLabel(_history->getLabel() + "\n" + _input->getLabel());
+        // Get the command from the command input field.
+        std::string command = _input->getLabel();
         _input->clear();
+
+        // Add command to history and set the current history index to the 
+        // end of the list.
+        _commandHistory.push_back(command);
+        if (_commandHistory.size() > 50)
+            _commandHistory.pop_back();
+        _commandHistoryIndex = _commandHistory.size();
+
+        // Call all callbacks and get their output.
+        std::string output;
+        for (unsigned int i = 0; i < _executeCallbacks.size(); ++i)
+        {
+            output.append( (*_executeCallbacks[i])(command) );
+            if (i + 1 < _executeCallbacks.size())
+                output.append("\n");
+        }
+
+        _history->setLabel(_history->getLabel() + "> " + command + "\n" + output);
+
+        return true;
+    }
+    else if (ev.key == osgGA::GUIEventAdapter::KEY_Up && ev.keyMask == 0x0)
+    {
+        if (_curCommandHistory > 0)
+            --_curCommandHistory;
+
+        if (_commandHistory.size() > 0)
+        {
+            _input->clear();
+            _input->setCommand(_commandHistory[_curCommandHistory]);
+        }
+
+        return true;
+    }
+    else if (ev.key == osgGA::GUIEventAdapter::KEY_Down && ev.keyMask == 0x0)
+    {
+        if (_curCommandHistory < _commandHistory.size())
+            ++_curCommandHistory;
+
+        // When pressing down, when we get to the end of the command history, 
+        // the command should be empty (as it was before we started to press 
+        // up). So in both cases we clear the command input field.
+        _input->clear();
+
+        if (_curCommandHistory < _commandHistory.size())
+        {
+            _input->setCommand(_commandHistory[_curCommandHistory]);
+        }
+
         return true;
     }
 
@@ -445,4 +556,19 @@ void Console::setColor(const osg::Vec4& color)
 osg::Vec4 Console::getColor() const
 {
     return _impl->getColor();
+}
+
+void Console::addExecuteCallback(ExecuteCallback* callback)
+{
+    _impl->addExecuteCallback(callback);
+}
+
+void Console::removeExecuteCallback(ExecuteCallback* callback)
+{
+    _impl->removeExecuteCallback(callback);
+}
+
+const Console::ExecuteCallbacks& Console::getExecuteCallbacks() const
+{
+    return _impl->getExecuteCallbacks();
 }
