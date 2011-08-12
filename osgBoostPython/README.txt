@@ -10,7 +10,7 @@ In general, make sure your path contains the path to bjam
 (Windows)
 setenv.bat does that for you when run from the osgBoostPython root directory.
 
-To build
+To build with bjam
 ------------------
 Make sure OSG_ROOT and BOOST_ROOT are set properly. Run
 
@@ -31,6 +31,21 @@ time you can attach the debugger and then press any key to continue.
 Note that the Visual Studio solution and project files in build/ are NOT for
 actually building this project! They are just there for convenience when
 working on the source.
+
+To build with cmake
+------------------
+NOTE : This has only been tested on Linux/Ubuntu 10.04 with cmake 2.8,
+boost 1.47.0, python 2.6, and OSG 3.0.1.
+
+In the source directory :
+     
+     $ cmake .
+     $ make
+     $ ./setenv.sh
+     
+Like the bjam build above this adds python modules into lib/osg, lib/osgDB/, etc...
+The last step adds the path to the python modules to your PYTHONPATH ( currently
+only bash shell is supported ).
 
 To run tests
 ------------------
