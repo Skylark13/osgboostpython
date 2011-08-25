@@ -105,9 +105,9 @@ struct NodeVisitor_wrapper : public NodeVisitor
     }
 
     // Supplies the default implementation of apply
-    void default_apply_Node(NodeVisitor& self_, Node& node)
+    void default_apply_Node(Node& node)
     {
-        self_.NodeVisitor::apply(node);
+        NodeVisitor::apply(node);
     }
 
     // Override apply to call back into Python
@@ -117,9 +117,9 @@ struct NodeVisitor_wrapper : public NodeVisitor
     }
 
     // Supplies the default implementation of apply
-    void default_apply_Group(NodeVisitor& self_, Group& node)
+    void default_apply_Group(Group& node)
     {
-        self_.NodeVisitor::apply(node);
+        NodeVisitor::apply(node);
     }
 
  private:
