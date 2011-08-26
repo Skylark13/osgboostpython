@@ -5,7 +5,7 @@ project(boost_python_osg)
 #
 # Find Open Scene Graph and set needed variables
 #
-set(OSG_COMPONENTS osgDB osgGA osgViewer)
+set(OSG_COMPONENTS osgDB osgGA osgViewer osgUtil)
 find_package(OpenSceneGraph REQUIRED 
   COMPONENTS ${OSG_COMPONENTS} )
 
