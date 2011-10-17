@@ -13,7 +13,7 @@ The intention is to support as many platforms as possible.  All three operating 
 You will need to have the following packages installed on your system.  The OpenSceneGraph, boost, and python libraries and header files are found by the cmake macros, so most _standard_ installations should be picked up without problems.
   * [http://www.cmake.org/ cmake] - The minimum version required is 2.8.
   * [http://www.openscenegraph.org/projects/osg OpenSceneGraph] - Currently testing on 3.0.1. 
-  * [www.boost.org boost] - Currently testing on 1.47.0.  Many of the libraries are header-only, but you will need to built Boost.Python.
+  * [http://www.boost.org boost] - Currently testing on 1.47.0.  Many of the libraries are header-only, but you will need to built Boost.Python.
   * [http://www.python.org/ python] - Currently testing on python 2.6
 
 == Building osgBoostPython ==
