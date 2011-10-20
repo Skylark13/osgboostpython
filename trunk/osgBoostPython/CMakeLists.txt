@@ -37,6 +37,7 @@ foreach( LIB ${PYOSG_LIBS} )
     ${THIS_SOURCE_LIST}
     )
   set_target_properties(${LIB} PROPERTIES PREFIX "_")
+  set_target_properties(${LIB} PROPERTIES SUFFIX ".so")
   set_target_properties(${LIB} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib/${LIB}/")
   target_link_libraries(${LIB} ${OPENSCENEGRAPH_LIBRARIES})
   target_link_libraries(${LIB} ${Boost_LIBRARIES})
