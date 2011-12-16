@@ -90,6 +90,52 @@ void export_drawable()
         .add_property("radius", &Sphere::getRadius, &Sphere::setRadius)
     ;
 
+    class_<Box, bases<Shape>, ref_ptr<Box> >("Box")
+      .def(init<Vec3f, float>())
+      .def(init<Vec3f, float, float, float>())
+      .def("set", &Box::set)
+      .add_property("center", make_function(&Box::getCenter, osgBoostPython::default_const_reference_policy()), &Box::setCenter )
+      .add_property("half_lengths", make_function(&Box::getHalfLengths, osgBoostPython::default_const_reference_policy()), &Box::setHalfLengths )
+      .add_property("rotation", make_function(&Box::getRotation, osgBoostPython::default_const_reference_policy()), &Box::setRotation )
+      .def("compute_rotation_matrix", &Box::computeRotationMatrix )
+      .def("zero_rotation", &Box::zeroRotation )
+    ;
+
+    class_<Cone, bases<Shape>, ref_ptr<Cone> >("Cone")
+      .def(init<Vec3f, float, float>())
+      .def("set", &Cone::set)
+      .add_property("center", make_function(&Cone::getCenter, osgBoostPython::default_const_reference_policy()), &Cone::setCenter)
+      .add_property("radius", &Cone::getRadius, &Cone::setRadius)
+      .add_property("height", &Cone::getHeight, &Cone::setHeight)
+      .add_property("rotation", make_function(&Cone::getRotation, osgBoostPython::default_const_reference_policy()), &Cone::setRotation )
+      .def("compute_rotation_matrix", &Cone::computeRotationMatrix )
+      .def("zero_rotation", &Cone::zeroRotation )
+      .add_property("base_offset_factor", &Cone::getBaseOffsetFactor )
+      .add_property("base_offset", &Cone::getBaseOffset )
+    ;
+
+    class_<Cylinder, bases<Shape>, ref_ptr<Cylinder> >("Cylinder")
+      .def(init<Vec3f, float, float>())
+      .def("set", &Cylinder::set)
+      .add_property("center", make_function(&Cylinder::getCenter, osgBoostPython::default_const_reference_policy()), &Cylinder::setCenter)
+      .add_property("radius", &Cylinder::getRadius, &Cylinder::setRadius)
+      .add_property("height", &Cylinder::getHeight, &Cylinder::setHeight)
+      .add_property("rotation", make_function(&Cylinder::getRotation, osgBoostPython::default_const_reference_policy()), &Cylinder::setRotation )
+      .def("compute_rotation_matrix", &Cylinder::computeRotationMatrix )
+      .def("zero_rotation", &Cylinder::zeroRotation )
+    ;
+
+    class_<Capsule, bases<Shape>, ref_ptr<Capsule> >("Capsule")
+      .def(init<Vec3f, float, float>())
+      .def("set", &Capsule::set)
+      .add_property("center", make_function(&Capsule::getCenter, osgBoostPython::default_const_reference_policy()), &Capsule::setCenter)
+      .add_property("radius", &Capsule::getRadius, &Capsule::setRadius)
+      .add_property("height", &Capsule::getHeight, &Capsule::setHeight)
+      .add_property("rotation", make_function(&Capsule::getRotation, osgBoostPython::default_const_reference_policy()), &Capsule::setRotation )
+      .def("compute_rotation_matrix", &Capsule::computeRotationMatrix )
+      .def("zero_rotation", &Capsule::zeroRotation )
+    ;
+
     // TODO: Other shape subclasses
 
     class_<TessellationHints, bases<Object>, ref_ptr<TessellationHints> >("TessellationHints")
@@ -97,6 +143,7 @@ void export_drawable()
 
     class_<ShapeDrawable, bases<Drawable>, ref_ptr<ShapeDrawable> >("ShapeDrawable")
         .def(init<Shape*, TessellationHints*>())
+        .def(init<Shape*>())
         .add_property("color", make_function(&ShapeDrawable::getColor, osgBoostPython::default_const_reference_policy()), &ShapeDrawable::setColor)
     ;
 
@@ -171,17 +218,96 @@ void export_drawable()
 
     // DrawElements
     {
+      class_<DrawElements, bases<PrimitiveSet>, ref_ptr<DrawElements>, boost::noncopyable >
+	("DrawElements", no_init );        
     }
 
+    {   
+      class_<VectorGLuint>("VectorGLuint")
+	.def(vector_indexing_suite<VectorGLuint>() );
+      class_<VectorGLubyte>("VectorGLubyte")
+	.def(vector_indexing_suite<VectorGLubyte>() );
+      class_<VectorGLushort>("VectorGLushort")
+	.def(vector_indexing_suite<VectorGLushort>() );
+      class_<VectorGLsizei>("VectorGLsizei")
+	.def(vector_indexing_suite<VectorGLsizei>() );
+    }
+    
     // DrawElementsUByte
     {
-    }
+      void(DrawElementsUByte::*accept_pf)(PrimitiveFunctor&) const = &DrawElementsUByte::accept;
+      void(DrawElementsUByte::*accept_pif)(PrimitiveIndexFunctor&) const = &DrawElementsUByte::accept;
+
+      class_<DrawElementsUByte, bases<DrawElements,VectorGLubyte>, ref_ptr<DrawElementsUByte> >
+	("DrawElementsUByte")
+	.def( init<GLenum>() )
+	.def( init<GLenum, unsigned int, GLubyte*, int>() )
+	.def( init<GLenum, unsigned int>() )
+	//.def( "getData", &DrawElementsUByte::getDataPointer, osgBoostPython::default_pointer_policy() )
+	.def("getTotalDataSize", &DrawElementsUByte::getTotalDataSize )
+	.def("supportsBufferObject", &DrawElementsUByte::supportsBufferObject )
+	.def("draw", &DrawElementsUByte::draw )
+	.def("accept", accept_pf )
+	.def("accept", accept_pif )
+	.def("getNumIndices", &DrawElementsUByte::getNumIndices )
+	.def("index", &DrawElementsUByte::index )
+	.def("offsetIndices", &DrawElementsUByte::offsetIndices )
+	.def("reserveElements", &DrawElementsUByte::reserveElements )
+	.def("setElement", &DrawElementsUByte::setElement )
+	.def("getElement", &DrawElementsUByte::getElement )
+	.def("addElement", &DrawElementsUByte::addElement )
+	;
+    } 
 
     // DrawElementsUShort
     {
+      void(DrawElementsUShort::*accept_pf)(PrimitiveFunctor&) const = &DrawElementsUShort::accept;
+      void(DrawElementsUShort::*accept_pif)(PrimitiveIndexFunctor&) const = &DrawElementsUShort::accept;
+
+      class_<DrawElementsUShort, bases<DrawElements,VectorGLushort>, ref_ptr<DrawElementsUShort> >
+	("DrawElementsUShort")
+	.def( init<GLenum>() )
+	.def( init<GLenum, unsigned int, GLushort*, int>() )
+	.def( init<GLenum, unsigned int>() )
+	//.def( "getData", &DrawElementsUShort::getDataPointer, osgBoostPython::default_pointer_policy() )
+	.def("getTotalDataSize", &DrawElementsUShort::getTotalDataSize )
+	.def("supportsBufferObject", &DrawElementsUShort::supportsBufferObject )
+	.def("draw", &DrawElementsUShort::draw )
+	.def("accept", accept_pf )
+	.def("accept", accept_pif )
+	.def("getNumIndices", &DrawElementsUShort::getNumIndices )
+	.def("index", &DrawElementsUShort::index )
+	.def("offsetIndices", &DrawElementsUShort::offsetIndices )
+	.def("reserveElements", &DrawElementsUShort::reserveElements )
+	.def("setElement", &DrawElementsUShort::setElement )
+	.def("getElement", &DrawElementsUShort::getElement )
+	.def("addElement", &DrawElementsUShort::addElement )
+	;
     }
 
     // DrawElementsUInt
     {
+      void(DrawElementsUInt::*accept_pf)(PrimitiveFunctor&) const = &DrawElementsUInt::accept;
+      void(DrawElementsUInt::*accept_pif)(PrimitiveIndexFunctor&) const = &DrawElementsUInt::accept;
+
+      class_<DrawElementsUInt, bases<DrawElements,VectorGLuint>, ref_ptr<DrawElementsUInt> >
+	("DrawElementsUInt")
+	.def( init<GLenum>() )
+	.def( init<GLenum, unsigned int, GLuint*, int>() )
+	.def( init<GLenum, unsigned int>() )
+	//.def( "getData", &DrawElementsUInt::getDataPointer, osgBoostPython::default_pointer_policy() )
+	.def("getTotalDataSize", &DrawElementsUInt::getTotalDataSize )
+	.def("supportsBufferObject", &DrawElementsUInt::supportsBufferObject )
+	.def("draw", &DrawElementsUInt::draw )
+	.def("accept", accept_pf )
+	.def("accept", accept_pif )
+	.def("getNumIndices", &DrawElementsUInt::getNumIndices )
+	.def("index", &DrawElementsUInt::index )
+	.def("offsetIndices", &DrawElementsUInt::offsetIndices )
+	.def("reserveElements", &DrawElementsUInt::reserveElements )
+	.def("setElement", &DrawElementsUInt::setElement )
+	.def("getElement", &DrawElementsUInt::getElement )
+	.def("addElement", &DrawElementsUInt::addElement )
+	;
     }
 }
