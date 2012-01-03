@@ -13,34 +13,27 @@
 * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
 * http://www.gnu.org/copyleft/lesser.txt.
 */
-
 #include <boost/python.hpp>
 using namespace boost::python;
 
-#include <osg/Depth>
-
+#include <osg/ref_ptr>
+#include <osg/Transform>
 using namespace osg;
 
 #include "defaults.h"
 
-void export_Depth() {
-
-    scope in_Depth = class_<Depth, bases<StateAttribute>, ref_ptr<Depth>, boost::noncopyable>("Depth")
-        .def(init<>())
-//      .def(init<Depth::Function, double, double, bool>())
-        .def("setFunction", &Depth::setFunction)
-        .def("setRange", &Depth::setRange)
+void export_Transform()
+{
+  // Abstract class
+  scope in_Transform = class_<Transform, bases<Group>, ref_ptr<Transform>, boost::noncopyable >("Transform", no_init)
+    .add_property("referenceFrame", &Transform::getReferenceFrame, &Transform::setReferenceFrame)
+    .def("computeLocalToWorldMatrix", &Transform::computeLocalToWorldMatrix)
+    .def("computeWorldToLocalMatrix", &Transform::computeWorldToLocalMatrix)
     ;
 
-    enum_<Depth::Function>("Function");
-        scope().attr("NEVER") = Depth::NEVER;
-        scope().attr("LESS") = Depth::LESS;
-        scope().attr("EQUAL") = Depth::EQUAL;
-        scope().attr("LEQUAL") = Depth::LEQUAL;
-        scope().attr("GREATER") = Depth::GREATER;
-        scope().attr("NOTEQUAL") = Depth::NOTEQUAL;
-        scope().attr("GEQUAL") = Depth::GEQUAL;
-        scope().attr("ALWAYS") = Depth::ALWAYS;
-
+  enum_<Transform::ReferenceFrame>("ReferenceFrame");
+  scope().attr("RELATIVE_RF") = Transform::RELATIVE_RF;
+  scope().attr("ABSOLUTE_RF") = Transform::ABSOLUTE_RF;
+  scope().attr("ABSOLUTE_RF_INHERIT_VIEWPOINT") = Transform::ABSOLUTE_RF_INHERIT_VIEWPOINT;
+  
 }
-

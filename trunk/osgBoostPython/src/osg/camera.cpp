@@ -38,10 +38,8 @@ void Camera_setDefaultClearMask(osg::Camera*c){
     c->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void export_camera()
+void export_Camera()
 {
-
-       class_<CullSettings, boost::noncopyable>("CullSettings");
 
        scope in_Camera = class_<Camera, bases<Transform, CullSettings>, ref_ptr<Camera>, boost::noncopyable >("Camera")
             .def(init<>())

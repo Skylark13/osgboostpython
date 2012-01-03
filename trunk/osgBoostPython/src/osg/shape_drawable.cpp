@@ -17,30 +17,24 @@
 #include <boost/python.hpp>
 using namespace boost::python;
 
-#include <osg/Depth>
+#include <osg/Object>
+#include <osg/Drawable>
+#include <osg/ShapeDrawable>
 
 using namespace osg;
 
 #include "defaults.h"
 
-void export_Depth() {
-
-    scope in_Depth = class_<Depth, bases<StateAttribute>, ref_ptr<Depth>, boost::noncopyable>("Depth")
-        .def(init<>())
-//      .def(init<Depth::Function, double, double, bool>())
-        .def("setFunction", &Depth::setFunction)
-        .def("setRange", &Depth::setRange)
+void export_ShapeDrawable()
+{
+  class_<TessellationHints, bases<Object>, ref_ptr<TessellationHints> >("TessellationHints")
     ;
 
-    enum_<Depth::Function>("Function");
-        scope().attr("NEVER") = Depth::NEVER;
-        scope().attr("LESS") = Depth::LESS;
-        scope().attr("EQUAL") = Depth::EQUAL;
-        scope().attr("LEQUAL") = Depth::LEQUAL;
-        scope().attr("GREATER") = Depth::GREATER;
-        scope().attr("NOTEQUAL") = Depth::NOTEQUAL;
-        scope().attr("GEQUAL") = Depth::GEQUAL;
-        scope().attr("ALWAYS") = Depth::ALWAYS;
+  class_<ShapeDrawable, bases<Drawable>, ref_ptr<ShapeDrawable> >("ShapeDrawable")
+    .def(init<Shape*, TessellationHints*>())
+    .def(init<Shape*>())
+    .add_property("color", make_function(&ShapeDrawable::getColor, osgBoostPython::default_const_reference_policy()), 
+		  &ShapeDrawable::setColor)
+    ;
 
 }
-

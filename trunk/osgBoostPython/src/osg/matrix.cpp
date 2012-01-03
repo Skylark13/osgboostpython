@@ -185,7 +185,7 @@ list asList(Matrix * self)
 
 //} // namespace
 
-void export_matrix()
+void export_Matrix()
 {
 
     class_<Matrixd>("Matrixd")
