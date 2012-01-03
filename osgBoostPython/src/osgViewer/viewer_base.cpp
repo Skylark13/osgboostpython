@@ -15,15 +15,17 @@
 */
 
 #include <boost/python.hpp>
-#include <boost/preprocessor/seq/for_each.hpp>
 using namespace boost::python;
+
+#include <osgViewer/ViewerBase>
+
+using namespace osg;
+using namespace osgViewer;
 
 #include "defaults.h"
 
-#define EXPORT_THESE \
-  (ViewerBase) \
-  (View) \
-    (Viewer) \
-  (ViewerEventHandlers)
-
-OSGBP_MODULE( _osgViewer, EXPORT_THESE )
+void export_ViewerBase()
+{
+    class_<ViewerBase, bases<Object>, ref_ptr<ViewerBase>, boost::noncopyable>("ViewerBase", no_init)
+    ;
+}

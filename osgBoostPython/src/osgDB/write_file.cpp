@@ -15,15 +15,18 @@
 */
 
 #include <boost/python.hpp>
-#include <boost/preprocessor/seq/for_each.hpp>
 using namespace boost::python;
 
+#include <osgDB/WriteFile>
 #include "defaults.h"
+using namespace osgDB;
 
-#define EXPORT_THESE \
-  (ViewerBase) \
-  (View) \
-    (Viewer) \
-  (ViewerEventHandlers)
+bool writeNodeFileWrapper(const osg::Node* node, const std::string& filename)
+{
+    return osgDB::writeNodeFile(*node, filename,Registry::instance()->getOptions());
+}
 
-OSGBP_MODULE( _osgViewer, EXPORT_THESE )
+void export_WriteFile()
+{
+    def("writeNodeFile", writeNodeFileWrapper);
+}

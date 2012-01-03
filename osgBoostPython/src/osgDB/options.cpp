@@ -31,7 +31,7 @@ std::string & (Options::*Options_getPluginStringData5)(std::string const & s) = 
 std::string const (Options::*Options_getPluginStringData6)(std::string const & s) const = & Options::getPluginStringData;
 
 
-void export_options() {
+void export_Options() {
  
     scope in_Options = class_<Options, bases<osg::Object>, ref_ptr<Options>, boost::noncopyable >( "Options", init<>() ) 
         //.def("removePluginStringData", &Options::removePluginStringData)
