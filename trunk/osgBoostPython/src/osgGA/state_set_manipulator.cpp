@@ -15,15 +15,20 @@
 */
 
 #include <boost/python.hpp>
-#include <boost/preprocessor/seq/for_each.hpp>
 using namespace boost::python;
+
+#include <osgGA/StateSetManipulator>
+
+#include <iostream>
+
 #include "defaults.h"
 
-#define EXPORT_THESE \
-  (GUIActionAdapter) \
-  (GUIEventHandler) \
-  (StateSetManipulator) \
-  (EventVisitor) \
-  (GUIEventAdapter) 
+using namespace osg;
+using namespace osgGA;
 
-OSGBP_MODULE( _osgGA, EXPORT_THESE )
+void export_StateSetManipulator()
+{
+    class_<StateSetManipulator, bases<GUIEventHandler>, ref_ptr<StateSetManipulator> >("StateSetManipulator")
+        .def(init<StateSet*>())
+    ;
+}
