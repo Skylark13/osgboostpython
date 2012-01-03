@@ -15,15 +15,19 @@
 */
 
 #include <boost/python.hpp>
-#include <boost/preprocessor/seq/for_each.hpp>
 using namespace boost::python;
+
+#include <osgGA/GUIActionAdapter>
+
+#include <iostream>
+
 #include "defaults.h"
 
-#define EXPORT_THESE \
-  (GUIActionAdapter) \
-  (GUIEventHandler) \
-  (StateSetManipulator) \
-  (EventVisitor) \
-  (GUIEventAdapter) 
+using namespace osg;
+using namespace osgGA;
 
-OSGBP_MODULE( _osgGA, EXPORT_THESE )
+void export_GUIActionAdapter()
+{
+    class_<GUIActionAdapter, boost::noncopyable>("GUIActionAdapter", no_init)
+    ;
+}
