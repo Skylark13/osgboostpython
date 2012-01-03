@@ -13,34 +13,19 @@
 * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
 * http://www.gnu.org/copyleft/lesser.txt.
 */
-
 #include <boost/python.hpp>
 using namespace boost::python;
 
-#include <osg/Depth>
-
+#include <osg/ref_ptr>
+#include <osg/FrameStamp>
 using namespace osg;
 
 #include "defaults.h"
 
-void export_Depth() {
-
-    scope in_Depth = class_<Depth, bases<StateAttribute>, ref_ptr<Depth>, boost::noncopyable>("Depth")
-        .def(init<>())
-//      .def(init<Depth::Function, double, double, bool>())
-        .def("setFunction", &Depth::setFunction)
-        .def("setRange", &Depth::setRange)
+void export_FrameStamp() {
+    class_<FrameStamp, ref_ptr<FrameStamp> >("FrameStamp")
+        .def("getFrameNumber", &FrameStamp::getFrameNumber)
+        .def("getReferenceTime", &FrameStamp::getReferenceTime)
+        .def("getSimulationTime", &FrameStamp::getSimulationTime)
     ;
-
-    enum_<Depth::Function>("Function");
-        scope().attr("NEVER") = Depth::NEVER;
-        scope().attr("LESS") = Depth::LESS;
-        scope().attr("EQUAL") = Depth::EQUAL;
-        scope().attr("LEQUAL") = Depth::LEQUAL;
-        scope().attr("GREATER") = Depth::GREATER;
-        scope().attr("NOTEQUAL") = Depth::NOTEQUAL;
-        scope().attr("GEQUAL") = Depth::GEQUAL;
-        scope().attr("ALWAYS") = Depth::ALWAYS;
-
 }
-

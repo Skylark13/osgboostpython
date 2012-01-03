@@ -15,10 +15,8 @@
 */
 
 #include <boost/python.hpp>
-//#include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 using namespace boost::python;
 
-//#include <osg/StateAttribute>
 #include <osg/ClipPlane>
 using namespace osg;
 
@@ -28,7 +26,7 @@ void (ClipPlane::*ClipPlane_setClipPlane1)(osg::Plane const & plane) = & ClipPla
 void (ClipPlane::*ClipPlane_setClipPlane2)(double a, double b, double c, double d) = & ClipPlane::setClipPlane;
 void (ClipPlane::*ClipPlane_setClipPlane3)(osg::Vec4d const & plane) = & ClipPlane::setClipPlane;
 
-void export_clipplane() {
+void export_ClipPlane() {
 
     class_<ClipPlane, bases<StateAttribute>, ref_ptr<ClipPlane>, boost::noncopyable >("ClipPlane")
         .def(init<>())

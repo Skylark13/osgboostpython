@@ -28,7 +28,7 @@ using namespace osg;
 void (BlendFunc::*BlendFunc_setFunction1)(GLenum source, GLenum destination) = & BlendFunc::setFunction;
 void (BlendFunc::*BlendFunc_setFunction2)(GLenum source_rgb, GLenum destination_rgb, GLenum source_alpha, GLenum destination_alpha) = & BlendFunc::setFunction;
 
-void export_blendfunc() {
+void export_BlendFunc() {
 
     scope in_BlendFunc = class_<BlendFunc, bases<StateAttribute>, ref_ptr<BlendFunc>, boost::noncopyable >("BlendFunc")
         .def(init<>())

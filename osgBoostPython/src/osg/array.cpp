@@ -308,7 +308,7 @@ struct ArrayWrapper
     }
 };
 
-void export_array()
+void export_Array()
 {
     // Vec3Array, Vec4Array, ...
 

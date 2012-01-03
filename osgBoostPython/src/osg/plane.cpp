@@ -43,7 +43,7 @@ double (Plane::*Plane_dotProductNormal15)(osg::Vec3d const & v) const = & Plane:
 int (Plane::*Plane_intersect18)(osg::BoundingSphere const & bs) const = & Plane::intersect;
 int (Plane::*Plane_intersect19)(osg::BoundingBox const & bb) const = & Plane::intersect;
 
-void export_plane() {
+void export_Plane() {
 
     class_<Plane, boost::noncopyable >("Plane")
         .def(init<>())

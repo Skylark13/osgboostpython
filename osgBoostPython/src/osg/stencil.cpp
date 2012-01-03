@@ -25,7 +25,7 @@ using namespace osg;
 void (Stencil::*Stencil_setFunction1)(osg::Stencil::Function func, int ref, unsigned int mask) = & Stencil::setFunction;
 void (Stencil::*Stencil_setFunction2)(osg::Stencil::Function func) = & Stencil::setFunction;
 
-void export_stencil() {
+void export_Stencil() {
 
     scope in_Stencil = class_<Stencil, bases<StateAttribute>, ref_ptr<Stencil>, boost::noncopyable >("Stencil")
         .def(init<>())
