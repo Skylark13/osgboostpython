@@ -49,6 +49,9 @@ only bash shell is supported ).
 
 To run tests
 ------------------
+Set the evironment variable OSG_FILE_PATH to the location of the model files 
+(i.e. 'cow.osg').
+
 python test/runtests.py
 
 or individually:
