@@ -29,7 +29,7 @@ osg::ClipPlane const * (ClipNode::*ClipNode_getClipPlane4)(unsigned int pos) con
 std::vector<osg::ref_ptr<osg::ClipPlane>, std::allocator<osg::ref_ptr<osg::ClipPlane> > > & (ClipNode::*ClipNode_getClipPlaneList5)() = & ClipNode::getClipPlaneList;
 //std::vector<osg::ref_ptr<osg::ClipPlane>, std::allocator<osg::ref_ptr<osg::ClipPlane> > > const & (ClipNode::*ClipNode_getClipPlaneList6)() = & ClipNode::getClipPlaneList;
 
-void export_clipnode() {
+void export_ClipNode() {
 
     scope in_ClipNode=
     class_<ClipNode, bases<Group>, ref_ptr<ClipNode>, boost::noncopyable >("ClipNode")
