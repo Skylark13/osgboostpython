@@ -15,15 +15,20 @@
 */
 
 #include <boost/python.hpp>
-#include <boost/preprocessor/seq/for_each.hpp>
 using namespace boost::python;
+
+#include <osgViewer/ViewerEventHandlers>
+
+using namespace osg;
+using namespace osgViewer;
 
 #include "defaults.h"
 
-#define EXPORT_THESE \
-  (ViewerBase) \
-  (View) \
-    (Viewer) \
-  (ViewerEventHandlers)
+void export_ViewerEventHandlers()
+{
+    class_<HelpHandler, bases<osgGA::GUIEventHandler>, ref_ptr<HelpHandler> >("HelpHandler")
+    ;
 
-OSGBP_MODULE( _osgViewer, EXPORT_THESE )
+    class_<StatsHandler, bases<osgGA::GUIEventHandler>, ref_ptr<StatsHandler> >("StatsHandler")
+    ;
+}

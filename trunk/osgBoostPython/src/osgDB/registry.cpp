@@ -61,7 +61,11 @@ osgDB::FilePathList const & (Registry::*Registry_getLibraryFilePathList37)() con
 // bool (ReadFunctor::*ReadFunctor_isValid40)(osg::Object * object) = & ReadFunctor::isValid;
 
 
-void export_registry() {
+static osg::ref_ptr<osgDB::Registry> getRegistry() {
+    return osg::ref_ptr<osgDB::Registry>(osgDB::Registry::instance());
+}
+
+void export_Registry() {
  
     class_<Registry, bases<osg::Referenced>, ref_ptr<Registry>, boost::noncopyable >( "Registry", no_init ) 
         //.def("writeObjectImplementation", &Registry::writeObjectImplementation)
@@ -183,4 +187,6 @@ void export_registry() {
         //.def("closeLibrary", &Registry::closeLibrary)
         //.def("writeShader", &Registry::writeShader)
 	;
+
+    def("Registry", &getRegistry);
 }

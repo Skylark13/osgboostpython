@@ -15,15 +15,32 @@
 */
 
 #include <boost/python.hpp>
-#include <boost/preprocessor/seq/for_each.hpp>
+
 using namespace boost::python;
+
+#include <osgDB/ReadFile>
+using namespace osgDB;
 
 #include "defaults.h"
 
-#define EXPORT_THESE \
-  (ViewerBase) \
-  (View) \
-    (Viewer) \
-  (ViewerEventHandlers)
+osg::ref_ptr<osg::Node> readNodeFileWrapper(const std::string& filename)
+{
+    return osg::ref_ptr<osg::Node>(osgDB::readNodeFile(filename));
+}
 
-OSGBP_MODULE( _osgViewer, EXPORT_THESE )
+osg::ref_ptr<osg::Image> readImageFileWrapper(const std::string& filename)
+{
+    return osg::ref_ptr<osg::Image>(osgDB::readImageFile(filename));
+}
+
+osg::ref_ptr<osg::Shader> readShaderFileWrapper(const std::string& filename)
+{
+    return osg::ref_ptr<osg::Shader>(osgDB::readShaderFile(filename));
+}
+
+void export_ReadFile()
+{
+    def("readNodeFile", readNodeFileWrapper);
+    def("readImageFile", readImageFileWrapper);
+    def("readShaderFile", readShaderFileWrapper);
+}
