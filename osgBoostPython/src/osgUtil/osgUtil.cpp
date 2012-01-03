@@ -1,15 +1,14 @@
 #include <boost/python.hpp>
+#include <boost/preprocessor/seq/for_each.hpp>
 using namespace boost::python;
+#include "defaults.h"
 
-void export_linesegmentintersector();
-void export_intersector();
-void export_intersectorgroup();
-void export_intersectionvisitor();
+#define EXPORT_THESE \
+  (IntersectionVisitor) \
+    (LineSegmentIntersector) \
+  (Simplifier) \
+  (CullVisitor) \
+  (UpdateVisitor) 
 
-BOOST_PYTHON_MODULE(_osgUtil)
-{
-    export_intersector();
-    export_intersectorgroup();	
-    export_linesegmentintersector();
-    export_intersectionvisitor();
-}
+OSGBP_MODULE( _osgUtil, EXPORT_THESE )
+

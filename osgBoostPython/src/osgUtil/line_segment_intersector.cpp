@@ -1,14 +1,6 @@
 #include "boost/python.hpp"
 #include "boost/python/suite/indexing/vector_indexing_suite.hpp"
-
-//#include <osg/ref_ptr>
-
-//#include <osg/Referenced>
-//#include <osg/Object>
-
 #include <osgUtil/LineSegmentIntersector>
-//#include <osgUtil/IntersectionVisitor>
-//#include <osgUtil/IntersectVisitor>
 
 using namespace osg;
 using namespace osgUtil;
@@ -21,7 +13,7 @@ Vec3d const & ( LineSegmentIntersector::Intersection::*get_loc_int_pt )(void) co
 Vec3 ( LineSegmentIntersector::Intersection::*get_world_int_norm )(void) const =  &::LineSegmentIntersector::Intersection::getWorldIntersectNormal;
 Vec3d ( LineSegmentIntersector::Intersection::*get_world_int_pt )(void) const = &::LineSegmentIntersector::Intersection::getWorldIntersectPoint;    
     
-void export_linesegmentintersector() {
+void export_LineSegmentIntersector() {
  
   class_<LineSegmentIntersector, bases<Intersector>, ref_ptr<LineSegmentIntersector>, boost::noncopyable >
       lsi( "LineSegmentIntersector",  init< Intersector::CoordinateFrame, double, double >(( arg("cf"), arg("x"), arg("y") )) );
