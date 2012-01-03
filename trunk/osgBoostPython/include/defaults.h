@@ -70,4 +70,14 @@ namespace osgBoostPython
 #define FUNC_PTR3_CONST(retval, classname, funcname, argtype1, argtype2, argtype3, ptr) retval (classname::*funcname)(argtype1, argtype2, argtype3) const = &ptr;
 #define FUNC_PTR4_CONST(retval, classname, funcname, argtype1, argtype2, argtype3, argtype4, ptr) retval (classname::*funcname)(argtype1, argtype2, argtype3, argtype4) const = &ptr;
 
+#define EXPORT_FN_DECL(r, data, t) void BOOST_PP_CAT(export_,t)();
+#define EXPORT(r, data, t) BOOST_PP_CAT(export_,t)();
+
+#define OSGBP_MODULE( name, export_these )				 \
+BOOST_PP_SEQ_FOR_EACH( EXPORT_FN_DECL, ~, export_these ) \
+BOOST_PYTHON_MODULE( name ) \
+{      \
+  BOOST_PP_SEQ_FOR_EACH(EXPORT, ~, export_these );  \
+}
+
 #endif  // __OSGBOOSTPYTHON_DEFAULTS_H__
