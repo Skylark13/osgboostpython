@@ -233,7 +233,7 @@ struct Vec4Wrapper : public Vec3Wrapper<VecType>
     }
 };
 
-void export_math()
+void export_Math()
 {
     // Vec2f
     VecWrapper<Vec2f>::class_t v2fwrapper = Vec2Wrapper<Vec2f>::wrap("Vec2f");
@@ -266,7 +266,14 @@ void export_math()
         .def(init<Vec3d, Vec4d::value_type>());
 
     class_<Quat>("Quat")
-        .def(init<>())
+      .def(init<>())
+      .def(init<double, double, double, double>())
+      .def(init<Vec4f>())
+      .def(init<Vec4d>())
+      .def(init<double, Vec3f>())
+      .def(init<double, Vec3d>())
+      .def(init<double, Vec3f, double, Vec3f, double, Vec3f>())
+      .def(init<double, Vec3d, double, Vec3d, double, Vec3d>())
         // TODO: other constructors
         .def("makeRotate",
             (void (Quat::*)(const osg::Vec3&, const osg::Vec3&))
