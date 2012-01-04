@@ -201,8 +201,8 @@ void export_Switch(){
     .add_property("newChildDefaultValue", &Switch::getNewChildDefaultValue, &Switch::setNewChildDefaultValue)
     .add_property("valueList", make_function( &Switch::getValueList, osgBoostPython::default_const_reference_policy() ),
 		  set_value_list )
-    .add_property("__setitem__", &Switch::setValue)
-    .add_property("__getitem__", &Switch::getValue)
+    .def("__setitem__", &Switch::setValue)
+    .def("__getitem__", &Switch::getValue)
     .def("setChildValue", &Switch::setChildValue)
     .def("getChildValue", &Switch::getChildValue)
     .def("setNewChildDefaultValue", &Switch::setNewChildDefaultValue)
