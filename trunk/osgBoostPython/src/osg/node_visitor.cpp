@@ -41,7 +41,8 @@ using namespace osg;
   void BOOST_PP_CAT(apply_,classname)  ( classname& node ){ NodeVisitor::apply(node); }
 
 #define APPLY_DEF( r, data, classname )					\
-  .def("apply_"#classname, BOOST_PP_CAT(&NodeVisitor_wrapper::apply_ , classname) )
+  .def( BOOST_PP_STRINGIZE( BOOST_PP_CAT(apply_, classname) ), \
+	BOOST_PP_CAT(&NodeVisitor_wrapper::apply_ , classname) )
 
 
 struct NodeVisitor_wrapper : public NodeVisitor
