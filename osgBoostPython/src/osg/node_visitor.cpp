@@ -31,9 +31,9 @@ using namespace osg;
   (Node)(Group)(Switch)
  
 #define APPLY_WRAP( r, data, classname )					\
-  void apply(classname& node) {     \
+  void apply(classname& node) {				\
     try{     \
-      call_method<void>(self, "apply_"#classname, boost::ref(node));  \
+      call_method<void>(self, BOOST_PP_STRINGIZE( BOOST_PP_CAT(apply_, classname) ), boost::ref(node) ); \
     } catch (error_already_set) {     \
       NodeVisitor::apply( node ); \
     }                              \
@@ -58,7 +58,7 @@ struct NodeVisitor_wrapper : public NodeVisitor
     NodeVisitor_wrapper(PyObject *p, const NodeVisitor& x)
         : NodeVisitor(x), self(p) {}
 
-  BOOST_PP_SEQ_FOR_EACH( APPLY_WRAP,,WRAP_THESE ) 
+  BOOST_PP_SEQ_FOR_EACH( APPLY_WRAP,,WRAP_THESE )
 
   // Override apply to call back into Python
   const char* className(){ 
