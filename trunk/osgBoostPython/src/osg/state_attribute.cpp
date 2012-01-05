@@ -29,6 +29,8 @@ void export_StateAttribute()
     ("StateAttribute", no_init)
     ;
 
+  class_<StateAttribute::ModeUsage, boost::noncopyable>("ModeUsage", no_init);
+
   enum_<StateAttribute::Values>("Values");
   scope().attr("OFF") =  StateAttribute::OFF;
   scope().attr("ON") =  StateAttribute::ON;
