@@ -41,6 +41,7 @@ using namespace osg;
 // Let's just make it look like the tree
 #define EXPORT_THESE \
   (OpenGL)\
+  (CopyOp)\
   (Matrix)\
   (Math) \
   (Plane) \
