@@ -18,9 +18,29 @@
 using namespace boost::python;
 
 #include <osg/NodeVisitor>
-#include <osg/Group>
+
 #include <osg/Node>
+#include <osg/Geode>
+#include <osg/Billboard>
+#include <osg/Group>
+#include <osg/ProxyNode>
+#include <osg/Projection>
+#include <osg/CoordinateSystemNode>
+#include <osg/ClipNode>
+#include <osg/TexGenNode>
+#include <osg/LightSource>
+#include <osg/Transform>
+#include <osg/Camera>
+#include <osg/CameraView>
+#include <osg/MatrixTransform>
+#include <osg/PositionAttitudeTransform>
 #include <osg/Switch>
+#include <osg/Sequence>
+#include <osg/LOD>
+#include <osg/PagedLOD>
+#include <osg/ClearNode>
+#include <osg/OccluderNode>
+//#include <osg/OcclusionQueryNode>
 
 using namespace osg;
 
@@ -28,8 +48,14 @@ using namespace osg;
 #include <boost/preprocessor/seq/for_each.hpp>
 
 #define WRAP_THESE \
-  (Node)(Group)(Switch)
+  (Node)(Geode)(Billboard)(Group)(ProxyNode)						\
+  (Projection)(CoordinateSystemNode)(ClipNode)(TexGenNode)(LightSource)\
+  (Transform)(Camera)(CameraView)(MatrixTransform)(PositionAttitudeTransform) \
+  (Switch)(Sequence)(LOD)(PagedLOD)(ClearNode)\
+  (OccluderNode)//(OcclusionQueryNode)
+
  
+
 #define APPLY_WRAP( r, data, classname )					\
   void apply(classname& node) {				\
     try{     \
