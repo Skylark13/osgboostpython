@@ -69,16 +69,29 @@ using namespace osg;
         (Stencil) \
         (ClipPlane) \
         (BlendFunc) \
+        (Light) \
+        (TexGen) \
       (Node) \
         (Geode) \
+          (Billboard) \
         (Group) \
           (ClipNode) \
           (Switch) \
           (LOD) \
+            (PagedLOD) \
           (Transform) \
             (Camera) \
+            (CameraView) \
             (MatrixTransform) \
             (PositionAttitudeTransform) \
+          (TexGenNode) \
+          (CoordinateSystemNode) \
+          (Sequence) \
+          (Projection) \
+          (OccluderNode) \
+          (ProxyNode) \
+          (LightSource) \
+          (ClearNode) \
     (NodeVisitor)\
   
 // HeldType for objects which have a protected destructor.
