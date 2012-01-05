@@ -35,8 +35,7 @@ bool add_child2( PagedLOD& p, Node* node, float min, float max, const std::strin
   return p.addChild( node, min, max, filename );
 }
 
-Referenced*(PagedLOD::*get_db_opt)() = &PagedLOD::getDatabaseOptions;
-const std::string& (PagedLOD::*get_db_path)() = &PagedLOD::getDatabasePath;
+Referenced*(PagedLOD::*get_db_opt_PLOD)() = &PagedLOD::getDatabaseOptions;
 
 void export_PagedLOD()
 {
@@ -50,9 +49,9 @@ void export_PagedLOD()
     .def("addChild", add_child1 )
     .def("addChild", add_child2 )
     .def("removeChildren", &PagedLOD::removeChildren )
-    .add_property("databaseOptions", make_function( get_db_opt, osgBoostPython::default_pointer_policy() ),
+    .add_property("databaseOptions", make_function( get_db_opt_PLOD, osgBoostPython::default_pointer_policy() ),
 	 &PagedLOD::setDatabaseOptions )
-    .add_property("databasePath", make_function( get_db_path, osgBoostPython::default_const_reference_policy() ),
+    .add_property("databasePath", make_function( &PagedLOD::getDatabasePath, osgBoostPython::default_const_reference_policy() ),
 	 &PagedLOD::setDatabasePath )
     
     ;
