@@ -22,8 +22,10 @@ using namespace boost::python;
 
 #define EXPORT_THESE \
   (ViewerBase) \
+  (GraphicsWindow) \
   (View) \
     (Viewer) \
+  (CompositeViewer) \
   (ViewerEventHandlers)
 
 OSGBP_MODULE( _osgViewer, EXPORT_THESE )

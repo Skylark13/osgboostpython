@@ -30,11 +30,14 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(osgView_setUpViewOnSingleScreen_overloads
 void export_View()
 {
 
-    // TODO: Wrap osgViewer::View at least, then osgViewer::ViewerBase and osgViewer::CompositeViewer.
-    class_<osgViewer::View, bases<osg::View, osgGA::GUIActionAdapter>, ref_ptr<osgViewer::View> >("View")
-        .def("setUpViewAcrossAllScreens", &osgViewer::View::setUpViewAcrossAllScreens)
-        .def("setUpViewInWindow", &osgViewer::View::setUpViewInWindow, osgView_setUpViewInWindow_overloads())
-        .def("setUpViewOnSingleScreen", &osgViewer::View::setUpViewOnSingleScreen, osgView_setUpViewOnSingleScreen_overloads())
+  // TODO: Wrap osgViewer::View at least, then osgViewer::ViewerBase and osgViewer::CompositeViewer.
+  class_<osgViewer::View, bases<osg::View, osgGA::GUIActionAdapter>, ref_ptr<osgViewer::View> >("View")
+    .def("setUpViewAcrossAllScreens", &osgViewer::View::setUpViewAcrossAllScreens)
+    .def("setUpViewInWindow", &osgViewer::View::setUpViewInWindow, osgView_setUpViewInWindow_overloads())
+    .def("setUpViewOnSingleScreen", &osgViewer::View::setUpViewOnSingleScreen, osgView_setUpViewOnSingleScreen_overloads())
+    .def("setSceneData", &osgViewer::View::setSceneData )
+    .def("addEventHandler", &osgViewer::View::addEventHandler )
+    .def("setCameraManipulator", &osgViewer::View::setCameraManipulator )
     ;
 
 }
