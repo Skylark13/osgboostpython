@@ -25,5 +25,6 @@ using namespace osg;
 
 void export_View(){
     class_<View, bases<Object>, ref_ptr<View> >("View")
+      .def("setCamera", &View::setCamera )
     ;
 }
