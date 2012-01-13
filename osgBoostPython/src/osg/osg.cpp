@@ -51,6 +51,7 @@ using namespace osg;
     (DisplaySettings) \
     (FrameStamp)\
     (Object)  \
+      (GraphicsContext) \
       (Image) \
       (View)  \
       (Shape) \
@@ -72,6 +73,7 @@ using namespace osg;
         (BlendFunc) \
         (Light) \
         (TexGen) \
+        (Viewport) \
       (Node) \
         (Geode) \
           (Billboard) \
