@@ -15,18 +15,21 @@
 */
 
 #include <boost/python.hpp>
-#include <boost/preprocessor/seq/for_each.hpp>
 using namespace boost::python;
+
+#include <osgGA/CameraManipulator>
+
 #include "defaults.h"
 
-#define EXPORT_THESE \
-  (GUIActionAdapter) \
-  (GUIEventHandler) \
-    (CameraManipulator) \
-  (StateSetManipulator) \
-  (EventVisitor) \
-  (GUIEventAdapter) \
-  (TrackballManipulator)
+using namespace osg;
+using namespace osgGA;
 
 
-OSGBP_MODULE( _osgGA, EXPORT_THESE )
+void export_CameraManipulator()
+{
+
+  class_<CameraManipulator, bases<osgGA::GUIEventHandler>, boost::noncopyable>
+    ("CameraManipulator", no_init)
+    ;
+
+}

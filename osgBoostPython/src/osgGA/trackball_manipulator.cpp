@@ -15,18 +15,20 @@
 */
 
 #include <boost/python.hpp>
-#include <boost/preprocessor/seq/for_each.hpp>
 using namespace boost::python;
+
+#include <osgGA/TrackballManipulator>
+
 #include "defaults.h"
 
-#define EXPORT_THESE \
-  (GUIActionAdapter) \
-  (GUIEventHandler) \
-    (CameraManipulator) \
-  (StateSetManipulator) \
-  (EventVisitor) \
-  (GUIEventAdapter) \
-  (TrackballManipulator)
+using namespace osg;
+using namespace osgGA;
 
 
-OSGBP_MODULE( _osgGA, EXPORT_THESE )
+void export_TrackballManipulator()
+{
+
+  class_<TrackballManipulator, bases<CameraManipulator>, ref_ptr<TrackballManipulator> >("TrackballManipulator")
+    ;
+
+}
