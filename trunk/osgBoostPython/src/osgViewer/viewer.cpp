@@ -35,13 +35,14 @@ void export_Viewer()
 {
 
     // Need wrapper for osgViewer::View, which needs wrapper for osg::View, ...
-    class_<Viewer, bases<osgViewer::View, osgViewer::ViewerBase>, ref_ptr<Viewer> >("Viewer")
-        .def("run", &Viewer::run)
-        .def("done", &Viewer::done)
-        .def("frame", &Viewer::frame, osgViewer_frame_overloads())
-        .def("addEventHandler", &Viewer::addEventHandler)
-        .def("setSceneData", &Viewer::setSceneData)
-        .def("getCameraWithFocus", Viewer_getCameraWithFocus1, osgBoostPython::default_pointer_policy())
+  class_<Viewer, bases<osgViewer::View, osgViewer::ViewerBase>, ref_ptr<Viewer> >("Viewer")
+    .def("run", &Viewer::run)
+    .def("done", &Viewer::done)
+    .def("frame", &Viewer::frame, osgViewer_frame_overloads())
+    .def("addEventHandler", &Viewer::addEventHandler)
+    .def("setSceneData", &Viewer::setSceneData)
+    .def("getCameraWithFocus", Viewer_getCameraWithFocus1, osgBoostPython::default_pointer_policy())
+    .def("setUpViewerAsEmbeddedInWindow", &Viewer::setUpViewerAsEmbeddedInWindow, osgBoostPython::default_pointer_policy() )
     ;
 
 }

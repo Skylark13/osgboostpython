@@ -26,6 +26,22 @@ using namespace osgViewer;
 
 void export_ViewerBase()
 {
-    class_<ViewerBase, bases<Object>, ref_ptr<ViewerBase>, boost::noncopyable>("ViewerBase", no_init)
+  scope in_ViewerBase = class_<ViewerBase, bases<Object>, boost::noncopyable>("ViewerBase", no_init)
+    .add_property("threadingModel", &ViewerBase::getThreadingModel, &ViewerBase::setThreadingModel )
+    .def("frame", &ViewerBase::frame)
     ;
+
+    enum_<ViewerBase::ThreadingModel>("ThreadingModel");
+    scope().attr("SingleThreaded") = ViewerBase::SingleThreaded ;
+    scope().attr("CullDrawThreadPerContext") = ViewerBase::CullDrawThreadPerContext ;
+    scope().attr("ThreadPerContext") = ViewerBase::ThreadPerContext ;
+    scope().attr("DrawThreadPerContext") = ViewerBase::DrawThreadPerContext ;
+    scope().attr("CullThreadPerCameraDrawThreadPerContext") = ViewerBase::CullThreadPerCameraDrawThreadPerContext ;
+    scope().attr("ThreadPerCamera") = ViewerBase::ThreadPerCamera ;
+    scope().attr("AutomaticSelection") = ViewerBase::AutomaticSelection ;
+
+    enum_<ViewerBase::BarrierPosition>("BarrierPosition");
+    scope().attr("BeforeSwapBuffers") = ViewerBase::BeforeSwapBuffers ;
+    scope().attr("AfterSwapBuffers") = ViewerBase::AfterSwapBuffers ;
+
 }
