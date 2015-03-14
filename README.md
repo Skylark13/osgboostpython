@@ -6,6 +6,7 @@ Note: this project is not active anymore, and has been moved here from Google Co
 boost.python bindings for OpenSceneGraph. Hand-written to hopefully be more optimized, and also to be able to offer a more python-esque view of the OSG data structures.
 
 See the README.txt file in the sources for how to build and use the wrappers.
+Also, the documentation I had written on this project's Google Code wiki is now in a branch called 'wiki'.
 
 They are still very much a work in progress, but basic things work well. For example, we can translate osg::createTexturedQuadGeometry() which is in src/osg/Geometry.cpp almost literally to Python:
 
@@ -106,6 +107,4 @@ Some python-esque things work already, like some uses of slices on arrays:
 
 But lots of things are missing, some of which are pretty basic.
 
-The WrappingCookbook wiki page has some tips for how to wrap things - it's mostly a reminder to myself but if someone wants to help it will be useful too. Most things are pretty simple to wrap, but reading the whole boost.python documentation, FAQ, wiki, and scattered mail posts and web pages takes a long time, so it's useful to collect all that info in one place.
-
-Contributions welcome, you can either post to the cplusplus-sig or osg-users mailings lists or directly to my e-mail address. That goes for questions as well.
+The WrappingCookbook wiki page (in branch 'wiki') has some tips for how to wrap things - it's mostly a reminder to myself but if someone wants to help it will be useful too. Most things are pretty simple to wrap, but reading the whole boost.python documentation, FAQ, wiki, and scattered mail posts and web pages takes a long time, so it's useful to collect all that info in one place.
