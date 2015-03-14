@@ -1,0 +1,23 @@
+# Guidelines #
+
+In the interest of making my life a bit easier when I review and checkin code submitted by others, I'd like to mention a few things.
+
+# General Guidelines #
+
+  * Please send complete modified files as diffs tend to go out of date real quick.
+  * Please send a summary of changes you made. Doesn't need to be super detailed, but at least mention each change in general.
+  * If you use bjam to build, please also send updated build files (Jamroot mostly). If not, don't worry about it, but it helps.
+
+# Tests #
+
+  * Please send me new tests (or update the existing test scripts) for the features you add. It makes it much easier to make sure everything works well, rather than trying to test it manually.
+  * The tests don't need to be really in-depth, just testing one or two expected results is enough.
+  * But the tests should actually test some results, not just that the wrapped classes and functions are available. So test some expected result after some operation, or start up a viewer and check visually that the result is what's expected.
+  * See the scripts in test/, it's pretty simple and quick to do.
+
+# Coding- or Style-Related Guidelines #
+
+  * Please read and follow the WrappingCookbook, because in addition to giving tips on wrapping, it also shows the style I prefer when wrapping (in cases where multiple styles are possible).
+  * I prefer to keep things unambiguous, for example when dealing with `Matrix` and `VecX` I prefer to specify which variant to wrap. No `Matrix` and `Vec3`, but `Matrixd/Matrixf` and `Vec3d/Vec3f`. Also, when wrapping things for one type of vector (for example `Vec3f/d`), I'd like to wrap the same thing in all other vector types that are currently wrapped if it exists. Either wrap it in the `VecWrapper` base class or in the `Vec2Wrapper/Vec3Wrapper/Vec4Wrapper` subclasses (all of them when appropriate, for example see the `__getitem__` wrapper in src/osg/math.cpp).
+  * Please make sure indentation is consistent. Also please indent with 4 spaces instead of tabs.
+  * Please keep things clean. Don't include headers unnecessarily, and don't import unnecessary modules in test scripts / examples.
